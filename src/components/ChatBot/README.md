@@ -14,7 +14,7 @@
 
 ```scss
 .example-driver-preview {
-  background: #F6F7F9;
+  background: #f6f7f9;
 }
 ```
 
@@ -25,9 +25,9 @@
 - _ChatBot(@components/ChatBot)
 
 ```jsx
-const {default:ChatBot} = _ChatBot;
-const BaseExample = ()=>{
-    return <ChatBot />;
+const { default: ChatBot } = _ChatBot;
+const BaseExample = () => {
+  return <ChatBot />;
 };
 
 render(<BaseExample />);

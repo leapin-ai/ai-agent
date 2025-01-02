@@ -14,7 +14,7 @@ HR助理
 
 ```scss
 .example-driver-preview {
-  background: #F6F7F9;
+  background: #f6f7f9;
 }
 ```
 
@@ -25,9 +25,9 @@ HR助理
 - _HrAssistant(@components/HrAssistant)
 
 ```jsx
-const {default:HrAssistant} = _HrAssistant;
-const BaseExample = ()=>{
-    return <HrAssistant />;
+const { default: HrAssistant } = _HrAssistant;
+const BaseExample = () => {
+  return <HrAssistant />;
 };
 
 render(<BaseExample />);

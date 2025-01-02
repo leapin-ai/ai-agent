@@ -16,9 +16,9 @@
 - _CreateAgent(@components/CreateAgent)
 
 ```jsx
-const {default:CreateAgent} = _CreateAgent;
-const BaseExample = ()=>{
-    return <CreateAgent />;
+const { default: CreateAgent } = _CreateAgent;
+const BaseExample = () => {
+  return <CreateAgent />;
 };
 
 render(<BaseExample />);

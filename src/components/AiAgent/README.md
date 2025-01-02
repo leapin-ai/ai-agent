@@ -14,7 +14,7 @@
 
 ```scss
 .example-driver-preview {
-  background: #F6F7F9;
+  background: #f6f7f9;
 }
 ```
 
@@ -25,9 +25,9 @@
 - _AiAgent(@components/AiAgent)
 
 ```jsx
-const {default:AiAgent} = _AiAgent;
-const BaseExample = ()=>{
-    return <AiAgent />;
+const { default: AiAgent } = _AiAgent;
+const BaseExample = () => {
+  return <AiAgent />;
 };
 
 render(<BaseExample />);

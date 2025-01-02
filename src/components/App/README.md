@@ -16,9 +16,9 @@
 - _App(@components/App)
 
 ```jsx
-const {default:App} = _App;
-const BaseExample = ()=>{
-    return <App />;
+const { default: App } = _App;
+const BaseExample = () => {
+  return <App />;
 };
 
 render(<BaseExample />);

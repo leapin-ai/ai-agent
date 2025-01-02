@@ -14,7 +14,7 @@
 
 ```scss
 .example-driver-preview {
-  background: #F6F7F9;
+  background: #f6f7f9;
 }
 ```
 
@@ -25,9 +25,9 @@
 - _ChatHistory(@components/ChatHistory)
 
 ```jsx
-const {default:ChatHistory} = _ChatHistory;
-const BaseExample = ()=>{
-    return <ChatHistory />;
+const { default: ChatHistory } = _ChatHistory;
+const BaseExample = () => {
+  return <ChatHistory />;
 };
 
 render(<BaseExample />);

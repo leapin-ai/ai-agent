@@ -72,8 +72,8 @@ export const globalInit = async () => {
     }
   });
   const registry = {
-    url: 'https://uc.fatalent.cn',
-    tpl: '{{url}}/packages/@kne-components/{{remote}}/{{version}}/build'
+    url: 'https://cdn.jsdelivr.net',
+    tpl: '{{url}}/npm/@kne-components/{{remote}}@{{version}}/build'
   };
 
   const componentsCoreRemote = {

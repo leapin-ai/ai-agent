@@ -14,7 +14,7 @@
 
 ```scss
 .example-driver-preview {
-  background: #F6F7F9;
+  background: #f6f7f9;
 }
 ```
 
@@ -25,9 +25,9 @@
 - _Marketplace(@components/Marketplace)
 
 ```jsx
-const {default:Marketplace} = _Marketplace;
-const BaseExample = ()=>{
-    return <Marketplace />;
+const { default: Marketplace } = _Marketplace;
+const BaseExample = () => {
+  return <Marketplace />;
 };
 
 render(<BaseExample />);
