@@ -1,0 +1,14 @@
+.my-agents {
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 24px;
+}
+
+.search-input {
+  :global(.ant-input-affix-wrapper) {
+    background: #f2f3f5;
+    border-color: #f2f3f5;
+  }
+
+  width: 298px;
+}

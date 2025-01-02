@@ -1,0 +1,83 @@
+.navigation-list > .ant-menu {
+  justify-content: center;
+}
+
+.react-form {
+  .react-form__field {
+    &:not(.no-background) {
+      background: #f6f7f9;
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    &.is-ignore-label-width {
+      .react-form__field-main {
+        display: block;
+      }
+
+      .react-form__field-label {
+        margin-left: 0;
+        margin-bottom: 4px;
+      }
+    }
+
+    &:not(.is-ignore-label-width) {
+      .react-form__field-label {
+        margin-top: 4px;
+      }
+    }
+
+    margin-bottom: 16px;
+  }
+
+  .react-form__field-label {
+    text-align: left;
+    height: auto !important;
+  }
+
+  .mult-field {
+    background: #f6f7f9;
+    margin-bottom: 16px;
+    border-radius: 12px;
+
+    .react-form__field {
+      margin-bottom: 0;
+
+      &:not(.is-ignore-label-width) .react-form__field-label {
+        display: block;
+      }
+    }
+
+    .mult-field-delete--label {
+      height: 8px !important;
+    }
+
+    .ant-btn-dashed {
+      margin-left: 116px;
+    }
+
+    .ant-btn-icon-only {
+      transform: translateX(-16px);
+      background: transparent !important;
+    }
+
+    .mult-field-item:not(:first-child) {
+      .react-form__field {
+        padding-top: 0;
+      }
+
+      .react-form__field-label {
+        visibility: hidden;
+      }
+    }
+  }
+
+  .react-form__field_label-tips {
+    display: block;
+  }
+}
+
+.info-page-table-header {
+  font-weight: bold;
+  border-radius: 12px;
+}

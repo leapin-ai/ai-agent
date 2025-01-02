@@ -1,0 +1,11 @@
+.info {
+  background: #ffffff;
+  border-radius: 4px;
+  padding: 24px;
+
+  :global {
+    .ant-tabs-tab {
+      padding-top: 0;
+    }
+  }
+}
