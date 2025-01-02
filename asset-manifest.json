@@ -1,9 +1,9 @@
 {
   "files": {
-    "main.js": "/ai-agent/static/js/main.73328a72.js",
+    "main.js": "/ai-agent/static/js/main.5974e7e7.js",
     "leapin_ai_agent_0_1_0.js": "/ai-agent/remoteEntry.js",
     "static/css/867.0bd8a827.chunk.css": "/ai-agent/static/css/867.0bd8a827.chunk.css",
-    "static/js/867.11b4ea3e.chunk.js": "/ai-agent/static/js/867.11b4ea3e.chunk.js",
+    "static/js/867.f450e68f.chunk.js": "/ai-agent/static/js/867.f450e68f.chunk.js",
     "static/js/488.ef12d40f.chunk.js": "/ai-agent/static/js/488.ef12d40f.chunk.js",
     "static/js/379.1675430e.chunk.js": "/ai-agent/static/js/379.1675430e.chunk.js",
     "static/js/446.0a845043.chunk.js": "/ai-agent/static/js/446.0a845043.chunk.js",
@@ -49,10 +49,10 @@
     "static/media/marketplace.png": "/ai-agent/static/media/marketplace.2420189b45f310999d8b.png",
     "static/media/custom_agent.png": "/ai-agent/static/media/custom_agent.44c482d4be5aca417713.png",
     "index.html": "/ai-agent/index.html",
-    "main.73328a72.js.map": "/ai-agent/static/js/main.73328a72.js.map",
+    "main.5974e7e7.js.map": "/ai-agent/static/js/main.5974e7e7.js.map",
     "remoteEntry.js.map": "/ai-agent/remoteEntry.js.map",
     "867.0bd8a827.chunk.css.map": "/ai-agent/static/css/867.0bd8a827.chunk.css.map",
-    "867.11b4ea3e.chunk.js.map": "/ai-agent/static/js/867.11b4ea3e.chunk.js.map",
+    "867.f450e68f.chunk.js.map": "/ai-agent/static/js/867.f450e68f.chunk.js.map",
     "488.ef12d40f.chunk.js.map": "/ai-agent/static/js/488.ef12d40f.chunk.js.map",
     "379.1675430e.chunk.js.map": "/ai-agent/static/js/379.1675430e.chunk.js.map",
     "446.0a845043.chunk.js.map": "/ai-agent/static/js/446.0a845043.chunk.js.map",
@@ -97,6 +97,6 @@
     "916.d63a9f79.chunk.js.map": "/ai-agent/static/js/916.d63a9f79.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.73328a72.js"
+    "static/js/main.5974e7e7.js"
   ]
 }
