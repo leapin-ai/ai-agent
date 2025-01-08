@@ -33,6 +33,10 @@ export const globalInit = async () => {
 
     instance.interceptors.response.use(
       response => {
+        if (response.status === 200 && response.data.code === 401) {
+          window.location.href = '/login';
+          return response;
+        }
         if (response.status !== 200 || (response.data.hasOwnProperty('code') && response.data.code !== 0 && response.config.showError !== false)) {
           message.error(response?.data?.msg || response?.data?.error_msg?.detail || '请求发生错误');
         }
@@ -102,10 +106,10 @@ export const globalInit = async () => {
 
   const componentsCoreRemote = {
     ...registry,
-    url: 'http://localhost:3001',
-    tpl: '{{url}}',
+    //url: 'http://localhost:3001',
+    //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.2.85'
+    defaultVersion: '0.2.86'
   };
   remoteLoaderPreset({
     remotes: {

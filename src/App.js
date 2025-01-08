@@ -24,6 +24,7 @@ const App = ({ globalPreset }) => {
         }
       >
         <Route path="/ai-agent/*" element={<AiAgentApp baseUrl="/ai-agent" />} />
+        <Route path="/login" element={'登录token失效'} />
         <Route path="error" element={<Error />} />
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="/ai-agent" />} />
