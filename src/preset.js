@@ -2,10 +2,18 @@ import React from 'react';
 import { preset as fetchPreset } from '@kne/react-fetch';
 import { Spin, Empty, message } from 'antd';
 import axios from 'axios';
-import { preset as remoteLoaderPreset } from '@kne/remote-loader';
+import { preset as remoteLoaderPreset, loadModule } from '@kne/remote-loader';
 import omit from 'lodash/omit';
+import cookie from 'js-cookie';
+import { getApis as getAgentApis } from '@components/Apis';
 
 window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
+
+export const defaultHeaders = headers => {
+  return Object.assign({}, headers, {
+    Authorization: `Bearer ${cookie.get('token')}`
+  });
+};
 
 export const globalInit = async () => {
   const ajax = (() => {
@@ -15,10 +23,18 @@ export const globalInit = async () => {
       }
     });
 
+    instance.interceptors.request.use(config => {
+      config.headers = Object.assign({}, defaultHeaders());
+      if (config.method.toUpperCase() !== 'GET' && !config.headers['Content-Type']) {
+        config.headers['Content-Type'] = 'application/json';
+      }
+      return config;
+    });
+
     instance.interceptors.response.use(
       response => {
-        if (response.status !== 200) {
-          response.showError !== false && response.config.showError !== false && message.error(response?.data?.msg || '请求发生错误');
+        if (response.status !== 200 || (response.data.hasOwnProperty('code') && response.data.code !== 0 && response.config.showError !== false)) {
+          message.error(response?.data?.msg || response?.data?.error_msg?.detail || '请求发生错误');
         }
         return response;
       },
@@ -28,7 +44,7 @@ export const globalInit = async () => {
       }
     );
 
-    return params => {
+    const ajax = params => {
       if (params.hasOwnProperty('loader') && typeof params.loader === 'function') {
         return Promise.resolve(params.loader(omit(params, ['loader'])))
           .then(data => ({
@@ -43,8 +59,16 @@ export const globalInit = async () => {
           });
       }
 
+      if (typeof params.urlParams === 'object' && Object.keys(params.urlParams).length > 0 && typeof params.url === 'string') {
+        params.url = params.url.replace(/{([\s\S]+?)}/g, (match, name) => {
+          return params.urlParams.hasOwnProperty(name) ? params.urlParams[name] : match;
+        });
+      }
+
       return instance(params);
     };
+    ajax.postForm = instance.postForm;
+    return ajax;
   })();
   fetchPreset({
     ajax,
@@ -78,6 +102,8 @@ export const globalInit = async () => {
 
   const componentsCoreRemote = {
     ...registry,
+    url: 'http://localhost:3001',
+    tpl: '{{url}}',
     remote: 'components-core',
     defaultVersion: '0.2.85'
   };
@@ -95,7 +121,8 @@ export const globalInit = async () => {
           ? {
               remote: 'leapin-ai-agent',
               url: '/',
-              tpl: '{{url}}'
+              tpl: '{{url}}',
+              defaultVersion: process.env.DEFAULT_VERSION
             }
           : {
               ...registry,
@@ -107,6 +134,12 @@ export const globalInit = async () => {
 
   return {
     ajax,
+    apis: Object.assign(
+      {},
+      {
+        agent: getAgentApis()
+      }
+    ),
     locale: 'en-US',
     themeToken: {
       colorPrimary: '#2257bf'

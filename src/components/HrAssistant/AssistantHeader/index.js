@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import defaultAvatar from '../../../common/defaultAvatar.png';
 import style from './style.module.scss';
 
-const AssistantHeader = ({ name, roles, baseUrl }) => {
+const AssistantHeader = ({ id, name, roles, baseUrl }) => {
   const navigate = useNavigate();
   return (
     <div className={style['assistant-header-outer']}>
@@ -14,7 +14,7 @@ const AssistantHeader = ({ name, roles, baseUrl }) => {
             <Flex vertical flex={1} gap={8}>
               <div className={style['title']}>{name}</div>
               <Space>
-                {roles.map(name => (
+                {(roles || []).map(name => (
                   <div className={style['tag']}>{name}</div>
                 ))}
               </Space>
@@ -27,7 +27,7 @@ const AssistantHeader = ({ name, roles, baseUrl }) => {
             <Button
               type="primary"
               onClick={() => {
-                navigate(`${baseUrl}/chat-bot`);
+                navigate(`${baseUrl}/chat-bot?id=${id}`);
               }}
             >
               Start Chat

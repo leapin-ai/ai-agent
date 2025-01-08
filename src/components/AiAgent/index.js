@@ -1,5 +1,8 @@
-import { Row, Col, Flex } from 'antd';
+import { useState } from 'react';
+import { Row, Col, Flex, Pagination } from 'antd';
 import { createWithRemoteLoader } from '@kne/remote-loader';
+import Fetch from '@kne/react-fetch';
+import { useSearchParams } from 'react-router-dom';
 import customAgent from './custom_agent.png';
 import marketplace from './marketplace.png';
 import HeaderCard from './HeaderCard';
@@ -10,9 +13,14 @@ import style from './style.module.scss';
 export { AgentCard };
 
 const AiAgent = createWithRemoteLoader({
-  modules: ['components-core:Common@SearchInput']
+  modules: ['components-core:Common@SearchInput', 'components-core:Global@usePreset']
 })(({ remoteModules, baseUrl }) => {
-  const [SearchInput] = remoteModules;
+  const [SearchInput, usePreset] = remoteModules;
+  const { apis } = usePreset();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get('page'),
+    pageSize = 12;
+  const [keyword, setKeyword] = useState('');
   return (
     <Flex vertical gap={24}>
       <Row gutter={12}>
@@ -40,23 +48,45 @@ const AiAgent = createWithRemoteLoader({
       <Flex className={style['my-agents']} vertical gap={24}>
         <Flex align="center" justify="space-between">
           <div className={style['title']}>My Agents</div>
-          <SearchInput className={style['search-input']} placeholder="search" onSearch={() => {}} />
+          <SearchInput className={style['search-input']} value={keyword} placeholder="search" onSearch={setKeyword} />
         </Flex>
-        <Row gutter={[12, 12]}>
-          {Array.from({ length: 20 }).map((item, index) => {
-            return (
-              <Col span={8} key={index}>
-                <AgentCard
-                  link={`${baseUrl}/hr-assistant`}
-                  title="GPT-Researcher EN"
-                  type="WORKFLOW"
-                  avatar={agentAvatar}
-                  description="GPT-Reasearcher is an expert in internet topic research. ltcan efficiently decompose a topic into sub-questions andprovide a professional research report from acomprehensive perspective."
-                />
-              </Col>
-            );
+        <Fetch
+          {...Object.assign({}, apis.agent.getAgentList, {
+            params: {
+              keyword,
+              page_size: pageSize,
+              page
+            }
           })}
-        </Row>
+          render={({ data }) => {
+            return (
+              <>
+                <Row gutter={[12, 12]}>
+                  {data.results.map((item, index) => {
+                    return (
+                      <Col span={8} key={item.id}>
+                        <AgentCard link={`${baseUrl}/detail?id=${item.id}`} title={item.name} roles={item.role} avatar={item.avatar || agentAvatar} description={item.description} />
+                      </Col>
+                    );
+                  })}
+                </Row>
+                <Flex justify="flex-end">
+                  <Pagination
+                    hideOnSinglePage
+                    total={data.count}
+                    current={page}
+                    pageSize={pageSize}
+                    onChange={page => {
+                      const newSearchParams = new URLSearchParams(searchParams);
+                      newSearchParams.set('page', page);
+                      setSearchParams(newSearchParams);
+                    }}
+                  />
+                </Flex>
+              </>
+            );
+          }}
+        />
       </Flex>
     </Flex>
   );

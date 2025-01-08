@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "init": "husky",
-    "start": "cross-env PORT=3010 MODULES_DEV_PUBLIC_URL=/ craco start",
+    "start": "cross-env PORT=3010 COMPONENTS_NAME=leapin-ai-agent MODULES_DEV_PUBLIC_URL=/ craco start",
     "build": "cross-env COMPONENTS_NAME=leapin-ai-agent MODULES_DEV_PUBLIC_URL=/ai-agent craco build",
     "create": "modules-dev-create",
     "test": "craco test --coverage",
@@ -64,9 +64,9 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
+    "@kne/modules-dev": "^2.0.14",
     "@kne/react-fetch": "^1.4.3",
     "@kne/remote-loader": "^1.2.3",
-    "@kne/modules-dev": "^2.0.14",
     "@loadable/component": "^5.16.3",
     "@testing-library/jest-dom": "^6.4.2",
     "antd": "^5.14.2",
@@ -76,13 +76,15 @@
     "http-proxy-middleware": "^2.0.6",
     "husky": "^9.0.11",
     "lodash": "^4.17.21",
-    "sass": "^1.75.0",
     "prettier": "^3.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "^6.22.2"
+    "react-router-dom": "^6.22.2",
+    "sass": "^1.75.0"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.5.2"
+    "@ant-design/icons": "^5.5.2",
+    "@kne/react-flow-chart": "^0.1.4",
+    "js-cookie": "^3.0.5"
   }
 }

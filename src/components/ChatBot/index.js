@@ -1,5 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { Flex, Input, Button, Avatar, Space } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import classnames from 'classnames';
 import defaultAvatar from '../../common/defaultAvatar.png';
 import enter from './enter.png';
@@ -9,6 +10,7 @@ const ChartBot = createWithRemoteLoader({
   modules: ['components-core:Icon']
 })(({ remoteModules, className, user, chatList }) => {
   const [Icon] = remoteModules;
+  const [searchParams] = useSearchParams();
   return (
     <Flex vertical className={classnames(className, style['chat'])} gap={8}>
       <Flex className={style['title']} justify="center" align="center">

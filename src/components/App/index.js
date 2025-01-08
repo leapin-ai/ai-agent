@@ -11,7 +11,7 @@ const App = ({ baseUrl }) => {
         <Route index element={<Home />} />
         <Route path="create" element={<CreateAgent />} />
         <Route path="marketplace" element={<Marketplace />} />
-        <Route path="hr-assistant" element={<HrAssistant />} />
+        <Route path="detail" element={<HrAssistant />} />
         <Route path="chat-bot" element={<ChatBot />} />
         <Route path="*" element={<Navigate to="404" />} />
       </Routes>

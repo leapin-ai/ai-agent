@@ -1,14 +1,34 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Flex } from 'antd';
+import { Flex, App } from 'antd';
 
 const Prompt = createWithRemoteLoader({
-  modules: ['components-core:FormInfo']
-})(({ remoteModules }) => {
-  const [FormInfo] = remoteModules;
+  modules: ['components-core:FormInfo', 'components-core:Global@usePreset']
+})(({ remoteModules, data: agentData }) => {
+  const [FormInfo, usePreset] = remoteModules;
   const { Form, SubmitButton } = FormInfo;
   const { TextArea } = FormInfo.fields;
+  const { message } = App.useApp();
+  const { ajax, apis } = usePreset();
   return (
-    <Form type="default">
+    <Form
+      type="default"
+      onSubmit={async data => {
+        const { data: resData } = await ajax(
+          Object.assign({}, apis.agent.setAgentConfig, {
+            urlParams: { agent_id: agentData.id },
+            data: {
+              agent_id: agentData.id,
+              prompt: data.prompt
+            }
+          })
+        );
+
+        if (resData.code !== 0) {
+          return;
+        }
+        message.success('Success');
+      }}
+    >
       <FormInfo column={1} list={[<TextArea name="prompt" ignoreLabelWidth label="Prompt" labelTips={`This is the prompt that virtual employee will use to generate respnses.`} />]} />
       <Flex justify="flex-end" gap={16}>
         <SubmitButton>Save</SubmitButton>

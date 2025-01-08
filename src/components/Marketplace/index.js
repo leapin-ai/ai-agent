@@ -48,7 +48,6 @@ const Marketplace = ({ baseUrl }) => {
           return (
             <Col span={8} key={index}>
               <AgentCard
-                link={`${baseUrl}/hr-assistant`}
                 title="GPT-Researcher EN"
                 type="WORKFLOW"
                 avatar={agentAvatar}

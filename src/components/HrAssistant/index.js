@@ -1,15 +1,32 @@
 import { Flex } from 'antd';
+import Fetch from '@kne/react-fetch';
+import { createWithRemoteLoader } from '@kne/remote-loader';
+import { useSearchParams } from 'react-router-dom';
 import style from './style.module.scss';
 import AssistantHeader from './AssistantHeader';
 import Info from './Info';
 
-const HrAssistant = ({ item, baseUrl }) => {
+const HrAssistant = createWithRemoteLoader({
+  modules: ['components-core:Global@usePreset']
+})(({ remoteModules, baseUrl }) => {
+  const [usePreset] = remoteModules;
+  const { apis } = usePreset();
+  const [searchParams] = useSearchParams();
   return (
-    <Flex vertical gap={16}>
-      <AssistantHeader baseUrl={baseUrl} name={'HR Assistant'} roles={['Interview', 'Hr Assistant']} />
-      <Info item={item} />
-    </Flex>
+    <Fetch
+      {...Object.assign({}, apis.agent.getAgentDetail, {
+        urlParams: { agent_id: searchParams.get('id') }
+      })}
+      render={({ data }) => {
+        return (
+          <Flex vertical gap={16}>
+            <AssistantHeader baseUrl={baseUrl} id={data.id} avatar={data.avatar} name={data.name} roles={data.role} />
+            <Info data={data} />
+          </Flex>
+        );
+      }}
+    />
   );
-};
+});
 
 export default HrAssistant;

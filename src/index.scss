@@ -3,6 +3,10 @@
 }
 
 .react-form {
+  > span > .ant-flex {
+    flex: 1;
+  }
+
   .react-form__field {
     &:not(.no-background) {
       background: #f6f7f9;
