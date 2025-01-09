@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from './context';
 import pages from './pages';
 
-const { Home, CreateAgent, Marketplace, HrAssistant, ChatBot } = pages;
+const { Home, CreateAgent, Marketplace, HrAssistant, ChatBot, History } = pages;
 
 const App = ({ baseUrl }) => {
   return (
@@ -13,6 +13,7 @@ const App = ({ baseUrl }) => {
         <Route path="marketplace" element={<Marketplace />} />
         <Route path="detail" element={<HrAssistant />} />
         <Route path="chat-bot" element={<ChatBot />} />
+        <Route path="history" element={<History />} />
         <Route path="*" element={<Navigate to="404" />} />
       </Routes>
     </Provider>

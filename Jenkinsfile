@@ -4,7 +4,7 @@ if (env.BRANCH_NAME == 'master') {
 }
 
 standardPipeline {
-    projectName = "app"
+    projectName = "ai-agent"
     isMultiBranch = true
     buildCommand = {
         sh "${build_command}"
@@ -12,6 +12,7 @@ standardPipeline {
     preBuildCommand = {
         sh "npm install"
     }
+    nodeVersion = "20.15.0"
     buildLocalPath = "build"
     deployBranch = ['develop', 'master']
 }

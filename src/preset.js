@@ -2,7 +2,7 @@ import React from 'react';
 import { preset as fetchPreset } from '@kne/react-fetch';
 import { Spin, Empty, message } from 'antd';
 import axios from 'axios';
-import { preset as remoteLoaderPreset, loadModule } from '@kne/remote-loader';
+import { preset as remoteLoaderPreset } from '@kne/remote-loader';
 import omit from 'lodash/omit';
 import cookie from 'js-cookie';
 import { getApis as getAgentApis } from '@components/Apis';
@@ -109,7 +109,7 @@ export const globalInit = async () => {
     //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.2.86'
+    defaultVersion: '0.2.87'
   };
   remoteLoaderPreset({
     remotes: {

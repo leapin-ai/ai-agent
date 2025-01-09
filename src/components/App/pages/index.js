@@ -1,5 +1,6 @@
 import loadable from '@loadable/component';
 import { Spin } from 'antd';
+import History from './History';
 
 const loadableWithProps = func =>
   loadable(func, {
@@ -11,7 +12,8 @@ const pages = {
   CreateAgent: loadableWithProps(() => import('./CreateAgent')),
   Marketplace: loadableWithProps(() => import('./Marketplace')),
   HrAssistant: loadableWithProps(() => import('./HrAssistant')),
-  ChatBot: loadableWithProps(() => import('./ChatBot'))
+  ChatBot: loadableWithProps(() => import('./ChatBot')),
+  History: loadableWithProps(() => import('./History'))
 };
 
 export default pages;
