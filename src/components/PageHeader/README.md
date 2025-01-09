@@ -16,13 +16,12 @@
 - _PageHeader(@components/PageHeader)
 
 ```jsx
-const {default: PageHeader} = _PageHeader;
+const { default: PageHeader } = _PageHeader;
 const BaseExample = () => {
-    return <PageHeader title="The chat history"
-                       description={'The chat history recoird the running status of the application, including user inputs and AI replies.'}/>;
+  return <PageHeader title="The chat history" description={'The chat history recoird the running status of the application, including user inputs and AI replies.'} />;
 };
 
-render(<BaseExample/>);
+render(<BaseExample />);
 
 ```
 
