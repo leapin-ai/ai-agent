@@ -68,11 +68,13 @@ const ChartHistory = createWithRemoteLoader({
           },
           {
             name: 'startDate',
-            title: 'Start Date'
+            title: 'Start Date',
+            format: 'date-DD.MM.YYYY()HH:mm'
           },
           {
             name: 'endDate',
-            title: 'End Date'
+            title: 'End Date',
+            format: 'date-DD.MM.YYYY()HH:mm'
           }
         ]}
       />

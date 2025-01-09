@@ -6,7 +6,7 @@ const MainLayout = createWithRemoteLoader({
 })(({ remoteModules, paths, preset, ...props }) => {
   const [Global, Layout] = remoteModules;
   return (
-    <Global {...props} preset={preset}>
+    <Global className="app" {...props} preset={preset}>
       <Layout
         navigation={{
           defaultTitle: 'AI Agent',

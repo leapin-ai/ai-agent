@@ -16,9 +16,9 @@
 - _LeftMenu(@components/LeftMenu)
 
 ```jsx
-const {default:LeftMenu} = _LeftMenu;
-const BaseExample = ()=>{
-    return <LeftMenu />;
+const { default: LeftMenu } = _LeftMenu;
+const BaseExample = () => {
+  return <LeftMenu />;
 };
 
 render(<BaseExample />);
