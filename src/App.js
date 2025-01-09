@@ -1,7 +1,8 @@
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import pages from './pages';
-import MainLayout from './MainLayout';
+import MainLayout, { GlobalPage } from './MainLayout';
 import AiAgentApp from '@components/App';
+import ChatBot from '@components/ChatBot';
 import './index.scss';
 
 const { Error, NotFound } = pages;
@@ -43,6 +44,16 @@ const App = ({ globalPreset }) => {
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="/ai-agent" />} />
       </Route>
+      <Route
+        path="/ai-agent/chat-bot"
+        element={
+          <GlobalPage preset={globalPreset} themeToken={globalPreset.themeToken}>
+            <div className="client-bot">
+              <ChatBot baseUrl="/ai-agent" />
+            </div>
+          </GlobalPage>
+        }
+      />
     </Routes>
   );
 };

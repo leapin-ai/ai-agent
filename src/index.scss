@@ -3,6 +3,9 @@
     justify-content: center;
   }
 
+  /*box-shadow: 0 2px 8px 0 #ebebeb;
+  border-bottom: 1px solid #ebebeb;*/
+
   .react-form {
     > span > .ant-flex {
       flex: 1;
@@ -114,5 +117,11 @@
 
   .core-page-menu-btn-outer {
     top: calc(38px + var(--nav-height));
+  }
+
+  .client-bot {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 }
