@@ -10,9 +10,9 @@ const ChartHistory = createWithRemoteLoader({
   return (
     <Flex className={style['history']} vertical gap={24}>
       <PageHeader title="The Chat History" description="The chat history recoird the running status of the application, including user inputs and AI replies." />
-      <Flex className={style['filter']}>
+      {/*<Flex className={style['filter']}>
         <Input />
-      </Flex>
+      </Flex>*/}
 
       <TableView
         dataSource={[

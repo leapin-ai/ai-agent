@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import pages from './pages';
 import MainLayout from './MainLayout';
 import AiAgentApp from '@components/App';
@@ -7,6 +7,7 @@ import './index.scss';
 const { Error, NotFound } = pages;
 
 const App = ({ globalPreset }) => {
+  const navigate = useNavigate();
   return (
     <Routes>
       <Route
@@ -14,8 +15,21 @@ const App = ({ globalPreset }) => {
           <MainLayout
             preset={globalPreset}
             themeToken={globalPreset.themeToken}
+            navigateTo={path => {
+              if (path === '/') {
+                window.location.href = path;
+                return;
+              }
+              navigate(path);
+            }}
             paths={[
               {
+                key: 'leapin-saas',
+                title: 'Leapin Saas',
+                path: '/'
+              },
+              {
+                key: 'ai-agent',
                 title: 'AI Agent',
                 path: '/ai-agent'
               }

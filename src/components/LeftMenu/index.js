@@ -1,4 +1,3 @@
-import { createWithRemoteLoader } from '@kne/remote-loader';
 import { Menu, Avatar } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
@@ -8,10 +7,7 @@ import chat from './chat.png';
 import chatActive from './chatActive.png';
 import style from './style.module.scss';
 
-const LeftMenu = createWithRemoteLoader({
-  modules: ['components-core:Menu']
-})(({ remoteModules, open, baseUrl }) => {
-  const [] = remoteModules;
+const LeftMenu = ({ open, baseUrl }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const activeKey = pathname.indexOf(`${baseUrl}/history`) === 0 ? 'history' : 'agent';
@@ -41,6 +37,6 @@ const LeftMenu = createWithRemoteLoader({
       }}
     />
   );
-});
+};
 
 export default LeftMenu;

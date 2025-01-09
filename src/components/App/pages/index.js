@@ -1,6 +1,5 @@
 import loadable from '@loadable/component';
 import { Spin } from 'antd';
-import History from './History';
 
 const loadableWithProps = func =>
   loadable(func, {
