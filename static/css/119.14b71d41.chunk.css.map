@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/119.14b71d41.chunk.css","mappings":"AAAA,6BAEE,gBACA,kBAFA,YAEA,CAGF,2BACE,eACA","sources":["components/ChatHistory/style.module.scss"],"sourcesContent":[".history {\n  padding: 24px;\n  background: #ffffff;\n  border-radius: 4px;\n}\n\n.title {\n  font-size: 20px;\n  font-weight: bolder;\n}\n"],"names":[],"sourceRoot":""}
