@@ -1,4 +1,4 @@
-import { Flex, Space } from 'antd';
+import { Flex, Space, Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import style from './style.module.scss';
 
@@ -14,7 +14,7 @@ const AgentCard = ({ link, avatar, title, roles, description }) => {
       }}
     >
       <Flex gap={8}>
-        <img className={style['avatar']} src={avatar} alt="avatar" />
+        <Avatar className={style['avatar']} src={avatar} alt="avatar" />
         <Flex vertical>
           <div className={style['title']}>{title}</div>
           <Space>

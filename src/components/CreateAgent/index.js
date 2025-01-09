@@ -1,5 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { Flex, App } from 'antd';
+import PageHeader from '@components/PageHeader';
 import { useNavigate } from 'react-router-dom';
 import defaultAvatar from './defaultAvatar.png';
 import style from './style.module.scss';
@@ -74,7 +75,7 @@ const CreateAgent = createWithRemoteLoader({
       }}
     >
       <Flex vertical>
-        <div className={style['title']}>Create My Agents</div>
+        <PageHeader title="Create My Agents" />
         <div className={style['description']}>App icon & name</div>
         <CreateAgentFormInner />
       </Flex>

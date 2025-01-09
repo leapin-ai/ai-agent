@@ -4,6 +4,7 @@ import { useContext } from '../../context';
 import style from '../style.module.scss';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
+import LeftMenu from '@components/LeftMenu';
 
 const ChatBotPage = createWithRemoteLoader({
   modules: ['Layout@Page']
@@ -12,7 +13,7 @@ const ChatBotPage = createWithRemoteLoader({
   const [Page] = remoteModules;
   const [searchParams] = useSearchParams();
   return (
-    <Page backgroundColor="transparent">
+    <Page menuWidth="200px" menuCloseWidth="80px" backgroundColor="transparent" menu={({ open }) => <LeftMenu baseUrl={baseUrl} open={open} />}>
       <Breadcrumb
         className={style['breadcrumb']}
         items={[

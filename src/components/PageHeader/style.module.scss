@@ -1,0 +1,35 @@
+.page-header {
+  border-bottom: solid 1px #e6e8f0;
+  padding-bottom: 24px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bolder;
+
+  > i {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    margin-right: 4px;
+    transform: translateY(-3px);
+    position: relative;
+
+    &:after {
+      content: '';
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: block;
+      position: absolute;
+      left: 3px;
+      top: 3px;
+    }
+  }
+}
+
+.description {
+}

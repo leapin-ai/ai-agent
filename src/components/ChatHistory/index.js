@@ -1,5 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { Flex, Input } from 'antd';
+import PageHeader from '@components/PageHeader';
 import style from './style.module.scss';
 
 const ChartHistory = createWithRemoteLoader({
@@ -8,10 +9,7 @@ const ChartHistory = createWithRemoteLoader({
   const [TableView] = remoteModules;
   return (
     <Flex className={style['history']} vertical gap={24}>
-      <Flex className={style['header']} vertical gap={4}>
-        <div className={style['title']}>The Chat History</div>
-        <div className={style['description']}>The chat history recoird the running status of the application, including user inputs and AI replies.</div>
-      </Flex>
+      <PageHeader title="The Chat History" description="The chat history recoird the running status of the application, including user inputs and AI replies." />
       <Flex className={style['filter']}>
         <Input />
       </Flex>

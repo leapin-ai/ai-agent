@@ -85,3 +85,12 @@
   font-weight: bold;
   border-radius: 12px;
 }
+
+.core-layout {
+  --margin-width: 0px !important;
+  --padding-width: 24px;
+}
+
+.core-page-menu-btn-outer {
+  top: calc(38px + var(--nav-height)) !important;
+}

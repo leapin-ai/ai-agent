@@ -1,14 +1,19 @@
 import { Flex, Space, Button, Avatar, Divider } from 'antd';
+import { createWithRemoteLoader } from '@kne/remote-loader';
 import { useNavigate } from 'react-router-dom';
+import { MessageOutlined } from '@ant-design/icons';
 import defaultAvatar from '../../../common/defaultAvatar.png';
 import style from './style.module.scss';
 
-const AssistantHeader = ({ id, name, roles, baseUrl }) => {
+const AssistantHeader = createWithRemoteLoader({
+  modules: ['components-core:Icon']
+})(({ remoteModules, id, avatar, name, roles, baseUrl }) => {
+  const [Icon] = remoteModules;
   const navigate = useNavigate();
   return (
     <div className={style['assistant-header-outer']}>
       <Flex gap={20} className={style['assistant-header']}>
-        <Avatar size={54} src={defaultAvatar} />
+        <Avatar size={54} src={avatar || defaultAvatar} />
         <Flex flex={1} vertical gap={24}>
           <Flex gap={24} align="center">
             <Flex vertical flex={1} gap={8}>
@@ -20,7 +25,9 @@ const AssistantHeader = ({ id, name, roles, baseUrl }) => {
               </Space>
             </Flex>
             <Divider className={style['divider']} type="vertical" />
-            <Button type="primary">Publish</Button>
+            <Button type="primary" icon={<Icon type="fasongduihua" />}>
+              Publish
+            </Button>
           </Flex>
 
           <div>
@@ -29,6 +36,7 @@ const AssistantHeader = ({ id, name, roles, baseUrl }) => {
               onClick={() => {
                 navigate(`${baseUrl}/chat-bot?id=${id}`);
               }}
+              icon={<MessageOutlined />}
             >
               Start Chat
             </Button>
@@ -37,6 +45,6 @@ const AssistantHeader = ({ id, name, roles, baseUrl }) => {
       </Flex>
     </div>
   );
-};
+});
 
 export default AssistantHeader;
