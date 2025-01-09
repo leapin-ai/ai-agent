@@ -3,15 +3,16 @@ import { Outlet } from 'react-router-dom';
 
 const MainLayout = createWithRemoteLoader({
   modules: ['components-core:Global', 'components-core:Layout']
-})(({ remoteModules, paths, preset, ...props }) => {
+})(({ remoteModules, paths, preset, navigateTo, ...props }) => {
   const [Global, Layout] = remoteModules;
   return (
     <Global className="app" {...props} preset={preset}>
       <Layout
         navigation={{
-          defaultTitle: 'AI Agent',
+          defaultTitle: 'leapin-saas',
           showIndex: false,
           list: paths,
+          navigateTo,
           headerLogo: { src: window.PUBLIC_URL + '/logo.png' }
         }}
       >
