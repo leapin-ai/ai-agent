@@ -34,7 +34,7 @@ const AssistantHeader = createWithRemoteLoader({
             <Button
               type="primary"
               onClick={() => {
-                navigate(`${baseUrl}/chat-bot?id=${id}`);
+                navigate(`${baseUrl}/chat-bot-test?id=${id}`);
               }}
               icon={<MessageOutlined />}
             >
