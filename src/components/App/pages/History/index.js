@@ -1,18 +1,18 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import AiAgent from '@components/AiAgent';
 import { useContext } from '../../context';
 import LeftMenu from '@components/LeftMenu';
+import History from '@components/ChatHistory';
 
-const Home = createWithRemoteLoader({
+const HistoryPage = createWithRemoteLoader({
   modules: ['Layout@Page']
 })(({ remoteModules }) => {
   const { baseUrl } = useContext();
   const [Page] = remoteModules;
   return (
     <Page menuWidth="200px" menuCloseWidth="80px" backgroundColor="transparent" menu={({ open }) => <LeftMenu baseUrl={baseUrl} open={open} />}>
-      <AiAgent baseUrl={baseUrl} />
+      <History baseUrl={baseUrl} />
     </Page>
   );
 });
 
-export default Home;
+export default HistoryPage;

@@ -1,6 +1,7 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { CreateAgentFormInner } from '@components/CreateAgent';
 import { Flex, App } from 'antd';
+import style from './style.module.scss';
 
 const Basic = createWithRemoteLoader({
   modules: ['components-core:FormInfo', 'components-core:Global@usePreset']
@@ -28,9 +29,12 @@ const Basic = createWithRemoteLoader({
         message.success('Success');
       }}
     >
-      <div>
-        <div>Agent infos</div>
-        <div>You can edit your agent infos</div>
+      <div className={style['basic-header']}>
+        <div className={style['basic-header-title']}>
+          <i />
+          Agent infos
+        </div>
+        <div className={style['basic-header-description']}>You can edit your agent infos</div>
       </div>
       <CreateAgentFormInner />
       <Flex justify="flex-end" gap={16}>

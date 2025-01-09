@@ -9,3 +9,89 @@
     }
   }
 }
+
+.form-info {
+  :global {
+    .form-info-mult-add-btn .ant-btn-dashed {
+      margin-left: 16px;
+    }
+
+    .mult-field-item:first-child .form-info-mult-option .mult-field-delete--label {
+      height: 70px !important;
+    }
+
+    .react-form__field .react-form__field-label {
+      font-weight: 400 !important;
+      font-size: 16px !important;
+
+      .react-form__field_extra {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        margin-right: 4px;
+        transform: translateY(-2px);
+        position: relative;
+
+        &:after {
+          content: '';
+          width: 2px;
+          height: 2px;
+          border-radius: 50%;
+          background: #ffffff;
+          display: block;
+          position: absolute;
+          left: 3px;
+          top: 3px;
+        }
+      }
+
+      .react-form__field_label-tips {
+        margin-top: 4px;
+        margin-bottom: 16px;
+        font-size: 14px !important;
+        color: #999999;
+      }
+    }
+  }
+}
+
+.basic-header {
+  background: #f6f7f9;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.basic-header-title {
+  font-weight: 400;
+  font-size: 16px;
+
+  > i {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    margin-right: 4px;
+    transform: translateY(-2px);
+    position: relative;
+
+    &:after {
+      content: '';
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: block;
+      position: absolute;
+      left: 3px;
+      top: 3px;
+    }
+  }
+}
+
+.basic-header-description {
+  color: #999999;
+  margin-top: 4px;
+}

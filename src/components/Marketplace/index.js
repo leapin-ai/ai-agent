@@ -1,15 +1,13 @@
 import { Flex, Divider, Tabs, Row, Col } from 'antd';
 import { AgentCard } from '@components/AiAgent';
+import PageHeader from '@components/PageHeader';
 import style from './style.module.scss';
 import agentAvatar from '../AiAgent/agentAvatar.png';
 
 const Marketplace = ({ baseUrl }) => {
   return (
     <Flex className={style['market']} vertical>
-      <Flex vertical gap={4}>
-        <div className={style['title']}>Welcome To Marketplace!</div>
-        <div>Use these template apps instantly or customize your own apps based on the templates.</div>
-      </Flex>
+      <PageHeader title="Welcome To Marketplace!" description="Use these template apps instantly or customize your own apps based on the templates." />
       <Divider />
       <Tabs
         items={[
