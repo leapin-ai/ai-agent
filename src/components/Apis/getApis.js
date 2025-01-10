@@ -21,8 +21,16 @@ const getApis = options => {
       method: 'POST'
     },
     uploadKnowledge: {
-      url: `${prefix}/agent/{agent_id}/knowledge/`,
+      url: `${prefix}/agent/{agent_id}/knowledge/add/`,
       method: 'POST'
+    },
+    removeKnowledge: {
+      url: `${prefix}/agent/knowledge/{knowledge_id}/delete/`,
+      method: 'DELETE'
+    },
+    getKnowledgeList: {
+      url: `${prefix}/agent/{agent_id}/knowledge/list/`,
+      method: 'GET'
     }
   };
 };

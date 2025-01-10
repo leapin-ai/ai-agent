@@ -1,6 +1,7 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { Flex, App } from 'antd';
 import style from './style.module.scss';
+import get from 'lodash/get';
 
 const Prompt = createWithRemoteLoader({
   modules: ['components-core:FormInfo', 'components-core:Global@usePreset']
@@ -13,6 +14,9 @@ const Prompt = createWithRemoteLoader({
   return (
     <Form
       type="default"
+      data={{
+        prompt: get(agentData, 'config.prompt')
+      }}
       onSubmit={async data => {
         const { data: resData } = await ajax(
           Object.assign({}, apis.agent.setAgentConfig, {
