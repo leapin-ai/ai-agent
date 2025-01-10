@@ -1,5 +1,5 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Flex, Input } from 'antd';
+import { Flex } from 'antd';
 import PageHeader from '@components/PageHeader';
 import style from './style.module.scss';
 
@@ -13,7 +13,6 @@ const ChartHistory = createWithRemoteLoader({
       {/*<Flex className={style['filter']}>
         <Input />
       </Flex>*/}
-
       <TableView
         dataSource={[
           {

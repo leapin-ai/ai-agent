@@ -1,5 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { Flex, App } from 'antd';
+import get from 'lodash/get';
 import style from './style.module.scss';
 
 const Skill = createWithRemoteLoader({
@@ -13,13 +14,16 @@ const Skill = createWithRemoteLoader({
   return (
     <Form
       type="default"
+      data={{
+        skills: get(agentData, 'config.skills')
+      }}
       onSubmit={async data => {
         const { data: resData } = await ajax(
           Object.assign({}, apis.agent.setAgentConfig, {
             urlParams: { agent_id: agentData.id },
             data: {
               agent_id: agentData.id,
-              skills: data.skills.join(',')
+              skills: data.skills
             }
           })
         );

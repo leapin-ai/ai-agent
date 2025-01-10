@@ -13,7 +13,7 @@
 .form-info {
   :global {
     .form-info-mult-add-btn .ant-btn-dashed {
-      margin-left: 16px;
+      margin-left: 16px !important;
     }
 
     .mult-field-item:first-child .form-info-mult-option .mult-field-delete--label {

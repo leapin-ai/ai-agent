@@ -48,6 +48,14 @@ export const globalInit = async () => {
       }
     );
 
+    const parseUrlParams = params => {
+      if (typeof params.urlParams === 'object' && Object.keys(params.urlParams).length > 0 && typeof params.url === 'string') {
+        params.url = params.url.replace(/{([\s\S]+?)}/g, (match, name) => {
+          return params.urlParams.hasOwnProperty(name) ? params.urlParams[name] : match;
+        });
+      }
+    };
+
     const ajax = params => {
       if (params.hasOwnProperty('loader') && typeof params.loader === 'function') {
         return Promise.resolve(params.loader(omit(params, ['loader'])))
@@ -62,16 +70,18 @@ export const globalInit = async () => {
             return { data: { code: 500, msg: err.message } };
           });
       }
-
-      if (typeof params.urlParams === 'object' && Object.keys(params.urlParams).length > 0 && typeof params.url === 'string') {
-        params.url = params.url.replace(/{([\s\S]+?)}/g, (match, name) => {
-          return params.urlParams.hasOwnProperty(name) ? params.urlParams[name] : match;
-        });
-      }
-
+      parseUrlParams(params);
       return instance(params);
     };
-    ajax.postForm = instance.postForm;
+    ajax.postForm = config => {
+      parseUrlParams(config);
+      const { url, params, urlParams, data, method, ...options } = config;
+      const searchParams = new URLSearchParams(params);
+
+      const queryString = searchParams.toString();
+
+      return axios.postForm(`${url}${queryString ? '?' + queryString : ''}`, data, Object.assign({}, { headers: defaultHeaders() }, options));
+    };
     return ajax;
   })();
   fetchPreset({
@@ -109,7 +119,7 @@ export const globalInit = async () => {
     //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.2.89'
+    defaultVersion: '0.2.90'
   };
   remoteLoaderPreset({
     remotes: {
