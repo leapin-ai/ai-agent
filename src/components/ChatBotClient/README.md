@@ -16,9 +16,9 @@
 - _ChatBotClient(@components/ChatBotClient)
 
 ```jsx
-const {default:ChatBotClient} = _ChatBotClient;
-const BaseExample = ()=>{
-    return <ChatBotClient />;
+const { default: ChatBotClient } = _ChatBotClient;
+const BaseExample = () => {
+  return <ChatBotClient />;
 };
 
 render(<BaseExample />);
