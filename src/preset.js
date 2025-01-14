@@ -5,6 +5,7 @@ import axios from 'axios';
 import { preset as remoteLoaderPreset } from '@kne/remote-loader';
 import omit from 'lodash/omit';
 import cookie from 'js-cookie';
+import ensureSlash from '@kne/ensure-slash';
 import { getApis as getAgentApis } from '@components/Apis';
 
 window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
@@ -174,7 +175,7 @@ export const globalInit = async () => {
                 {
                   url: ossConfig.host,
                   data: {
-                    key: `${ossConfig.dir}${file.name}`,
+                    key: `${ensureSlash(ossConfig.dir, true)}${file.name}`,
                     file,
                     'x-oss-object-acl': 'public-read',
                     policy: ossConfig.policy,

@@ -84,6 +84,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
+    "@kne/ensure-slash": "^0.1.0",
     "@kne/react-flow-chart": "^0.1.11",
     "@kne/use-ref-callback": "^0.1.2",
     "dayjs": "^1.11.13",
