@@ -6,6 +6,7 @@ import { preset as remoteLoaderPreset } from '@kne/remote-loader';
 import omit from 'lodash/omit';
 import cookie from 'js-cookie';
 import ensureSlash from '@kne/ensure-slash';
+import md5 from 'md5';
 import { getApis as getAgentApis } from '@components/Apis';
 
 window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
@@ -160,7 +161,7 @@ export const globalInit = async () => {
                 {},
                 {
                   url: '/api/common/upload/token',
-                  //params: { media_params: 'candidate-cv' },
+                  params: { media_params: 'candidate-cv' },
                   method: 'GET'
                 }
               )
@@ -169,25 +170,47 @@ export const globalInit = async () => {
               return { code: resData.code, msg: resData.error_msg };
             }
             const ossConfig = resData.data;
+
+            const md5Hash = await new Promise((resolve, reject) => {
+              const fileReader = new FileReader();
+              fileReader.readAsBinaryString(file);
+              fileReader.onload = e => {
+                const md5Hash = md5(e.target.result);
+                resolve(md5Hash);
+              };
+              fileReader.onerror = () => {
+                reject();
+              };
+            });
+
+            const targetFileName = `${md5Hash}.${file.name.split('.').pop()}`;
+
             const { data: uploadRes } = await ajax.postForm(
               Object.assign(
                 {},
                 {
                   url: ossConfig.host,
                   data: {
-                    key: `${ensureSlash(ossConfig.dir, true)}${file.name}`,
+                    key: `${ensureSlash(ossConfig.dir, true)}${targetFileName}`,
                     'x-oss-object-acl': 'public-read',
                     policy: ossConfig.policy,
                     OSSAccessKeyId: ossConfig.OSSAccessKeyId,
                     signature: ossConfig.Signature,
-                    success_action_status: 201,
+                    success_action_status: 200,
                     file
                   }
                 }
               )
             );
-            console.log('0000000---->', uploadRes);
-            return { code: 0, data: { src: '/', filename: file.name } };
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(uploadRes, 'text/xml');
+            xmlDoc.getElementsByTagName('Location');
+            return {
+              data: {
+                code: 0,
+                data: { src: xmlDoc.getElementsByTagName('Location')[0].textContent, filename: file.name }
+              }
+            };
           }
         }
       }
