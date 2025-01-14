@@ -138,6 +138,7 @@ const AssistantHeader = createWithRemoteLoader({
               Start Chat
             </LoadingButton>
             <Button
+              disabled={status !== 2}
               onClick={() => {
                 formModal({
                   title: 'Invite',
