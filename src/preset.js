@@ -196,7 +196,7 @@ export const globalInit = async () => {
                     policy: ossConfig.policy,
                     OSSAccessKeyId: ossConfig.OSSAccessKeyId,
                     signature: ossConfig.Signature,
-                    success_action_status: 200,
+                    success_action_status: 201,
                     file
                   }
                 }
