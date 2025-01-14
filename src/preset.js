@@ -160,7 +160,7 @@ export const globalInit = async () => {
                 {},
                 {
                   url: '/api/common/upload/token',
-                  params: { media_params: 'candidate-cv' },
+                  //params: { media_params: 'candidate-cv' },
                   method: 'GET'
                 }
               )
