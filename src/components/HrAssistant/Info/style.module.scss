@@ -95,3 +95,13 @@
   color: #999999;
   margin-top: 4px;
 }
+
+.file-list {
+  :global(.core-file-list-title-group) {
+    display: none;
+  }
+}
+
+.flow-chart {
+  --node-width: 320px !important;
+}
