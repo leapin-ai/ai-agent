@@ -5,6 +5,7 @@ import { createWithRemoteLoader } from '@kne/remote-loader';
 import FlowChart, { localeLoader } from '@kne/react-flow-chart';
 import en from '@kne/react-flow-chart/dist/locale/en';
 import '@kne/react-flow-chart/dist/index.css';
+import style from '../style.module.scss';
 
 localeLoader('en', en);
 
@@ -21,7 +22,9 @@ const Flow = createWithRemoteLoader({
   return (
     <Flex vertical gap={4}>
       <FlowChart
+        className={style['flow-chart']}
         locale="en"
+        initFit={false}
         value={flowData}
         vertical
         onEditNode={({ nodeData, replaceNode }) => {

@@ -3,7 +3,7 @@ import { Button, Flex } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRightOutlined } from '@ant-design/icons';
 
-const HeaderCard = ({ headerImg, title, link, description }) => {
+const HeaderCard = ({ headerImg, title, link, description, disabled }) => {
   const navigate = useNavigate();
   return (
     <div className={style['card']}>
@@ -16,6 +16,7 @@ const HeaderCard = ({ headerImg, title, link, description }) => {
         <Button
           type="primary"
           ghost
+          disabled={disabled}
           onClick={() => {
             navigate(link);
           }}

@@ -7,8 +7,13 @@
 
 .title {
   border-bottom: solid 1px #e6e8ea;
-  padding: 16px 24px;
   font-weight: bold;
+}
+
+.title-inner {
+  width: 800px;
+  margin: 0 auto;
+  padding: 16px 32px;
 }
 
 .message-list {
@@ -40,6 +45,7 @@
   box-shadow: 0 0 20px 0 #0000000d;
   border-top: 1px solid #dddddd;
   padding: 20px 32px;
+  background: #ffffff;
 }
 
 .message-input-border {
@@ -78,4 +84,13 @@
 .message-input-border {
   max-width: 800px;
   margin: 0 auto;
+}
+
+.message-list-outer {
+  flex: none;
+  height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 87px - 46px - 16px - 100px);
+
+  &.is-end {
+    height: auto;
+  }
 }

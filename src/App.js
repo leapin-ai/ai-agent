@@ -2,7 +2,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import pages from './pages';
 import MainLayout, { GlobalPage } from './MainLayout';
 import AiAgentApp from '@components/App';
-import ChatBot from '@components/ChatBot';
+import ChatBotClient from '@components/ChatBotClient';
 import './index.scss';
 
 const { Error, NotFound } = pages;
@@ -40,7 +40,9 @@ const App = ({ globalPreset }) => {
       >
         <Route path="/ai-agent/*" element={<AiAgentApp baseUrl="/ai-agent" />} />
         <Route path="/login" element={'登录token失效'} />
+        <Route path="/ai-agent/error" element={<Error />} />
         <Route path="error" element={<Error />} />
+        <Route path="/ai-agent/404" element={<NotFound />} />
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="/ai-agent" />} />
       </Route>
@@ -49,7 +51,7 @@ const App = ({ globalPreset }) => {
         element={
           <GlobalPage preset={globalPreset} themeToken={globalPreset.themeToken}>
             <div className="client-bot">
-              <ChatBot baseUrl="/ai-agent" />
+              <ChatBotClient baseUrl="/ai-agent" />
             </div>
           </GlobalPage>
         }

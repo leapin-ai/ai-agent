@@ -9,6 +9,14 @@ const getApis = options => {
       url: `${prefix}/agent/{agent_id}/update/`,
       method: 'POST'
     },
+    duplicateAgent: {
+      url: `${prefix}/agent/{agent_id}/duplicate/`,
+      method: 'PUT'
+    },
+    removeAgent: {
+      url: `${prefix}/agent/{agent_id}/delete/`,
+      method: 'DELETE'
+    },
     getAgentDetail: {
       url: `${prefix}/agent/{agent_id}/detail/`
     },
@@ -31,6 +39,40 @@ const getApis = options => {
     getKnowledgeList: {
       url: `${prefix}/agent/{agent_id}/knowledge/list/`,
       method: 'GET'
+    },
+    saveKnowledge: {
+      url: `${prefix}/agent/knowledge/{knowledge_id}/update/`,
+      method: 'PUT'
+    },
+    chatBot: {
+      addSession: {
+        url: `${prefix}/api/agent/saas/session/add/`,
+        method: 'POST'
+      },
+      getSessionDetail: {
+        url: `${prefix}/agent/saas/session/{session_id}/detail/`,
+        method: 'GET'
+      },
+      sendSessionMessage: {
+        url: `${prefix}/agent/saas/session/{session_id}/message/send/`,
+        method: 'POST'
+      },
+      saveSession: {
+        url: `${prefix}/agent/saas/session/{session_id}/update/`,
+        method: 'PUT'
+      }
+    },
+    job: {
+      getJobList: {
+        url: `${prefix}/jobs/jobs/status/filter/`,
+        method: 'GET'
+      }
+    },
+    chatBotClient: {
+      getTokenByCode: {
+        url: `${prefix}/agent/chatbot/code/verify/`,
+        method: 'POST'
+      }
     }
   };
 };

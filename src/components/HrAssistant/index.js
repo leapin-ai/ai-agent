@@ -17,10 +17,10 @@ const HrAssistant = createWithRemoteLoader({
       {...Object.assign({}, apis.agent.getAgentDetail, {
         urlParams: { agent_id: searchParams.get('id') }
       })}
-      render={({ data }) => {
+      render={({ data, reload }) => {
         return (
           <Flex vertical gap={16}>
-            <AssistantHeader baseUrl={baseUrl} id={data.id} avatar={data.avatar} name={data.name} roles={data.role} />
+            <AssistantHeader baseUrl={baseUrl} reload={reload} id={data.id} status={data.status} avatar={data.avatar} name={data.name} roles={data.role} />
             <Info data={data} />
           </Flex>
         );

@@ -119,7 +119,7 @@ export const globalInit = async () => {
     //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.2.90'
+    defaultVersion: '0.2.91'
   };
   remoteLoaderPreset({
     remotes: {
@@ -151,7 +151,44 @@ export const globalInit = async () => {
     apis: Object.assign(
       {},
       {
-        agent: getAgentApis()
+        agent: getAgentApis(),
+        file: {
+          upload: async ({ file }) => {
+            const { data: resData } = await ajax(
+              Object.assign(
+                {},
+                {
+                  url: '/api/common/upload/token',
+                  params: { media_params: 'candidate-cv' },
+                  method: 'GET'
+                }
+              )
+            );
+            if (resData.code !== 0) {
+              return { code: resData.code, msg: resData.error_msg };
+            }
+            const ossConfig = resData.data;
+            const { data: uploadRes } = await ajax.postForm(
+              Object.assign(
+                {},
+                {
+                  url: ossConfig.host,
+                  data: {
+                    file,
+                    key: `${ossConfig.dir}${file.name}`,
+                    'x-oss-object-acl': 'public-read',
+                    policy: ossConfig.policy,
+                    OSSAccessKeyId: ossConfig.OSSAccessKeyId,
+                    signature: ossConfig.Signature,
+                    success_action_status: 201
+                  }
+                }
+              )
+            );
+            console.log('0000000---->', uploadRes);
+            return { code: 0, data: { src: '/', filename: file.name } };
+          }
+        }
       }
     ),
     locale: 'en-US',

@@ -84,7 +84,9 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
-    "@kne/react-flow-chart": "^0.1.9",
+    "@kne/react-flow-chart": "^0.1.10",
+    "@kne/use-ref-callback": "^0.1.2",
+    "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5"
   }
 }

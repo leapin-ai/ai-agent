@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Row, Col, Flex, Pagination } from 'antd';
+import { Row, Col, Flex, Pagination, Empty } from 'antd';
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import Fetch from '@kne/react-fetch';
 import { useSearchParams } from 'react-router-dom';
@@ -29,6 +29,7 @@ const AiAgent = createWithRemoteLoader({
             title={'Find an agent on the marketplace'}
             headerImg={marketplace}
             link={`${baseUrl}/marketplace`}
+            disabled
             description={
               'Dive into out diverse marketplace, featuring AI agents fine-tuned by experts. These ready-made solutions offer expertise catering to a wide range of needs ideal for those looking for quick depolyment and proven capabilities.'
             }
@@ -62,13 +63,19 @@ const AiAgent = createWithRemoteLoader({
             return (
               <>
                 <Row gutter={[12, 12]}>
-                  {data.results.map((item, index) => {
-                    return (
-                      <Col span={8} key={item.id}>
-                        <AgentCard link={`${baseUrl}/detail?id=${item.id}`} title={item.name} roles={item.role} avatar={item.avatar || agentAvatar} description={item.description} />
-                      </Col>
-                    );
-                  })}
+                  {data.results && data.results.length > 0 ? (
+                    data.results.map((item, index) => {
+                      return (
+                        <Col span={8} key={item.id}>
+                          <AgentCard link={`${baseUrl}/detail?id=${item.id}`} title={item.name} roles={item.role} avatar={item.avatar || agentAvatar} description={item.description} />
+                        </Col>
+                      );
+                    })
+                  ) : (
+                    <Col span={24}>
+                      <Empty />
+                    </Col>
+                  )}
                 </Row>
                 <Flex justify="flex-end">
                   <Pagination
