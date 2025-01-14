@@ -174,8 +174,8 @@ export const globalInit = async () => {
                 {
                   url: ossConfig.host,
                   data: {
-                    file,
                     key: `${ossConfig.dir}${file.name}`,
+                    file,
                     'x-oss-object-acl': 'public-read',
                     policy: ossConfig.policy,
                     OSSAccessKeyId: ossConfig.OSSAccessKeyId,
