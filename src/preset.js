@@ -176,12 +176,12 @@ export const globalInit = async () => {
                   url: ossConfig.host,
                   data: {
                     key: `${ensureSlash(ossConfig.dir, true)}${file.name}`,
-                    file,
                     'x-oss-object-acl': 'public-read',
                     policy: ossConfig.policy,
                     OSSAccessKeyId: ossConfig.OSSAccessKeyId,
                     signature: ossConfig.Signature,
-                    success_action_status: 201
+                    success_action_status: 201,
+                    file
                   }
                 }
               )
