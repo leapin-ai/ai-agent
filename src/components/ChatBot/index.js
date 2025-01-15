@@ -95,14 +95,7 @@ const ChartBotMessage = createWithRemoteLoader({
         })}
         scrollableNodeProps={{ ref: messageListRef }}
       >
-        <MessageList list={list} startTime={startTime}>
-          {loading && currentMessage && (
-            <Flex className={classnames(style['message'], style['is-user'])} gap={12}>
-              <Image.Avatar className={style['message-avatar']} gender="M" size={28} />
-              <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: md.render(currentMessage) }} />
-            </Flex>
-          )}
-        </MessageList>
+        <MessageList list={list} startTime={startTime} currentMessage={loading && currentMessage} />
       </SimpleBar>
       {!isEnd && (
         <div className={style['footer']}>
