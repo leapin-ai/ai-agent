@@ -13,7 +13,7 @@ const HrAssistantPage = createWithRemoteLoader({
   const [Page] = remoteModules;
   return (
     <Page menuWidth="200px" menuCloseWidth="80px" backgroundColor="transparent" menu={({ open }) => <LeftMenu baseUrl={baseUrl} open={open} />}>
-      <Breadcrumb className={style['breadcrumb']} items={[{ title: <Link to={baseUrl}>My Agent</Link> }, { title: 'Hr Assistant' }]} />
+      <Breadcrumb className={style['breadcrumb']} items={[{ title: <Link to={baseUrl}>My Agent</Link> }, { title: 'Agent Detail' }]} />
       <HrAssistant baseUrl={baseUrl} />
     </Page>
   );
