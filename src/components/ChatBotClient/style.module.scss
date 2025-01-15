@@ -1,0 +1,17 @@
+.chat-bot {
+  flex: 1;
+
+  :global(.message-list-scroller) {
+    height: calc(100vh - 87px - 16px - 100px);
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .chat-bot {
+    width: 100vw;
+  }
+
+  :global(.container-body) {
+    min-width: unset !important;
+  }
+}

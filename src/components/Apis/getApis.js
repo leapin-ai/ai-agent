@@ -44,6 +44,10 @@ const getApis = options => {
       url: `${prefix}/agent/knowledge/{knowledge_id}/update/`,
       method: 'PUT'
     },
+    getSessionList: {
+      url: `${prefix}/agent/saas/session/list/`,
+      method: 'GET'
+    },
     chatBot: {
       addSession: {
         url: `${prefix}/api/agent/saas/session/add/`,
@@ -66,12 +70,28 @@ const getApis = options => {
       getJobList: {
         url: `${prefix}/jobs/jobs/status/filter/`,
         method: 'GET'
+      },
+      deliverJob: {
+        url: `${prefix}/jobs/application_record/bulk_add/`,
+        method: 'POST'
       }
     },
     chatBotClient: {
       getTokenByCode: {
         url: `${prefix}/agent/chatbot/code/verify/`,
         method: 'POST'
+      },
+      getSessionDetail: {
+        url: `${prefix}/agent/chatbot/session/{session_id}/detail/`,
+        method: 'GET'
+      },
+      sendSessionMessage: {
+        url: `${prefix}/agent/chatbot/session/{session_id}/message/send/`,
+        method: 'POST'
+      },
+      saveSession: {
+        url: `${prefix}/agent/chatbot/session/{session_id}/update/`,
+        method: 'PUT'
       }
     }
   };

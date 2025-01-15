@@ -121,7 +121,7 @@ export const globalInit = async () => {
     //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.2.91'
+    defaultVersion: '0.2.93'
   };
   remoteLoaderPreset({
     remotes: {
@@ -156,6 +156,16 @@ export const globalInit = async () => {
         agent: getAgentApis(),
         file: {
           upload: async ({ file }) => {
+            return {
+              data: {
+                code: 0,
+                data: {
+                  src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                  filename: '17700713ccc28c0ce29d6b87237bb8b5.pdf'
+                }
+              }
+            };
+
             const { data: resData } = await ajax(
               Object.assign(
                 {},
