@@ -39,8 +39,13 @@ export const globalInit = async () => {
           window.location.href = '/login';
           return response;
         }
+
+        if (response.status === 200 && response.data.code === 404) {
+          window.location.href = '/ai-agent/404';
+          return response;
+        }
         if (response.status !== 200 || (response.data.hasOwnProperty('code') && response.data.code !== 0 && response.config.showError !== false)) {
-          message.error(response?.data?.msg || response?.data?.error_msg?.detail || '请求发生错误');
+          message.error(response?.data?.msg || response?.data?.error_msg?.detail || response?.data?.error_msg || '请求发生错误');
         }
         return response;
       },
