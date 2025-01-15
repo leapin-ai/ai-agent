@@ -108,7 +108,7 @@ const ChartBotMessage = createWithRemoteLoader({
                 placeholder="Chat with a robot"
                 value={currentMessage}
                 onChange={e => {
-                  setCurrentMessage(e.target.value.trim());
+                  setCurrentMessage(e.target.value);
                 }}
                 onKeyPress={e => {
                   if (e.key === 'Enter') {
@@ -130,7 +130,7 @@ const ChartBotMessage = createWithRemoteLoader({
                     message.warning('The content sent cannot be empty');
                     return;
                   }
-                  return sendMessage(currentMessage);
+                  return sendMessage(currentMessage.trim());
                 }}
               />
             </Flex>
