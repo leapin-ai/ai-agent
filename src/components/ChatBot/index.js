@@ -108,15 +108,17 @@ const ChartBotMessage = createWithRemoteLoader({
                 placeholder="Chat with a robot"
                 value={currentMessage}
                 onChange={e => {
-                  setCurrentMessage(e.target.value.trim());
+                  setCurrentMessage(e.target.value);
                 }}
-                onKeyPress={e => {
+                onKeyUp={e => {
                   if (e.key === 'Enter') {
-                    if (currentMessage.length === 0) {
+                    const msg = currentMessage.trim();
+                    setCurrentMessage(msg);
+                    if (msg.length === 0) {
                       message.warning('The content sent cannot be empty');
                       return;
                     }
-                    return sendMessage(currentMessage);
+                    return sendMessage(msg);
                   }
                 }}
               />
@@ -126,11 +128,12 @@ const ChartBotMessage = createWithRemoteLoader({
                 loading={loading}
                 icon={<img src={enter} alt="enter" />}
                 onClick={async () => {
-                  if (currentMessage.length === 0) {
+                  const msg = currentMessage.trim();
+                  if (msg.length === 0) {
                     message.warning('The content sent cannot be empty');
                     return;
                   }
-                  return sendMessage(currentMessage);
+                  return sendMessage(msg.trim());
                 }}
               />
             </Flex>
