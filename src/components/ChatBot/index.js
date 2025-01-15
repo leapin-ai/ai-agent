@@ -1,15 +1,17 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Flex, Input, Button, Avatar, Space, App } from 'antd';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Flex, Input, Space, App } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
-import dayjs from 'dayjs';
+import markdown from 'markdown-it';
 import last from 'lodash/last';
+import MessageList from './MessageList';
 import useRefCallback from '@kne/use-ref-callback';
 import defaultAvatar from '../../common/defaultAvatar.png';
 import enter from './enter.png';
 import style from './style.module.scss';
+
+const md = markdown();
 
 const ChartBotMessage = createWithRemoteLoader({
   modules: ['components-core:LoadingButton', 'components-core:Global@usePreset', 'components-core:Common@SimpleBar', 'components-core:Image']
@@ -60,7 +62,7 @@ const ChartBotMessage = createWithRemoteLoader({
         <Flex className={style['title-inner']} justify="space-between" align="center">
           <Space>
             <Image.Avatar src={defaultAvatar} size={54} />
-            <div>{sessionName || 'Conversations with Test'}</div>
+            <div>{sessionName || 'Conversations'}</div>
           </Space>
           {!isEnd && (
             <LoadingButton
@@ -88,38 +90,19 @@ const ChartBotMessage = createWithRemoteLoader({
         </Flex>
       </div>
       <SimpleBar
-        className={classnames(style['message-list-outer'], {
+        className={classnames(style['message-list-outer'], 'message-list-scroller', {
           [style['is-end']]: isEnd
         })}
         scrollableNodeProps={{ ref: messageListRef }}
       >
-        <Flex className={style['message-list']} vertical gap={20}>
-          <Flex justify="center" className={style['message-time']}>
-            {dayjs(startTime).format('YYYY-MM-DD HH:mm:ss')}
-          </Flex>
-          {list.map((item, index) => {
-            return (
-              <>
-                {!(index === 0 && (item.user_content || '').trim() === '') && (
-                  <Flex className={classnames(style['message'], style['is-user'])} gap={12}>
-                    <Image.Avatar className={style['message-avatar']} gender="M" size={28} />
-                    <div className={style['message-content']}>{item.user_content}</div>
-                  </Flex>
-                )}
-                <Flex className={style['message']} gap={12}>
-                  <Image.Avatar className={style['message-avatar']} src={defaultAvatar} size={28} />
-                  <div className={style['message-content']}>{item.chatbot_content}</div>
-                </Flex>
-              </>
-            );
-          })}
+        <MessageList list={list} startTime={startTime}>
           {loading && currentMessage && (
             <Flex className={classnames(style['message'], style['is-user'])} gap={12}>
               <Image.Avatar className={style['message-avatar']} gender="M" size={28} />
-              <div className={style['message-content']}>{currentMessage}</div>
+              <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: md.render(currentMessage) }} />
             </Flex>
           )}
-        </Flex>
+        </MessageList>
       </SimpleBar>
       {!isEnd && (
         <div className={style['footer']}>
@@ -199,3 +182,5 @@ const ChartBot = createWithRemoteLoader({
 });
 
 export default ChartBot;
+
+export { MessageList };

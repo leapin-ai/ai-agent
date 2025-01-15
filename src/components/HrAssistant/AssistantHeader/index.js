@@ -113,7 +113,7 @@ const AssistantHeader = createWithRemoteLoader({
                 Publish
               </LoadingButton>
             )}
-            {status === 1 && <StateTag type="progress" text="审核中" />}
+            {status === 1 && <StateTag type="progress" text="Auditing" />}
           </Flex>
           <Flex gap={8}>
             <LoadingButton
@@ -143,7 +143,24 @@ const AssistantHeader = createWithRemoteLoader({
                 formModal({
                   title: 'Invite',
                   size: 'small',
-                  formProps: {},
+                  autoClose: true,
+                  formProps: {
+                    onSubmit: async data => {
+                      const { data: resData } = await ajax(
+                        Object.assign({}, apis.agent.job.deliverJob, {
+                          data: {
+                            agent_id: id,
+                            job_id: data.jobId.value,
+                            cv_url_list: data.resume.map(item => item.src)
+                          }
+                        })
+                      );
+                      if (resData.code !== 0) {
+                        return false;
+                      }
+                      message.success('Send invitation successfully');
+                    }
+                  },
                   children: (
                     <FormInfo
                       column={1}
@@ -153,6 +170,7 @@ const AssistantHeader = createWithRemoteLoader({
                           label="Job"
                           rule="REQ"
                           single
+                          showSelectedTag={false}
                           pagination={{
                             paramsType: 'params',
                             current: 'page',
@@ -174,7 +192,7 @@ const AssistantHeader = createWithRemoteLoader({
                             }
                           })}
                         />,
-                        <Upload name="resume" label="Resume" rule="REQ" single />
+                        <Upload name="resume" label="Resume" rule="REQ" single onSave={({ data }) => data} />
                       ]}
                     />
                   )

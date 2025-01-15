@@ -1,5 +1,4 @@
 .chat {
-  min-height: 600px;
   background: #ffffff;
   border-radius: 4px;
   flex: 1;
@@ -11,7 +10,7 @@
 }
 
 .title-inner {
-  width: 800px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 16px 32px;
 }
@@ -89,7 +88,7 @@
 .message-list-outer {
   flex: none;
   height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 87px - 46px - 16px - 100px);
-
+  overflow: auto;
   &.is-end {
     height: auto;
   }

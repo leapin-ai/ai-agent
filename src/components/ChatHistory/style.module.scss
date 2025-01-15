@@ -8,3 +8,24 @@
   font-size: 20px;
   font-weight: bolder;
 }
+
+.search-input {
+  :global(.ant-input-affix-wrapper) {
+    background: #f2f3f5;
+    border-color: #f2f3f5;
+  }
+
+  width: 298px;
+}
+
+.tag {
+  height: 22px;
+  line-height: 22px;
+  border-radius: 11px;
+  background: #1180ff26;
+  text-align: center;
+  color: #1180ff;
+  display: inline-block;
+  padding: 0 8px;
+  white-space: nowrap;
+}
