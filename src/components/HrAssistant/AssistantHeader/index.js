@@ -90,7 +90,7 @@ const AssistantHeader = createWithRemoteLoader({
               </Space>
             </Flex>
             <Divider className={style['divider']} type="vertical" />
-            {[0, 2, 3].indexOf(status) > -1 && (
+            {[0, 4].indexOf(status) > -1 && (
               <LoadingButton
                 type="primary"
                 icon={<Icon type="fasongduihua" />}
@@ -113,6 +113,8 @@ const AssistantHeader = createWithRemoteLoader({
                 Publish
               </LoadingButton>
             )}
+            {status === 3 && <StateTag type="danger" text="Refusal" />}
+            {status === 2 && <StateTag type="success" text="Online" />}
             {status === 1 && <StateTag type="progress" text="Auditing" />}
           </Flex>
           <Flex gap={8}>
