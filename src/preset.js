@@ -161,7 +161,7 @@ export const globalInit = async () => {
         agent: getAgentApis(),
         file: {
           upload: async ({ file }) => {
-            return {
+            /*return {
               data: {
                 code: 0,
                 data: {
@@ -169,8 +169,7 @@ export const globalInit = async () => {
                   filename: '17700713ccc28c0ce29d6b87237bb8b5.pdf'
                 }
               }
-            };
-
+            };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},
