@@ -48,6 +48,14 @@ const getApis = options => {
       url: `${prefix}/agent/saas/session/list/`,
       method: 'GET'
     },
+    getApplicationList: {
+      url: `${prefix}/agent/{agent_id}/application/list/`,
+      method: 'GET'
+    },
+    getApplicationDetail: {
+      url: `${prefix}/api/candidate/candidate/applications/detail/{applications_id}/`,
+      method: 'GET'
+    },
     chatBot: {
       addSession: {
         url: `${prefix}/api/agent/saas/session/add/`,
@@ -73,6 +81,14 @@ const getApis = options => {
       },
       deliverJob: {
         url: `${prefix}/jobs/application_record/bulk_add/`,
+        method: 'POST'
+      },
+      resend: {
+        url: `${prefix}/agent/{agent_id}/application/{application_id}/resend/`,
+        method: 'POST'
+      },
+      rejected: {
+        url: `${prefix}/candidate/candidate/applications/change_status/`,
         method: 'POST'
       }
     },

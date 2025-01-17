@@ -4,6 +4,7 @@ import Prompt from './Prompt';
 import Flow from './Flow';
 import Knowledge from './Knowledge';
 import Basic from './Basic';
+import Applicants from './Applicants';
 import style from './style.module.scss';
 
 const Info = ({ data }) => {
@@ -35,6 +36,11 @@ const Info = ({ data }) => {
           key: 'basic',
           label: 'Agent infos',
           children: <Basic data={data} />
+        },
+        {
+          key: 'applicants',
+          label: 'Applicants',
+          children: <Applicants data={data} />
         }
       ]}
     />

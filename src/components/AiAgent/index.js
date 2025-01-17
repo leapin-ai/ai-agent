@@ -79,6 +79,7 @@ const AiAgent = createWithRemoteLoader({
                 </Row>
                 <Flex justify="flex-end">
                   <Pagination
+                    showSizeChanger={false}
                     hideOnSinglePage
                     total={data.count}
                     current={page}
