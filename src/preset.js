@@ -126,7 +126,7 @@ export const globalInit = async () => {
     //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.2.93'
+    defaultVersion: '0.2.95'
   };
   remoteLoaderPreset({
     remotes: {
@@ -155,6 +155,17 @@ export const globalInit = async () => {
 
   return {
     ajax,
+    enums: {
+      atsStage: [
+        { description: '初筛', value: 0 },
+        { description: 'ai 面试', value: 1 },
+        { description: '复试', value: 3 },
+        { description: '待入职', value: 4 },
+        { description: '不合适', value: 5 },
+        { description: 'offer', value: 8 },
+        { description: '已入职', value: 9 }
+      ]
+    },
     apis: Object.assign(
       {},
       {
@@ -162,14 +173,14 @@ export const globalInit = async () => {
         file: {
           upload: async ({ file }) => {
             /*return {
-              data: {
-                code: 0,
-                data: {
-                  src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                  filename: file.name
-                }
-              }
-            };*/
+                          data: {
+                            code: 0,
+                            data: {
+                              src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                              filename: file.name
+                            }
+                          }
+                        };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},
@@ -232,6 +243,9 @@ export const globalInit = async () => {
     locale: 'en-US',
     themeToken: {
       colorPrimary: '#2257bf'
+    },
+    formInfo: {
+      type: 'default'
     }
   };
 };

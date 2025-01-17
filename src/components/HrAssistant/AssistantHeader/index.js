@@ -139,7 +139,7 @@ const AssistantHeader = createWithRemoteLoader({
               }}
               icon={<MessageOutlined />}
             >
-              Start Chat
+              Test Chat
             </LoadingButton>
             <Button
               disabled={status !== 2}
@@ -156,13 +156,18 @@ const AssistantHeader = createWithRemoteLoader({
                             agent_id: id,
                             job_id: data.jobId.value,
                             cv_data_list: data.cv_data_list.map(({ name, email, phone, resume }) => {
-                              return {
+                              const phoneProps = (() => {
+                                if (!phone) {
+                                  return {};
+                                }
+                                const [mobile_country_code, mobile] = phone.split(' ');
+                                return { mobile, mobile_country_code };
+                              })();
+                              return Object.assign({}, phoneProps, {
                                 name,
                                 email,
-                                mobile: phone.value,
-                                mobile_country_code: phone.code,
                                 cv_url: get(resume, '[0].src')
-                              };
+                              });
                             })
                           }
                         })
@@ -215,7 +220,7 @@ const AssistantHeader = createWithRemoteLoader({
                           list={[
                             <Upload name="resume" label="Resume" rule="REQ" maxLength={1} onSave={({ data }) => data} />,
                             <Input name="name" label="Name" />,
-                            <PhoneNumber name="phone" label="Phone" />,
+                            <PhoneNumber name="phone" label="Phone" interceptor="phone-number-string" />,
                             <Input name="email" label="Email" rule="EMAIL" />
                           ]}
                         />

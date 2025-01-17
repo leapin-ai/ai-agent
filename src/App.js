@@ -26,7 +26,7 @@ const App = ({ globalPreset }) => {
             paths={[
               {
                 key: 'leapin-saas',
-                title: 'Leapin Saas',
+                title: 'LeapIn Saas',
                 path: '/'
               },
               {

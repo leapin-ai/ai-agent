@@ -108,10 +108,12 @@ const ChartHistory = createWithRemoteLoader({
                     getValueOf: item => {
                       return (
                         <Button
+                          className="btn-no-padding"
                           type="link"
                           onClick={() => {
                             modal({
                               title: 'Chat History',
+                              footer: null,
                               children: <MessageList list={item.messages} startTime={item.start_time} />
                             });
                           }}
@@ -135,6 +137,7 @@ const ChartHistory = createWithRemoteLoader({
               />
               <Flex justify="flex-end">
                 <Pagination
+                  showSizeChanger={false}
                   hideOnSinglePage
                   total={data.count}
                   current={page}

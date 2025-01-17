@@ -129,7 +129,7 @@ const KnowledgeList = createWithRemoteLoader({
           <Flex vertical gap={8}>
             <Knowledge reload={reload} fileListData={data} data={agentData} />
             <Flex justify="flex-end">
-              <Pagination hideOnSinglePage total={data.count} current={page} pageSize={pageSize} onChange={setPage} />
+              <Pagination showSizeChanger={false} hideOnSinglePage total={data.count} current={page} pageSize={pageSize} onChange={setPage} />
             </Flex>
           </Flex>
         );
