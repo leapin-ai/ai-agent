@@ -1,6 +1,7 @@
 import { Flex, Space, Button, Avatar, Divider, Dropdown, App } from 'antd';
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { useNavigate } from 'react-router-dom';
+import get from 'lodash/get';
 import { MessageOutlined } from '@ant-design/icons';
 import defaultAvatar from '../../../common/defaultAvatar.png';
 import style from './style.module.scss';
@@ -22,7 +23,8 @@ const AssistantHeader = createWithRemoteLoader({
   const { message } = App.useApp();
   const confirmModal = useConfirmModal();
   const formModal = useFormModal();
-  const { SuperSelect, Upload } = FormInfo.fields;
+  const { SuperSelect, Upload, Input, PhoneNumber } = FormInfo.fields;
+  const { List } = FormInfo;
   return (
     <div className={style['assistant-header-outer']}>
       <Flex gap={20} className={style['assistant-header']}>
@@ -153,7 +155,15 @@ const AssistantHeader = createWithRemoteLoader({
                           data: {
                             agent_id: id,
                             job_id: data.jobId.value,
-                            cv_url_list: data.resume.map(item => item.src)
+                            cv_data_list: data.cv_data_list.map(({ name, email, phone, resume }) => {
+                              return {
+                                name,
+                                email,
+                                mobile: phone.value,
+                                mobile_country_code: phone.code,
+                                cv_url: get(resume, '[0].src')
+                              };
+                            })
                           }
                         })
                       );
@@ -178,6 +188,9 @@ const AssistantHeader = createWithRemoteLoader({
                             current: 'page',
                             pageSizeName: 'page_size'
                           }}
+                          getSearchProps={({ searchText }) => {
+                            return { job_name: searchText };
+                          }}
                           api={Object.assign({}, apis.agent.job.getJobList, {
                             params: {
                               status: 0,
@@ -194,7 +207,18 @@ const AssistantHeader = createWithRemoteLoader({
                             }
                           })}
                         />,
-                        <Upload name="resume" label="Resume" rule="REQ" single onSave={({ data }) => data} />
+                        <List
+                          title="Candidates"
+                          name="cv_data_list"
+                          column={1}
+                          minLength={1}
+                          list={[
+                            <Upload name="resume" label="Resume" rule="REQ" maxLength={1} onSave={({ data }) => data} />,
+                            <Input name="name" label="Name" />,
+                            <PhoneNumber name="phone" label="Phone" />,
+                            <Input name="email" label="Email" rule="EMAIL" />
+                          ]}
+                        />
                       ]}
                     />
                   )
