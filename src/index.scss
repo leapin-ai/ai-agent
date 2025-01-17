@@ -124,4 +124,11 @@ body {
     display: flex;
     flex-direction: column;
   }
+
+  .filter {
+    > .ant-space {
+      padding: 0 !important;
+      border-bottom: 0 !important;
+    }
+  }
 }
