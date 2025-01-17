@@ -36,7 +36,9 @@ const CandidatePreview = createWithRemoteLoader({
         ]}
       />
       <StateBar stateOption={[{ tab: 'Resume', key: '1' }]} />
-      <FilePreview src={data.cv_url} />
+      <div>
+        <FilePreview src={data.cv_url} />
+      </div>
     </Flex>
   );
 });
