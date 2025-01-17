@@ -2,9 +2,10 @@ import { createWithRemoteLoader } from '@kne/remote-loader';
 import { useState } from 'react';
 import Fetch from '@kne/react-fetch';
 import get from 'lodash/get';
-import { Button, Flex, App } from 'antd';
+import { Button, Flex, App, Pagination, Space } from 'antd';
 import { MessageList } from '@components/ChatBot';
 import CandidatePreview from '@components/CandidatePreview';
+import style from '../../../ChatHistory/style.module.scss';
 
 const Applicants = createWithRemoteLoader({
   modules: [
@@ -24,22 +25,61 @@ const Applicants = createWithRemoteLoader({
 })(({ remoteModules, data: agentData }) => {
   const [TableView, usePreset, Filter, ButtonGroup, Icon, StateTag, useModal, ModalButton, Enum, FormInfo, CentralContent, FileLink] = remoteModules;
   const [filter, setFilter] = useState([]);
+  const { SearchInput, getFilterValue, fields: filterFields } = Filter;
+  const { SuperSelectFilterItem } = filterFields;
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
   const { apis, ajax } = usePreset();
   const modal = useModal();
   const { useFormModal } = FormInfo;
   const formModal = useFormModal();
   const { Input, PhoneNumber } = FormInfo.fields;
   const { message } = App.useApp();
+  const filterValue = getFilterValue(filter);
   return (
     <Fetch
       {...Object.assign({}, apis.agent.getApplicationList, {
+        params: Object.assign({}, filterValue, { page, page_size: pageSize }),
         urlParams: {
           agent_id: agentData.id
         }
       })}
       render={({ data, reload }) => {
         return (
-          <>
+          <Flex vertical gap={8}>
+            <Enum moduleName="atsStage">
+              {list => {
+                return (
+                  <Filter
+                    className="filter"
+                    value={filter}
+                    onChange={setFilter}
+                    list={[
+                      [
+                        /*<SuperSelectFilterItem name="status" label="State" single
+                                                           options={list.map((item) => {
+                                                               return {
+                                                                   value: item.value,
+                                                                   label: item.description
+                                                               };
+                                                           })}/>*/
+                        <SuperSelectFilterItem
+                          name="status"
+                          label="Status"
+                          single
+                          options={[
+                            { label: 'Not started', value: 0 },
+                            { label: 'In progress', value: 1 },
+                            { label: 'Completed', value: 2 }
+                          ]}
+                        />
+                      ]
+                    ]}
+                    extra={<SearchInput className={style['search-input']} name="name" label="Name" />}
+                  ></Filter>
+                );
+              }}
+            </Enum>
             <TableView
               columns={[
                 {
@@ -256,7 +296,19 @@ const Applicants = createWithRemoteLoader({
               ]}
               dataSource={data.results}
             />
-          </>
+            <Flex justify="flex-end">
+              <Pagination
+                showSizeChanger={false}
+                hideOnSinglePage
+                total={data.count}
+                current={page}
+                pageSize={pageSize}
+                onChange={page => {
+                  setPage(page);
+                }}
+              />
+            </Flex>
+          </Flex>
         );
       }}
     />
