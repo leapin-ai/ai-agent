@@ -76,7 +76,7 @@ const Applicants = createWithRemoteLoader({
                       ]
                     ]}
                     extra={<SearchInput className={style['search-input']} name="name" label="Name" />}
-                  ></Filter>
+                  />
                 );
               }}
             </Enum>
