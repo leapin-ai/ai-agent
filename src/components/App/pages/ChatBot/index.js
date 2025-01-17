@@ -19,7 +19,7 @@ const ChatBotPage = createWithRemoteLoader({
         items={[
           { title: <Link to={baseUrl}>My Agent</Link> },
           {
-            title: <Link to={`${baseUrl}/detail?id=${searchParams.get('id')}`}>Hr Assistant</Link>
+            title: <Link to={`${baseUrl}/detail?id=${searchParams.get('id')}`}>Agent Detail</Link>
           },
           { title: 'ChatBot' }
         ]}

@@ -166,7 +166,7 @@ export const globalInit = async () => {
                 code: 0,
                 data: {
                   src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                  filename: '17700713ccc28c0ce29d6b87237bb8b5.pdf'
+                  filename: file.name
                 }
               }
             };*/
