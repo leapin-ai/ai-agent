@@ -87,7 +87,9 @@ const AssistantHeader = createWithRemoteLoader({
               </div>
               <Space>
                 {(roles || []).map(name => (
-                  <div className={style['tag']}>{name}</div>
+                  <div key={name} className={style['tag']}>
+                    {name}
+                  </div>
                 ))}
               </Space>
             </Flex>
@@ -193,6 +195,7 @@ const AssistantHeader = createWithRemoteLoader({
                             current: 'page',
                             pageSizeName: 'page_size'
                           }}
+                          searchPlaceholder="Search by job name"
                           getSearchProps={({ searchText }) => {
                             return { job_name: searchText };
                           }}

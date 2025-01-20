@@ -3,19 +3,18 @@ import { Flex, Input, Space, App } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
-import markdown from 'markdown-it';
 import last from 'lodash/last';
 import MessageList from './MessageList';
 import useRefCallback from '@kne/use-ref-callback';
 import defaultAvatar from '../../common/defaultAvatar.png';
 import enter from './enter.png';
 import style from './style.module.scss';
-
-const md = markdown();
+import get from 'lodash/get';
+import CheckList from './CheckList';
 
 const ChartBotMessage = createWithRemoteLoader({
   modules: ['components-core:LoadingButton', 'components-core:Global@usePreset', 'components-core:Common@SimpleBar', 'components-core:Image']
-})(({ remoteModules, messageList, agentId, sessionId, sessionName, startTime, apis, onComplete, className, isEnd }) => {
+})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, apis, onComplete, className, isEnd }) => {
   const [LoadingButton, usePreset, SimpleBar, Image] = remoteModules;
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState(messageList || []);
@@ -26,15 +25,22 @@ const ChartBotMessage = createWithRemoteLoader({
   useEffect(() => {
     messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
   }, [list, loading]);
-  const sendMessage = useRefCallback(async content => {
+  const sendMessage = useRefCallback(async ({ type, value }) => {
     setLoading(true);
     const { data: resData } = await ajax(
       Object.assign({}, apis.sendSessionMessage, {
         urlParams: { session_id: sessionId },
-        data: {
-          user_content: content,
-          chat_message_id: last(list)?.id
-        }
+        data:
+          type === 'condition'
+            ? {
+                type,
+                user_selection: [value],
+                chat_message_id: last(list)?.id
+              }
+            : {
+                user_content: value,
+                chat_message_id: last(list)?.id
+              }
       })
     );
     setLoading(false);
@@ -55,13 +61,12 @@ const ChartBotMessage = createWithRemoteLoader({
       setLoading(false);
     }
   }, [list, sendMessage]);
-
   return (
     <Flex vertical className={classnames(className, style['chat'])} gap={8}>
       <div className={style['title']}>
         <Flex className={style['title-inner']} justify="space-between" align="center">
           <Space>
-            <Image.Avatar src={defaultAvatar} size={54} />
+            <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
             <div>{sessionName || 'Conversations'}</div>
           </Space>
           {!isEnd && (
@@ -95,49 +100,71 @@ const ChartBotMessage = createWithRemoteLoader({
         })}
         scrollableNodeProps={{ ref: messageListRef }}
       >
-        <MessageList list={list} startTime={startTime} currentMessage={loading && currentMessage} />
+        <MessageList
+          agentAvatar={agentAvatar}
+          list={list}
+          startTime={startTime}
+          currentMessage={loading && currentMessage}
+          onConditionChange={item => {
+            setCurrentMessage(item.label);
+            sendMessage({ type: 'condition', value: item });
+          }}
+        />
       </SimpleBar>
       {!isEnd && (
         <div className={style['footer']}>
-          <div className={style['message-input-border']}>
-            <Flex className={style['message-input-outer']}>
-              <Input.TextArea
-                disabled={loading}
-                className={style['message-input']}
-                autoSize={{ minRows: 1, maxRows: 6 }}
-                placeholder="Chat with a robot"
-                value={currentMessage}
-                onChange={e => {
-                  setCurrentMessage(e.target.value);
+          {get(last(list), 'type') === 'condition' ? (
+            <div className={style['message-input-checklist']}>
+              <CheckList
+                loading={loading}
+                options={last(list).options || []}
+                onChange={item => {
+                  setCurrentMessage(item.label);
+                  sendMessage({ type: 'condition', value: item });
                 }}
-                onKeyUp={e => {
-                  if (e.key === 'Enter') {
+              />
+            </div>
+          ) : (
+            <div className={style['message-input-border']}>
+              <Flex className={style['message-input-outer']}>
+                <Input.TextArea
+                  disabled={loading}
+                  className={style['message-input']}
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  placeholder="Chat with a robot"
+                  value={currentMessage}
+                  onChange={e => {
+                    setCurrentMessage(e.target.value);
+                  }}
+                  onKeyUp={e => {
+                    if (e.key === 'Enter') {
+                      const msg = currentMessage.trim();
+                      setCurrentMessage(msg);
+                      if (msg.length === 0) {
+                        message.warning('The content sent cannot be empty');
+                        return;
+                      }
+                      return sendMessage({ value: msg });
+                    }
+                  }}
+                />
+                <LoadingButton
+                  className={style['message-sender']}
+                  type="primary"
+                  loading={loading}
+                  icon={<img src={enter} alt="enter" />}
+                  onClick={async () => {
                     const msg = currentMessage.trim();
-                    setCurrentMessage(msg);
                     if (msg.length === 0) {
                       message.warning('The content sent cannot be empty');
                       return;
                     }
-                    return sendMessage(msg);
-                  }
-                }}
-              />
-              <LoadingButton
-                className={style['message-sender']}
-                type="primary"
-                loading={loading}
-                icon={<img src={enter} alt="enter" />}
-                onClick={async () => {
-                  const msg = currentMessage.trim();
-                  if (msg.length === 0) {
-                    message.warning('The content sent cannot be empty');
-                    return;
-                  }
-                  return sendMessage(msg.trim());
-                }}
-              />
-            </Flex>
-          </div>
+                    return sendMessage({ value: msg.trim() });
+                  }}
+                />
+              </Flex>
+            </div>
+          )}
         </div>
       )}
     </Flex>
@@ -170,6 +197,7 @@ const ChartBot = createWithRemoteLoader({
             isEnd={data.status === 2}
             messageList={data.messages}
             agentId={data.agent_application.id}
+            agentAvatar={get(data, 'agent_application.agent.avatar')}
           />
         );
       }}

@@ -11,30 +11,31 @@ const LeftMenu = ({ open, baseUrl }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const activeKey = pathname.indexOf(`${baseUrl}/history`) === 0 ? 'history' : 'agent';
+
   return (
     <Menu
       className={classnames(style['menu'], {
         [style['is-close']]: !open
       })}
+      selectedKeys={[activeKey]}
       items={[
         {
           icon: <Avatar src={activeKey === 'history' ? chatActive : chat} />,
           label: 'Chat History',
-          key: 'history'
+          key: 'history',
+          onClick: () => {
+            navigate(`${baseUrl}/history`);
+          }
         },
         {
           icon: <Avatar src={activeKey === 'agent' ? aiActive : ai} />,
           label: 'AI Agent',
-          key: 'agent'
+          key: 'agent',
+          onClick: () => {
+            navigate(`${baseUrl}`);
+          }
         }
       ]}
-      onSelect={({ key }) => {
-        const map = {
-          history: `${baseUrl}/history`,
-          agent: `${baseUrl}`
-        };
-        navigate(map[key]);
-      }}
     />
   );
 };

@@ -11,7 +11,7 @@ localeLoader('en', en);
 
 const Flow = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset', 'components-core:FormInfo@useFormDrawer', 'components-core:FormInfo', 'components-core:LoadingButton']
-})(({ remoteModules, data: agentData }) => {
+})(({ remoteModules, data: agentData, reload }) => {
   const [usePreset, useDrawer, FormInfo, LoadingButton] = remoteModules;
   const { Input, TextArea } = FormInfo.fields;
   const drawer = useDrawer();
@@ -107,6 +107,7 @@ const Flow = createWithRemoteLoader({
               return;
             }
             message.success('Success');
+            reload();
           }}
         >
           Save

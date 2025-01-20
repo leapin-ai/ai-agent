@@ -113,7 +113,7 @@ const Knowledge = createWithRemoteLoader({
 
 const KnowledgeList = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, data: agentData }) => {
+})(({ remoteModules, data: agentData, reload: pageReload }) => {
   const [usePreset] = remoteModules;
   const { apis } = usePreset();
   const [page, setPage] = useState(1);
@@ -127,7 +127,14 @@ const KnowledgeList = createWithRemoteLoader({
       render={({ data, reload }) => {
         return (
           <Flex vertical gap={8}>
-            <Knowledge reload={reload} fileListData={data} data={agentData} />
+            <Knowledge
+              reload={() => {
+                reload();
+                pageReload();
+              }}
+              fileListData={data}
+              data={agentData}
+            />
             <Flex justify="flex-end">
               <Pagination showSizeChanger={false} hideOnSinglePage total={data.count} current={page} pageSize={pageSize} onChange={setPage} />
             </Flex>

@@ -5,7 +5,7 @@ import style from './style.module.scss';
 
 const Skill = createWithRemoteLoader({
   modules: ['components-core:FormInfo', 'components-core:Global@usePreset']
-})(({ remoteModules, data: agentData }) => {
+})(({ remoteModules, data: agentData, reload }) => {
   const [FormInfo, usePreset] = remoteModules;
   const { Form, MultiField, SubmitButton } = FormInfo;
   const { TextArea } = FormInfo.fields;
@@ -32,6 +32,7 @@ const Skill = createWithRemoteLoader({
           return;
         }
         message.success('Success');
+        reload();
       }}
     >
       <FormInfo
@@ -42,7 +43,7 @@ const Skill = createWithRemoteLoader({
             name="skills"
             label="Agent skills"
             ignoreLabelWidth
-            labelTips="When chatting with the agent, you can use one or multiple of the following skills"
+            labelTips="When chatting with the agent, you can use one or more of the following skills"
             field={TextArea}
             placeholder={`- Expertise in screening candidate
 - based on their cv, tailor different interview questions`}
