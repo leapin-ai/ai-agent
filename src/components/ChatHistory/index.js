@@ -71,7 +71,9 @@ const ChartHistory = createWithRemoteLoader({
                       return (
                         <Space wrap>
                           {(get(item, 'agent_application.agent.role') || []).map(role => (
-                            <div className={style['tag']}>{role}</div>
+                            <div key={role} className={style['tag']}>
+                              {role}
+                            </div>
                           ))}
                         </Space>
                       );
@@ -114,7 +116,7 @@ const ChartHistory = createWithRemoteLoader({
                             modal({
                               title: 'Chat History',
                               footer: null,
-                              children: <MessageList list={item.messages} startTime={item.start_time} />
+                              children: <MessageList agentAvatar={get(item, 'agent_application.agent.avatar')} list={item.messages} startTime={item.start_time} />
                             });
                           }}
                         >

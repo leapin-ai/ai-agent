@@ -38,6 +38,15 @@
   &.is-user .message-content {
     background: #e8f2ff;
   }
+
+  &.is-user {
+    flex-direction: row-reverse;
+  }
+
+  .message-black {
+    flex: 0 0 34px;
+    pointer-events: none;
+  }
 }
 
 .footer {
@@ -45,6 +54,7 @@
   border-top: 1px solid #dddddd;
   padding: 20px 32px;
   background: #ffffff;
+  min-height: 100px;
 }
 
 .message-input-border {
@@ -80,7 +90,8 @@
 }
 
 .message-list,
-.message-input-border {
+.message-input-border,
+.message-input-checklist {
   max-width: 800px;
   margin: 0 auto;
 }
@@ -89,7 +100,26 @@
   flex: none;
   height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 87px - 46px - 16px - 100px);
   overflow: auto;
+
   &.is-end {
     height: auto;
   }
+}
+
+.message-condition-item {
+  padding: 0 8px;
+  background: var(--primary-color-1);
+  color: var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+
+  &.loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.message-input-checklist {
+  display: flex;
+  justify-content: center;
 }

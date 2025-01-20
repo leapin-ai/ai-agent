@@ -5,7 +5,7 @@ import get from 'lodash/get';
 
 const Prompt = createWithRemoteLoader({
   modules: ['components-core:FormInfo', 'components-core:Global@usePreset']
-})(({ remoteModules, data: agentData }) => {
+})(({ remoteModules, data: agentData, reload }) => {
   const [FormInfo, usePreset] = remoteModules;
   const { Form, SubmitButton } = FormInfo;
   const { TextArea } = FormInfo.fields;
@@ -32,6 +32,7 @@ const Prompt = createWithRemoteLoader({
           return;
         }
         message.success('Success');
+        reload();
       }}
     >
       <FormInfo className={style['form-info']} column={1} list={[<TextArea name="prompt" ignoreLabelWidth label="Prompt" labelTips={`This is the prompt that virtual employee will use to generate respnses.`} />]} />

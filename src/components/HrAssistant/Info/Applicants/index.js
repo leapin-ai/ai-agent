@@ -2,7 +2,7 @@ import { createWithRemoteLoader } from '@kne/remote-loader';
 import { useState } from 'react';
 import Fetch from '@kne/react-fetch';
 import get from 'lodash/get';
-import { Button, Flex, App, Pagination, Space } from 'antd';
+import { Button, Flex, App, Pagination } from 'antd';
 import { MessageList } from '@components/ChatBot';
 import CandidatePreview from '@components/CandidatePreview';
 import style from '../../../ChatHistory/style.module.scss';
@@ -57,16 +57,17 @@ const Applicants = createWithRemoteLoader({
                     list={[
                       [
                         /*<SuperSelectFilterItem name="status" label="State" single
-                                                           options={list.map((item) => {
-                                                               return {
-                                                                   value: item.value,
-                                                                   label: item.description
-                                                               };
-                                                           })}/>*/
+                                                                                   options={list.map((item) => {
+                                                                                       return {
+                                                                                           value: item.value,
+                                                                                           label: item.description
+                                                                                       };
+                                                                                   })}/>*/
                         <SuperSelectFilterItem
                           name="status"
                           label="Status"
                           single
+                          showSelectedTag={false}
                           options={[
                             { label: 'Not started', value: 0 },
                             { label: 'In progress', value: 1 },
@@ -177,6 +178,9 @@ const Applicants = createWithRemoteLoader({
                   title: '',
                   width: '16px',
                   getValueOf: item => {
+                    if (get(item, 'application.status') !== 0) {
+                      return <></>;
+                    }
                     return (
                       <ButtonGroup
                         showLength={0}

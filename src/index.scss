@@ -3,6 +3,14 @@ body {
     justify-content: center;
   }
 
+  .container-body {
+    word-break: normal;
+  }
+
+  .ant-modal-root {
+    word-break: normal;
+  }
+
   /*box-shadow: 0 2px 8px 0 #ebebeb;
   border-bottom: 1px solid #ebebeb;*/
 

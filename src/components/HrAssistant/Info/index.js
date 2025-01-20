@@ -7,7 +7,7 @@ import Basic from './Basic';
 import Applicants from './Applicants';
 import style from './style.module.scss';
 
-const Info = ({ data }) => {
+const Info = props => {
   return (
     <Tabs
       className={style['info']}
@@ -15,32 +15,32 @@ const Info = ({ data }) => {
         {
           key: 'skills',
           label: 'Skills',
-          children: <Skill data={data} />
+          children: <Skill {...props} />
         },
         {
           key: 'prompt',
           label: 'Prompt',
-          children: <Prompt data={data} />
+          children: <Prompt {...props} />
         },
         {
           key: 'flow',
           label: 'Flow',
-          children: <Flow data={data} />
+          children: <Flow {...props} />
         },
         {
           key: 'knowledge',
           label: 'Knowledge',
-          children: <Knowledge data={data} />
+          children: <Knowledge {...props} />
         },
         {
           key: 'basic',
           label: 'Agent infos',
-          children: <Basic data={data} />
+          children: <Basic {...props} />
         },
         {
           key: 'applicants',
           label: 'Applicants',
-          children: <Applicants data={data} />
+          children: <Applicants {...props} />
         }
       ]}
     />

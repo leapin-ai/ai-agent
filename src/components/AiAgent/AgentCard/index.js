@@ -19,7 +19,9 @@ const AgentCard = ({ link, avatar, title, roles, description }) => {
           <div className={style['title']}>{title}</div>
           <Space>
             {(roles || []).map(role => (
-              <div className={style['tag']}>{role}</div>
+              <div key={role} className={style['tag']}>
+                {role}
+              </div>
             ))}
           </Space>
         </Flex>

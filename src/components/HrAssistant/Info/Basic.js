@@ -5,7 +5,7 @@ import style from './style.module.scss';
 
 const Basic = createWithRemoteLoader({
   modules: ['components-core:FormInfo', 'components-core:Global@usePreset']
-})(({ remoteModules, data: agentData }) => {
+})(({ remoteModules, data: agentData, reload }) => {
   const [FormInfo, usePreset] = remoteModules;
   const { SubmitButton, Form } = FormInfo;
   const { ajax, apis } = usePreset();
@@ -27,6 +27,7 @@ const Basic = createWithRemoteLoader({
         }
 
         message.success('Success');
+        reload();
       }}
     >
       <div className={style['basic-header']}>
