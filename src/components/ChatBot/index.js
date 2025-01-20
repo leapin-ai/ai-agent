@@ -38,6 +38,7 @@ const ChartBotMessage = createWithRemoteLoader({
                 chat_message_id: last(list)?.id
               }
             : {
+                type: 'text',
                 user_content: value,
                 chat_message_id: last(list)?.id
               }
