@@ -46,7 +46,7 @@ const Skill = createWithRemoteLoader({
             labelTips="When chatting with the agent, you can use one or more of the following skills"
             field={TextArea}
             placeholder={`- Expertise in screening candidate
-- based on their cv, tailor different interview questions`}
+- Based on their cv, tailor different interview questions`}
           />
         ]}
       />
