@@ -38,7 +38,6 @@ const ChartBotMessage = createWithRemoteLoader({
                 chat_message_id: last(list)?.id
               }
             : {
-                type: 'text',
                 user_content: value,
                 chat_message_id: last(list)?.id
               }
@@ -57,7 +56,7 @@ const ChartBotMessage = createWithRemoteLoader({
   });
   useEffect(() => {
     if (list.length === 0) {
-      sendMessage('');
+      sendMessage({ value: '' });
     } else {
       setLoading(false);
     }
@@ -145,7 +144,7 @@ const ChartBotMessage = createWithRemoteLoader({
                         message.warning('The content sent cannot be empty');
                         return;
                       }
-                      return sendMessage({ value: msg });
+                      return sendMessage({ type: 'text', value: msg });
                     }
                   }}
                 />
@@ -160,7 +159,7 @@ const ChartBotMessage = createWithRemoteLoader({
                       message.warning('The content sent cannot be empty');
                       return;
                     }
-                    return sendMessage({ value: msg.trim() });
+                    return sendMessage({ type: 'text', value: msg.trim() });
                   }}
                 />
               </Flex>
