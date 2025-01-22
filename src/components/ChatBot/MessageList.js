@@ -9,6 +9,7 @@ import markdown from 'markdown-it/index.mjs';
 import CheckList from './CheckList';
 import last from 'lodash/last';
 import get from 'lodash/get';
+import { ReactComponent as LoadingIcon } from './loading.svg';
 
 const md = markdown();
 
@@ -62,7 +63,9 @@ const MessageList = createWithRemoteLoader({
           </Flex>
           <Flex className={style['message']} gap={12}>
             <Image.Avatar className={style['message-avatar']} src={agentAvatar || defaultAvatar} size={28} />
-            <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: '...' }} />
+            <div className={style['message-content']}>
+              <LoadingIcon />
+            </div>
             <div className={style['message-black']} />
           </Flex>
         </>
