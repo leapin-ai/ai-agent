@@ -32,7 +32,10 @@
   padding: 10px 12px;
   background: #f6f6f6;
   border-radius: 12px;
-  white-space: pre-wrap;
+  > p {
+    margin: 0;
+    white-space: pre-wrap;
+  }
 }
 
 .message {
