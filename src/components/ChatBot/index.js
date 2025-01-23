@@ -11,10 +11,11 @@ import enter from './enter.png';
 import style from './style.module.scss';
 import get from 'lodash/get';
 import CheckList from './CheckList';
+import Countdown from './Countdown';
 
 const ChartBotMessage = createWithRemoteLoader({
   modules: ['components-core:LoadingButton', 'components-core:Global@usePreset', 'components-core:Common@SimpleBar', 'components-core:Image']
-})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, apis, onComplete, className, isEnd }) => {
+})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd }) => {
   const [LoadingButton, usePreset, SimpleBar, Image] = remoteModules;
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState(messageList || []);
@@ -22,6 +23,22 @@ const ChartBotMessage = createWithRemoteLoader({
   const { message } = App.useApp();
   const [currentMessage, setCurrentMessage] = useState('');
   const messageListRef = useRef(null);
+  const endHandler = useRefCallback(async () => {
+    const { data: resData } = await ajax(
+      Object.assign({}, apis.saveSession, {
+        urlParams: { session_id: sessionId },
+        data: {
+          status: 2
+        }
+      })
+    );
+    if (resData.code !== 0) {
+      return;
+    }
+    message.success('Success');
+    onComplete && onComplete();
+  });
+
   useEffect(() => {
     messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
   }, [list, loading]);
@@ -70,28 +87,17 @@ const ChartBotMessage = createWithRemoteLoader({
             <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
             <div>{sessionName || 'Conversations'}</div>
           </Space>
-          {!isEnd && (
-            <LoadingButton
-              type="primary"
-              shape="round"
-              onClick={async () => {
-                const { data: resData } = await ajax(
-                  Object.assign({}, apis.saveSession, {
-                    urlParams: { session_id: sessionId },
-                    data: {
-                      status: 2
-                    }
-                  })
-                );
-                if (resData.code !== 0) {
-                  return;
-                }
-                message.success('Success');
-                onComplete && onComplete();
-              }}
-            >
-              End
-            </LoadingButton>
+          {!isEnd ? (
+            <>
+              <div className={style['title-time']}>
+                <Countdown time={lastTime} onComplete={endHandler} />
+              </div>
+              <LoadingButton type="primary" shape="round" onClick={endHandler}>
+                End
+              </LoadingButton>
+            </>
+          ) : (
+            <div className={style['over-tips']}>Session's over</div>
           )}
         </Flex>
       </div>
@@ -195,6 +201,7 @@ const ChartBot = createWithRemoteLoader({
             onComplete={() => {
               reload();
             }}
+            lastTime={data.countdown_time}
             isEnd={data.status === 2}
             messageList={data.messages}
             agentId={data.agent_application.id}
