@@ -12,9 +12,8 @@ const App = ({ baseUrl }) => {
         <Route path="create" element={<CreateAgent />} />
         <Route path="marketplace" element={<Marketplace />} />
         <Route path="detail" element={<HrAssistant />} />
-        <Route path="chat-bot" element={<ChatBot />} />
+        <Route path="chat-bot-test" element={<ChatBot />} />
         <Route path="history" element={<History />} />
-        <Route path="*" element={<Navigate to="404" />} />
       </Routes>
     </Provider>
   );

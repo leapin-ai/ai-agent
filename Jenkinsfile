@@ -10,7 +10,7 @@ standardPipeline {
         sh "${build_command}"
     }
     preBuildCommand = {
-        sh "npm install"
+        sh "npm config set registry https://registry.npmmirror.com && npm install"
     }
     nodeVersion = "20.15.0"
     buildLocalPath = "build"

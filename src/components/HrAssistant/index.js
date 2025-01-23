@@ -2,7 +2,6 @@ import { Flex } from 'antd';
 import Fetch from '@kne/react-fetch';
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { useSearchParams } from 'react-router-dom';
-import style from './style.module.scss';
 import AssistantHeader from './AssistantHeader';
 import Info from './Info';
 
@@ -17,11 +16,11 @@ const HrAssistant = createWithRemoteLoader({
       {...Object.assign({}, apis.agent.getAgentDetail, {
         urlParams: { agent_id: searchParams.get('id') }
       })}
-      render={({ data }) => {
+      render={({ data, reload }) => {
         return (
           <Flex vertical gap={16}>
-            <AssistantHeader baseUrl={baseUrl} id={data.id} avatar={data.avatar} name={data.name} roles={data.role} />
-            <Info data={data} />
+            <AssistantHeader baseUrl={baseUrl} reload={reload} id={data.id} status={data.status} avatar={data.avatar} name={data.name} roles={data.role} />
+            <Info data={data} reload={reload} />
           </Flex>
         );
       }}

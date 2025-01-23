@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
-    "@kne/modules-dev": "^2.0.14",
+    "@kne/modules-dev": "^2.1.2",
     "@kne/react-fetch": "^1.4.3",
     "@kne/remote-loader": "^1.2.3",
     "@loadable/component": "^5.16.3",
@@ -80,11 +80,16 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "^6.22.2",
-    "sass": "^1.75.0"
+    "sass": "^1.83.4"
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
-    "@kne/react-flow-chart": "^0.1.4",
-    "js-cookie": "^3.0.5"
+    "@kne/ensure-slash": "^0.1.0",
+    "@kne/react-flow-chart": "^0.1.11",
+    "@kne/use-ref-callback": "^0.1.2",
+    "dayjs": "^1.11.13",
+    "js-cookie": "^3.0.5",
+    "markdown-it": "^14.1.0",
+    "md5": "^2.3.0"
   }
 }

@@ -12,7 +12,7 @@ const NotFound = () => {
         <Button
           type="primary"
           onClick={() => {
-            navigate('/');
+            navigate('/ai-agent');
           }}
         >
           返回首页

@@ -1,7 +1,18 @@
-.app {
+body {
   .navigation-list > .ant-menu {
     justify-content: center;
   }
+
+  .container-body {
+    word-break: normal;
+  }
+
+  .ant-modal-root {
+    word-break: normal;
+  }
+
+  /*box-shadow: 0 2px 8px 0 #ebebeb;
+  border-bottom: 1px solid #ebebeb;*/
 
   .react-form {
     > span > .ant-flex {
@@ -96,7 +107,7 @@
     border: none;
 
     > span {
-      padding: 0;
+      padding: 0 8px;
     }
   }
 
@@ -114,5 +125,18 @@
 
   .core-page-menu-btn-outer {
     top: calc(38px + var(--nav-height));
+  }
+
+  .client-bot {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter {
+    > .ant-space {
+      padding: 0 !important;
+      border-bottom: 0 !important;
+    }
   }
 }

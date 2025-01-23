@@ -7,7 +7,7 @@ import { Breadcrumb } from 'antd';
 import LeftMenu from '@components/LeftMenu';
 
 const ChatBotPage = createWithRemoteLoader({
-  modules: ['Layout@Page']
+  modules: ['components-core:Layout@Page']
 })(({ remoteModules }) => {
   const { baseUrl } = useContext();
   const [Page] = remoteModules;
@@ -19,12 +19,12 @@ const ChatBotPage = createWithRemoteLoader({
         items={[
           { title: <Link to={baseUrl}>My Agent</Link> },
           {
-            title: <Link to={`${baseUrl}/detail?id=${searchParams.get('id')}`}>Hr Assistant</Link>
+            title: <Link to={`${baseUrl}/detail?id=${searchParams.get('id')}`}>Agent Detail</Link>
           },
-          { title: '与Test的对话' }
+          { title: 'ChatBot' }
         ]}
       />
-      <ChatBot className={style['chat-bot']} baseUrl={baseUrl} />
+      <ChatBot className={style['chat-bot']} baseUrl={baseUrl} apiName="chatBot" id={searchParams.get('sessionId')} />
     </Page>
   );
 });
