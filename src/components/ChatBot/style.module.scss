@@ -32,6 +32,7 @@
   padding: 10px 12px;
   background: #f6f6f6;
   border-radius: 12px;
+
   p {
     margin: 0;
     white-space: pre-wrap;
@@ -126,4 +127,13 @@
 .message-input-checklist {
   display: flex;
   justify-content: center;
+}
+
+.title-time {
+  transform: scale(1.5);
+  color: var(--primary-color);
+}
+
+.over-tips {
+  color: var(--font-color-grey);
 }
