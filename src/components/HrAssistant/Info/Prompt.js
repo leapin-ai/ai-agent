@@ -35,7 +35,7 @@ const Prompt = createWithRemoteLoader({
         reload();
       }}
     >
-      <FormInfo className={style['form-info']} column={1} list={[<TextArea name="prompt" ignoreLabelWidth label="Prompt" labelTips={`This is the prompt that virtual employee will use to generate respnses.`} />]} />
+      <FormInfo className={style['form-info']} column={1} list={[<TextArea autoSize={{ minRows: 4 }} name="prompt" ignoreLabelWidth label="Prompt" labelTips={`This is the prompt that virtual employee will use to generate respnses.`} />]} />
       <Flex justify="flex-end" gap={16}>
         <SubmitButton>Save</SubmitButton>
       </Flex>
