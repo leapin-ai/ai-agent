@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 
 const Countdown = ({ time, onComplete }) => {
-  const [current, setCurrent] = useState(time || 60);
+  const [current, setCurrent] = useState(Number.isInteger(time) ? time : 60);
   const minute = Math.max(Math.floor(current / 60), 0),
     second = Math.max(current % 60, 0);
+
   useEffect(() => {
     const nextTick = () => {
       setCurrent(current => {

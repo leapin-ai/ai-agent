@@ -20,7 +20,7 @@ const ChartHistory = createWithRemoteLoader({
     pageSize = 10;
   return (
     <Flex className={style['history']} vertical gap={24}>
-      <PageHeader title="The Chat History" description="The chat history recoird the running status of the application, including user inputs and AI replies." />
+      <PageHeader title="The Chat History" description="The chat history record the running status of the application, including user inputs and AI replies." />
       <Flex className={style['filter']} justify="space-between">
         <div></div>
         <div>
