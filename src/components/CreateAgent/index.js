@@ -41,8 +41,8 @@ export const CreateAgentFormInner = createWithRemoteLoader({
         />,
         <Input name="name" label="Name" placeholder={'Give your app a name'} rule="REQ" />,
         <MultiField name="role" label="Role" placeholder={'Give a role of your app'} field={Input} maxLength={3} />,
-        <TextArea ignoreLabelWidth name="description" label="Description" placeholder={'Enter the description of  the app'} />,
-        <TextArea name="goals" ignoreLabelWidth label="Goals" placeholder={'The name of the task'} />
+        <TextArea ignoreLabelWidth name="description" label="Description" autoSize={{ minRows: 4 }} placeholder={'Enter the description of  the app'} />,
+        <TextArea name="goals" ignoreLabelWidth label="Goals" autoSize={{ minRows: 4 }} placeholder={'The name of the task'} />
       ]}
     />
   );
