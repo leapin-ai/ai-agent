@@ -157,13 +157,13 @@ export const globalInit = async () => {
     ajax,
     enums: {
       atsStage: [
-        { description: '初筛', value: 0 },
-        { description: 'ai 面试', value: 1 },
-        { description: '复试', value: 3 },
-        { description: '待入职', value: 4 },
-        { description: '不合适', value: 5 },
-        { description: 'offer', value: 8 },
-        { description: '已入职', value: 9 }
+        { description: 'Primary screening', value: 0 },
+        { description: 'AI interview', value: 1 },
+        { description: 'Retest', value: 3 },
+        { description: 'Awaiting entry', value: 4 },
+        { description: 'Inappropriate', value: 5 },
+        { description: 'Offer', value: 8 },
+        { description: 'Inducted', value: 9 }
       ]
     },
     apis: Object.assign(
