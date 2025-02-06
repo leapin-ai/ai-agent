@@ -223,7 +223,7 @@ const AssistantHeader = createWithRemoteLoader({
                           list={[
                             <Upload name="resume" label="Resume" rule="REQ" maxLength={1} onSave={({ data }) => data} />,
                             <Input name="name" label="Name" />,
-                            <PhoneNumber name="phone" label="Phone" interceptor="phone-number-string" />,
+                            <PhoneNumber name="phone" label="Phone" format="string" />,
                             <Input name="email" label="Email" rule="EMAIL" />
                           ]}
                         />
