@@ -116,9 +116,10 @@ export const globalInit = async () => {
       return response;
     }
   });
+
   const registry = {
-    url: 'https://cdn.jsdelivr.net',
-    tpl: '{{url}}/npm/@kne-components/{{remote}}@{{version}}/build'
+    url: 'https://cdn.leapin-ai.com',
+    tpl: '{{url}}/components/@kne-components/{{remote}}/{{version}}/build'
   };
 
   const componentsCoreRemote = {
