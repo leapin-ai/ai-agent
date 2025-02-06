@@ -261,7 +261,7 @@ const Applicants = createWithRemoteLoader({
                                     <FormInfo
                                       title="Confirmation of key information"
                                       column={1}
-                                      list={[<Input name="name" label="Name" />, <PhoneNumber name="phone" label="Phone" interceptor="phone-number-string" />, <Input name="email" label="Email" rule="EMAIL" />]}
+                                      list={[<Input name="name" label="Name" />, <PhoneNumber name="phone" label="Phone" format="string" />, <Input name="email" label="Email" rule="EMAIL" />]}
                                     />
                                   </Flex>
                                 )
