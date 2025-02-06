@@ -14,16 +14,18 @@ const AgentCard = ({ link, avatar, title, roles, description }) => {
       }}
     >
       <Flex gap={8}>
-        <Avatar className={style['avatar']} src={avatar} alt="avatar" />
+        <Flex flex={0}>
+          <Avatar className={style['avatar']} src={avatar} alt="avatar" />
+        </Flex>
         <Flex vertical>
           <div className={style['title']}>{title}</div>
-          <Space>
+          <Flex gap={8} wrap>
             {(roles || []).map(role => (
               <div key={role} className={style['tag']}>
                 {role}
               </div>
             ))}
-          </Space>
+          </Flex>
         </Flex>
       </Flex>
       <div className={style['description']}>{description}</div>
