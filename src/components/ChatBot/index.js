@@ -88,9 +88,9 @@ const ChartBotMessage = createWithRemoteLoader({
               <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
             </Flex>
             <Flex flex={1} vertical>
-              <div className={style['title-content']}>{sessionName || 'Conversations'}xxxxxxxxxxxxxx</div>
+              <div className={style['title-content']}>{sessionName || 'Conversations'}</div>
               <div className={style['title-time']}>
-                <Countdown time={lastTime} onComplete={endHandler} />
+                <Countdown time={isEnd ? 0 : lastTime} onComplete={endHandler} />
               </div>
             </Flex>
           </Flex>
