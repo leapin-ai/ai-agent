@@ -112,6 +112,7 @@ const ChartBotMessage = createWithRemoteLoader({
         scrollableNodeProps={{ ref: messageListRef }}
       >
         <MessageList
+          isEnd={isEnd}
           agentAvatar={agentAvatar}
           list={list}
           startTime={startTime}
