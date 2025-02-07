@@ -32,8 +32,9 @@
   padding: 10px 12px;
   background: #f6f6f6;
   border-radius: 12px;
-
-  p {
+  overflow: hidden;
+  p,
+  pre {
     margin: 0;
     white-space: pre-wrap;
   }
@@ -129,8 +130,16 @@
   justify-content: center;
 }
 
+.title-content {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 160px;
+  text-overflow: ellipsis;
+}
+
 .title-time {
   transform: scale(1.5);
+  transform-origin: left;
   color: var(--primary-color);
 }
 

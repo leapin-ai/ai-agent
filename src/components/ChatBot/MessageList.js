@@ -16,7 +16,7 @@ const md = markdown();
 
 const MessageList = createWithRemoteLoader({
   modules: ['components-cre:Image']
-})(({ remoteModules, list, startTime, currentMessage, agentAvatar, onConditionChange, children = null }) => {
+})(({ remoteModules, list, startTime, currentMessage, agentAvatar, onConditionChange, isEnd, children = null }) => {
   const [Image] = remoteModules;
   return (
     <Flex className={classnames(style['message-list'], 'message-list')} vertical gap={20}>
@@ -43,9 +43,11 @@ const MessageList = createWithRemoteLoader({
               {item.type === 'condition' && item === last(list) ? (
                 <Flex vertical gap={8} className={style['message-content']}>
                   <div dangerouslySetInnerHTML={{ __html: md.render(item.chatbot_content || item.content || '') }} />
-                  <div>
-                    <CheckList loading={currentMessage} options={item.options} onChange={onConditionChange} />
-                  </div>
+                  {!isEnd && (
+                    <div>
+                      <CheckList loading={currentMessage} options={item.options} onChange={onConditionChange} />
+                    </div>
+                  )}
                 </Flex>
               ) : (
                 <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: md.render(item.chatbot_content || item.content || '') }} />
