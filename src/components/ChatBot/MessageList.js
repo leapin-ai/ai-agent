@@ -10,6 +10,7 @@ import CheckList from './CheckList';
 import last from 'lodash/last';
 import get from 'lodash/get';
 import { ReactComponent as LoadingIcon } from './loading.svg';
+import getDefaultAvatar from './getDefaultAvatar';
 
 const md = markdown();
 
@@ -27,7 +28,7 @@ const MessageList = createWithRemoteLoader({
           <Fragment key={item.id}>
             {!(index === 0 && (item.user_content || '').trim() === '') && (
               <Flex className={classnames(style['message'], style['is-user'])} gap={12}>
-                <Image.Avatar className={style['message-avatar']} gender="M" size={28} />
+                <Image.Avatar className={style['message-avatar']} src={getDefaultAvatar()} size={28} />
                 <div
                   className={style['message-content']}
                   dangerouslySetInnerHTML={{
@@ -57,7 +58,7 @@ const MessageList = createWithRemoteLoader({
       {currentMessage && (
         <>
           <Flex className={classnames(style['message'], style['is-user'])} gap={12}>
-            <Image.Avatar className={style['message-avatar']} gender="M" size={28} />
+            <Image.Avatar className={style['message-avatar']} src={getDefaultAvatar()} size={28} />
             <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: md.render(currentMessage || '') }} />
             <div className={style['message-black']} />
           </Flex>
