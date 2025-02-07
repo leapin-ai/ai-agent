@@ -1,5 +1,5 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Flex, Input, Space, App } from 'antd';
+import { Flex, Input, App } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
@@ -83,22 +83,26 @@ const ChartBotMessage = createWithRemoteLoader({
     <Flex vertical className={classnames(className, style['chat'])} gap={8}>
       <div className={style['title']}>
         <Flex className={style['title-inner']} justify="space-between" align="center">
-          <Space>
-            <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
-            <div>{sessionName || 'Conversations'}</div>
-          </Space>
-          {!isEnd ? (
-            <>
+          <Flex gap={8} flex={1}>
+            <Flex flex={0}>
+              <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
+            </Flex>
+            <Flex flex={1} vertical>
+              <div className={style['title-content']}>{sessionName || 'Conversations'}xxxxxxxxxxxxxx</div>
               <div className={style['title-time']}>
                 <Countdown time={lastTime} onComplete={endHandler} />
               </div>
+            </Flex>
+          </Flex>
+          <Flex>
+            {!isEnd ? (
               <LoadingButton type="primary" shape="round" onClick={endHandler}>
                 End
               </LoadingButton>
-            </>
-          ) : (
-            <div className={style['over-tips']}>Session's over</div>
-          )}
+            ) : (
+              <div className={style['over-tips']}>Session's over</div>
+            )}
+          </Flex>
         </Flex>
       </div>
       <SimpleBar
