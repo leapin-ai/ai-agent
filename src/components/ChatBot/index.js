@@ -13,6 +13,41 @@ import get from 'lodash/get';
 import CheckList from './CheckList';
 import Countdown from './Countdown';
 
+const resolveStreamResponse = response => {
+  // 将 ArrayBuffer 转换为 ReadableStream
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(new Uint8Array(response.data)); // 将数据放入流
+      controller.close(); // 关闭流
+    }
+  });
+
+  // 创建 TextDecoder 实例，用于将二进制数据解码为字符串
+  const decoder = new TextDecoder('utf-8');
+
+  // 获取流的读取器
+  const reader = stream.getReader();
+
+  // 递归读取流数据
+  const pump = () =>
+    reader.read().then(({ done, value }) => {
+      if (done) {
+        console.log('流读取完成');
+        return;
+      }
+
+      // 将二进制数据解码为字符串
+      const chunk = decoder.decode(value, { stream: true });
+      console.log('接收到数据块:', chunk);
+      console.log('-----------------------------------');
+      // 继续读取下一块
+      return pump();
+    });
+
+  // 开始读取流
+  return pump();
+};
+
 const ChartBotMessage = createWithRemoteLoader({
   modules: ['components-core:LoadingButton', 'components-core:Global@usePreset', 'components-core:Common@SimpleBar', 'components-core:Image']
 })(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd }) => {
@@ -44,8 +79,8 @@ const ChartBotMessage = createWithRemoteLoader({
   }, [list, loading]);
   const sendMessage = useRefCallback(async ({ type, value }) => {
     setLoading(true);
-    const { data: resData } = await ajax(
-      Object.assign({}, apis.sendSessionMessage, {
+    const response = await ajax.fetchPost(
+      Object.assign({}, apis.sendSessionMessageStream, {
         urlParams: { session_id: sessionId },
         data:
           type === 'condition'
@@ -61,15 +96,52 @@ const ChartBotMessage = createWithRemoteLoader({
               }
       })
     );
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let result = [];
+    const pump = () =>
+      reader.read().then(({ done, value }) => {
+        if (done) {
+          // 流读取完成
+          console.log('流读取完成');
+          console.log('最终结果:', result);
+          return;
+        }
+
+        // 将二进制数据解码为字符串
+        const chunk = decoder.decode(value, { stream: true });
+        console.log('接收到数据块:', chunk);
+        result.push(
+          ...chunk
+            .split('data:')
+            .map(str => str.trim())
+            .filter(str => str.length > 0)
+            .map(str => JSON.parse(str))
+        );
+        // 将块数据拼接到结果中
+        const target = result.reduce((a, b) => {
+          return Object.assign({}, a, b, {
+            chatbot_content: (a.chatbot_content || '') + (b.chatbot_content || '')
+          });
+        }, {});
+
+        setList(list => {
+          const newList = list.slice(0);
+          const index = list.findIndex(item => item.id === target.id);
+          if (index === -1) {
+            newList.push(target);
+          } else {
+            newList.splice(index, 1, target);
+          }
+          return newList;
+        });
+        // 继续读取下一块
+        return pump();
+      });
+
+    await pump();
     setLoading(false);
-    if (resData.code !== 0) {
-      return;
-    }
-    setList(list => {
-      const newList = list.slice(0);
-      newList.push(resData.data);
-      return newList;
-    });
     setCurrentMessage('');
   });
   useEffect(() => {

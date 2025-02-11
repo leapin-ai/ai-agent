@@ -80,6 +80,7 @@ export const globalInit = async () => {
       parseUrlParams(params);
       return instance(params);
     };
+
     ajax.postForm = config => {
       parseUrlParams(config);
       const { url, params, urlParams, data, method, ...options } = config;
@@ -89,6 +90,28 @@ export const globalInit = async () => {
 
       return axios.postForm(`${url}${queryString ? '?' + queryString : ''}`, data, Object.assign({}, { headers: defaultHeaders() }, options));
     };
+
+    ajax.fetchPost = config => {
+      parseUrlParams(config);
+      const { url, params, urlParams, data, method, ...options } = config;
+      const searchParams = new URLSearchParams(params);
+      const queryString = searchParams.toString();
+      return window.fetch(
+        `${url}${queryString ? '?' + queryString : ''}`,
+        Object.assign(
+          {},
+          {
+            method: config.method,
+            headers: Object.assign({}, defaultHeaders(), {
+              'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(data)
+          },
+          options
+        )
+      );
+    };
+
     return ajax;
   })();
   fetchPreset({
@@ -176,14 +199,14 @@ export const globalInit = async () => {
           pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
-                          data: {
-                            code: 0,
-                            data: {
-                              src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                              filename: file.name
-                            }
-                          }
-                        };*/
+                                      data: {
+                                        code: 0,
+                                        data: {
+                                          src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                                          filename: file.name
+                                        }
+                                      }
+                                    };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},
