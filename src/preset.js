@@ -4,6 +4,8 @@ import { Spin, Empty, message } from 'antd';
 import axios from 'axios';
 import { preset as remoteLoaderPreset } from '@kne/remote-loader';
 import omit from 'lodash/omit';
+import transform from 'lodash/transform';
+import qs from 'qs';
 import cookie from 'js-cookie';
 import ensureSlash from '@kne/ensure-slash';
 import md5 from 'md5';
@@ -91,25 +93,33 @@ export const globalInit = async () => {
       return axios.postForm(`${url}${queryString ? '?' + queryString : ''}`, data, Object.assign({}, { headers: defaultHeaders() }, options));
     };
 
-    ajax.fetchPost = config => {
+    ajax.sse = config => {
       parseUrlParams(config);
       const { url, params, urlParams, data, method, ...options } = config;
-      const searchParams = new URLSearchParams(params);
-      const queryString = searchParams.toString();
-      return window.fetch(
-        `${url}${queryString ? '?' + queryString : ''}`,
-        Object.assign(
-          {},
-          {
-            method: config.method,
-            headers: Object.assign({}, defaultHeaders(), {
-              'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify(data)
+      const queryString = qs.stringify(
+        transform(
+          Object.assign({}, params, data, {
+            token: cookie.get('token')
+          }),
+          (result, value, key) => {
+            if (value !== void 0) {
+              result[key] = value;
+            }
           },
-          options
+          {}
         )
       );
+      console.log('xxxxx');
+      const eventSource = new EventSource(`${url}${queryString ? '?' + queryString : ''}`);
+      eventSource.onmessage = event => {
+        // 处理服务器推送的消息
+        console.log('Received:', event.data);
+      };
+
+      eventSource.onerror = error => {
+        // 处理错误
+        console.error('Error:', error.message);
+      };
     };
 
     return ajax;
@@ -199,14 +209,14 @@ export const globalInit = async () => {
           pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
-                                      data: {
-                                        code: 0,
-                                        data: {
-                                          src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                                          filename: file.name
-                                        }
-                                      }
-                                    };*/
+                                                  data: {
+                                                    code: 0,
+                                                    data: {
+                                                      src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                                                      filename: file.name
+                                                    }
+                                                  }
+                                                };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},
