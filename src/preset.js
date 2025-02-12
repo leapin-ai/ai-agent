@@ -95,7 +95,7 @@ export const globalInit = async () => {
 
     ajax.sse = config => {
       parseUrlParams(config);
-      const { url, params, urlParams, data, method, ...options } = config;
+      const { url, params, urlParams, data, method, eventEmit, ...options } = config;
       const queryString = qs.stringify(
         transform(
           Object.assign({}, params, data, {
@@ -109,17 +109,24 @@ export const globalInit = async () => {
           {}
         )
       );
-      console.log('xxxxx');
-      const eventSource = new EventSource(`${url}${queryString ? '?' + queryString : ''}`);
-      eventSource.onmessage = event => {
-        // 处理服务器推送的消息
-        console.log('Received:', event.data);
-      };
 
-      eventSource.onerror = error => {
-        // 处理错误
-        console.error('Error:', error.message);
-      };
+      return new Promise(resolve => {
+        const eventSource = new EventSource(`${url}${queryString ? '?' + queryString : ''}`);
+        const result = [];
+        eventSource.onmessage = event => {
+          // 处理服务器推送的消息
+          const data = JSON.parse(event.data);
+          result.push(data);
+          eventEmit && eventEmit(data, result);
+          if (data.event === 'message_end') {
+            eventSource.close();
+            resolve(result);
+          }
+        };
+        eventSource.onerror = error => {
+          eventSource.close();
+        };
+      });
     };
 
     return ajax;
@@ -209,14 +216,14 @@ export const globalInit = async () => {
           pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
-                                                  data: {
-                                                    code: 0,
-                                                    data: {
-                                                      src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                                                      filename: file.name
-                                                    }
-                                                  }
-                                                };*/
+                                                              data: {
+                                                                code: 0,
+                                                                data: {
+                                                                  src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                                                                  filename: file.name
+                                                                }
+                                                              }
+                                                            };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},
