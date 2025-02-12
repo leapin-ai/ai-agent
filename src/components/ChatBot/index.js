@@ -44,8 +44,8 @@ const ChartBotMessage = createWithRemoteLoader({
   }, [list, loading]);
   const sendMessage = useRefCallback(async ({ type, value }) => {
     setLoading(true);
-    const { data: resData } = await ajax(
-      Object.assign({}, apis.sendSessionMessage, {
+    const resData = await ajax.sse(
+      Object.assign({}, apis.sendSessionMessageStream, {
         urlParams: { session_id: sessionId },
         data:
           type === 'condition'
@@ -58,18 +58,29 @@ const ChartBotMessage = createWithRemoteLoader({
                 type,
                 user_content: value,
                 chat_message_id: last(list)?.id
-              }
+              },
+        eventEmit: data => {
+          setList(list => {
+            const newList = list.slice(0);
+            const index = newList.findIndex(({ id }) => id === data.id);
+
+            if (index === -1) {
+              newList.push(data);
+            } else {
+              newList.splice(
+                index,
+                1,
+                Object.assign({}, newList[index], data, {
+                  chatbot_content: (newList[index].chatbot_content || '') + (data.chatbot_content || '')
+                })
+              );
+            }
+            return newList;
+          });
+        }
       })
     );
     setLoading(false);
-    if (resData.code !== 0) {
-      return;
-    }
-    setList(list => {
-      const newList = list.slice(0);
-      newList.push(resData.data);
-      return newList;
-    });
     setCurrentMessage('');
   });
   useEffect(() => {
