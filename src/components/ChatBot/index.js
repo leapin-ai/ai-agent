@@ -44,7 +44,7 @@ const ChartBotMessage = createWithRemoteLoader({
   }, [list, loading]);
   const sendMessage = useRefCallback(async ({ type, value }) => {
     setLoading(true);
-    const resData = await ajax.sse(
+    await ajax.sse(
       Object.assign({}, apis.sendSessionMessageStream, {
         urlParams: { session_id: sessionId },
         data:
@@ -154,7 +154,7 @@ const ChartBotMessage = createWithRemoteLoader({
                   disabled={loading}
                   className={style['message-input']}
                   autoSize={{ minRows: 1, maxRows: 6 }}
-                  placeholder="Chat with a robot"
+                  placeholder="Ask Elsa..."
                   value={currentMessage}
                   onChange={e => {
                     setCurrentMessage(e.target.value);
