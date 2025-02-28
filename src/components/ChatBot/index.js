@@ -22,7 +22,10 @@ const ChartBotMessage = createWithRemoteLoader({
   const { ajax } = usePreset();
   const { message } = App.useApp();
   const [currentMessage, setCurrentMessage] = useState('');
+  const [isComposing, setIsComposing] = useState(false);
   const messageListRef = useRef(null);
+  const inputTimer = useRef(null);
+  const inputRef = useRef(null);
   const endHandler = useRefCallback(async () => {
     const { data: resData } = await ajax(
       Object.assign({}, apis.saveSession, {
@@ -82,6 +85,7 @@ const ChartBotMessage = createWithRemoteLoader({
     );
     setLoading(false);
     setCurrentMessage('');
+    inputRef.current && inputRef.current.focus();
   });
   useEffect(() => {
     if (list.length === 0) {
@@ -151,6 +155,16 @@ const ChartBotMessage = createWithRemoteLoader({
             <div className={style['message-input-border']}>
               <Flex className={style['message-input-outer']}>
                 <Input.TextArea
+                  ref={inputRef}
+                  onCompositionStart={() => {
+                    setIsComposing(true);
+                    inputTimer.current && clearTimeout(inputTimer.current);
+                  }}
+                  onCompositionEnd={() => {
+                    inputTimer.current = setTimeout(() => {
+                      setIsComposing(false);
+                    }, 300);
+                  }}
                   disabled={loading}
                   className={style['message-input']}
                   autoSize={{ minRows: 1, maxRows: 6 }}
@@ -160,7 +174,7 @@ const ChartBotMessage = createWithRemoteLoader({
                     setCurrentMessage(e.target.value);
                   }}
                   onKeyUp={e => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' && !isComposing) {
                       const msg = currentMessage.trim();
                       setCurrentMessage(msg);
                       if (msg.length === 0) {
@@ -171,6 +185,7 @@ const ChartBotMessage = createWithRemoteLoader({
                     }
                   }}
                 />
+                {isComposing ? 'true' : 'false'}
                 <LoadingButton
                   className={style['message-sender']}
                   type="primary"
