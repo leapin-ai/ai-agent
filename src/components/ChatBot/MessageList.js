@@ -1,8 +1,9 @@
 import style from './style.module.scss';
 import { Fragment } from 'react';
-import { Flex } from 'antd';
+import { Flex, Button } from 'antd';
 import dayjs from 'dayjs';
 import classnames from 'classnames';
+import { ReloadOutlined } from '@ant-design/icons';
 import defaultAvatar from '../../common/defaultAvatar.png';
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import markdown from 'markdown-it/index.mjs';
@@ -15,9 +16,9 @@ import getDefaultAvatar from './getDefaultAvatar';
 const md = markdown();
 
 const MessageList = createWithRemoteLoader({
-  modules: ['components-cre:Image']
-})(({ remoteModules, list, startTime, currentMessage, agentAvatar, onConditionChange, isEnd, children = null }) => {
-  const [Image] = remoteModules;
+  modules: ['components-cre:Image', 'components-cre:LoadingButton']
+})(({ remoteModules, list, startTime, currentMessage, agentAvatar, onConditionChange, onResend, isEnd, children = null }) => {
+  const [Image, LoadingButton] = remoteModules;
   return (
     <Flex className={classnames(style['message-list'], 'message-list')} vertical gap={20}>
       <Flex justify="center" className={style['message-time']}>
@@ -38,22 +39,39 @@ const MessageList = createWithRemoteLoader({
                 <div className={style['message-black']} />
               </Flex>
             )}
-            <Flex className={style['message']} gap={12}>
-              <Image.Avatar className={style['message-avatar']} src={agentAvatar || defaultAvatar} size={28} />
-              {item.type === 'condition' && item === last(list) ? (
-                <Flex vertical gap={8} className={style['message-content']}>
-                  <div dangerouslySetInnerHTML={{ __html: md.render(item.chatbot_content || item.content || '') }} />
-                  {!isEnd && (
-                    <div>
-                      <CheckList loading={currentMessage} options={item.options} onChange={onConditionChange} />
-                    </div>
-                  )}
+            <div>
+              <Flex className={style['message']} gap={12}>
+                <Image.Avatar className={style['message-avatar']} src={agentAvatar || defaultAvatar} size={28} />
+                {item.type === 'condition' && item === last(list) ? (
+                  <Flex vertical gap={8} className={style['message-content']}>
+                    <div dangerouslySetInnerHTML={{ __html: md.render(item.chatbot_content || item.content || '') }} />
+                    {!isEnd && (
+                      <div>
+                        <CheckList loading={currentMessage} options={item.options} onChange={onConditionChange} />
+                      </div>
+                    )}
+                  </Flex>
+                ) : (
+                  <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: md.render(item.chatbot_content || item.content || '') }} />
+                )}
+                <div className={style['message-black']} />
+              </Flex>
+              {item === last(list) && item.event === 'error' && (
+                <Flex gap={12}>
+                  <div className={style['message-black']} />
+                  <LoadingButton
+                    size="small"
+                    type="link"
+                    icon={<ReloadOutlined />}
+                    onClick={() => {
+                      return onResend && onResend(item);
+                    }}
+                  >
+                    Retry
+                  </LoadingButton>
                 </Flex>
-              ) : (
-                <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: md.render(item.chatbot_content || item.content || '') }} />
               )}
-              <div className={style['message-black']} />
-            </Flex>
+            </div>
           </Fragment>
         );
       })}
