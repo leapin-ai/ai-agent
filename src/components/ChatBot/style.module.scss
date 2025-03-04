@@ -48,11 +48,11 @@
   &.is-user {
     flex-direction: row-reverse;
   }
+}
 
-  .message-black {
-    flex: 0 0 34px;
-    pointer-events: none;
-  }
+.message-black {
+  flex: 0 0 34px;
+  pointer-events: none;
 }
 
 .footer {

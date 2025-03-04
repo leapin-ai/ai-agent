@@ -102,11 +102,13 @@ const ChartBotMessage = createWithRemoteLoader({
             <Flex flex={0}>
               <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
             </Flex>
-            <Flex flex={1} vertical>
+            <Flex flex={1} vertical justify="center">
               <div className={style['title-content']}>{sessionName || 'Conversations'}</div>
-              <div className={style['title-time']}>
-                <Countdown time={isEnd ? 0 : lastTime} onComplete={endHandler} />
-              </div>
+              {!isEnd && (
+                <div className={style['title-time']}>
+                  <Countdown time={lastTime} onComplete={endHandler} />
+                </div>
+              )}
             </Flex>
           </Flex>
           <Flex>
@@ -132,6 +134,9 @@ const ChartBotMessage = createWithRemoteLoader({
           list={list}
           startTime={startTime}
           currentMessage={loading && currentMessage}
+          onResend={data => {
+            sendMessage({ type: data.type, value: data.user_content });
+          }}
           onConditionChange={item => {
             setCurrentMessage(item.label);
             sendMessage({ type: 'condition', value: item });
@@ -185,7 +190,6 @@ const ChartBotMessage = createWithRemoteLoader({
                     }
                   }}
                 />
-                {isComposing ? 'true' : 'false'}
                 <LoadingButton
                   className={style['message-sender']}
                   type="primary"
