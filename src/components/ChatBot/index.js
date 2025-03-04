@@ -1,5 +1,5 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Flex, Input, Space, App } from 'antd';
+import { Flex, Input, App } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
@@ -18,11 +18,15 @@ const ChartBotMessage = createWithRemoteLoader({
 })(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd }) => {
   const [LoadingButton, usePreset, SimpleBar, Image] = remoteModules;
   const [loading, setLoading] = useState(true);
+  const [evening, setEvening] = useState(false);
   const [list, setList] = useState(messageList || []);
   const { ajax } = usePreset();
   const { message } = App.useApp();
   const [currentMessage, setCurrentMessage] = useState('');
+  const [isComposing, setIsComposing] = useState(false);
   const messageListRef = useRef(null);
+  const inputTimer = useRef(null);
+  const inputRef = useRef(null);
   const endHandler = useRefCallback(async () => {
     const { data: resData } = await ajax(
       Object.assign({}, apis.saveSession, {
@@ -44,33 +48,48 @@ const ChartBotMessage = createWithRemoteLoader({
   }, [list, loading]);
   const sendMessage = useRefCallback(async ({ type, value }) => {
     setLoading(true);
-    const { data: resData } = await ajax(
-      Object.assign({}, apis.sendSessionMessage, {
+    setEvening(true);
+    const prevMessageId = last(list.filter(({ event }) => event !== 'error'))?.id;
+    await ajax.sse(
+      Object.assign({}, apis.sendSessionMessageStream, {
         urlParams: { session_id: sessionId },
         data:
           type === 'condition'
             ? {
                 type,
                 user_selection: [value],
-                chat_message_id: last(list)?.id
+                chat_message_id: prevMessageId
               }
             : {
                 type,
                 user_content: value,
-                chat_message_id: last(list)?.id
-              }
+                chat_message_id: prevMessageId
+              },
+        eventEmit: data => {
+          setList(list => {
+            const newList = list.slice(0);
+            const index = newList.findIndex(({ id }) => id === data.id);
+
+            if (index === -1) {
+              newList.push(data);
+            } else {
+              newList.splice(
+                index,
+                1,
+                Object.assign({}, newList[index], data, {
+                  chatbot_content: (newList[index].chatbot_content || '') + (data.chatbot_content || '')
+                })
+              );
+            }
+            return newList;
+          });
+        }
       })
     );
     setLoading(false);
-    if (resData.code !== 0) {
-      return;
-    }
-    setList(list => {
-      const newList = list.slice(0);
-      newList.push(resData.data);
-      return newList;
-    });
     setCurrentMessage('');
+    setEvening(false);
+    inputRef.current && inputRef.current.focus();
   });
   useEffect(() => {
     if (list.length === 0) {
@@ -83,22 +102,28 @@ const ChartBotMessage = createWithRemoteLoader({
     <Flex vertical className={classnames(className, style['chat'])} gap={8}>
       <div className={style['title']}>
         <Flex className={style['title-inner']} justify="space-between" align="center">
-          <Space>
-            <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
-            <div>{sessionName || 'Conversations'}</div>
-          </Space>
-          {!isEnd ? (
-            <>
-              <div className={style['title-time']}>
-                <Countdown time={lastTime} onComplete={endHandler} />
-              </div>
+          <Flex gap={8} flex={1}>
+            <Flex flex={0}>
+              <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
+            </Flex>
+            <Flex flex={1} vertical justify="center">
+              <div className={style['title-content']}>{sessionName || 'Conversations'}</div>
+              {!isEnd && (
+                <div className={style['title-time']}>
+                  <Countdown time={lastTime} onComplete={endHandler} />
+                </div>
+              )}
+            </Flex>
+          </Flex>
+          <Flex>
+            {!isEnd ? (
               <LoadingButton type="primary" shape="round" onClick={endHandler}>
                 End
               </LoadingButton>
-            </>
-          ) : (
-            <div className={style['over-tips']}>Session's over</div>
-          )}
+            ) : (
+              <div className={style['over-tips']}>Session's over</div>
+            )}
+          </Flex>
         </Flex>
       </div>
       <SimpleBar
@@ -108,10 +133,14 @@ const ChartBotMessage = createWithRemoteLoader({
         scrollableNodeProps={{ ref: messageListRef }}
       >
         <MessageList
+          isEnd={isEnd}
           agentAvatar={agentAvatar}
           list={list}
           startTime={startTime}
           currentMessage={loading && currentMessage}
+          onResend={data => {
+            sendMessage({ type: data.type, value: data.user_content });
+          }}
           onConditionChange={item => {
             setCurrentMessage(item.label);
             sendMessage({ type: 'condition', value: item });
@@ -135,16 +164,26 @@ const ChartBotMessage = createWithRemoteLoader({
             <div className={style['message-input-border']}>
               <Flex className={style['message-input-outer']}>
                 <Input.TextArea
-                  disabled={loading}
+                  ref={inputRef}
+                  onCompositionStart={() => {
+                    setIsComposing(true);
+                    inputTimer.current && clearTimeout(inputTimer.current);
+                  }}
+                  onCompositionEnd={() => {
+                    inputTimer.current = setTimeout(() => {
+                      setIsComposing(false);
+                    }, 300);
+                  }}
+                  disabled={loading || evening}
                   className={style['message-input']}
                   autoSize={{ minRows: 1, maxRows: 6 }}
-                  placeholder="Chat with a robot"
+                  placeholder="Ask Elsa..."
                   value={currentMessage}
                   onChange={e => {
                     setCurrentMessage(e.target.value);
                   }}
                   onKeyUp={e => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' && !isComposing) {
                       const msg = currentMessage.trim();
                       setCurrentMessage(msg);
                       if (msg.length === 0) {
@@ -158,7 +197,7 @@ const ChartBotMessage = createWithRemoteLoader({
                 <LoadingButton
                   className={style['message-sender']}
                   type="primary"
-                  loading={loading}
+                  loading={loading || evening}
                   icon={<img src={enter} alt="enter" />}
                   onClick={async () => {
                     const msg = currentMessage.trim();

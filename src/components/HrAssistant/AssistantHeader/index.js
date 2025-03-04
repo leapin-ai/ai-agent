@@ -150,6 +150,7 @@ const AssistantHeader = createWithRemoteLoader({
                   title: 'Invite',
                   size: 'small',
                   autoClose: true,
+                  saveText: 'Invite',
                   formProps: {
                     onSubmit: async data => {
                       const { data: resData } = await ajax(
@@ -222,8 +223,8 @@ const AssistantHeader = createWithRemoteLoader({
                           minLength={1}
                           list={[
                             <Upload name="resume" label="Resume" rule="REQ" maxLength={1} onSave={({ data }) => data} />,
-                            <Input name="name" label="Name" />,
-                            <PhoneNumber name="phone" label="Phone" interceptor="phone-number-string" />,
+                            <Input name="name" label="Name" rule="REQ"/>,
+                            <PhoneNumber name="phone" label="Phone" format="string" />,
                             <Input name="email" label="Email" rule="EMAIL" />
                           ]}
                         />

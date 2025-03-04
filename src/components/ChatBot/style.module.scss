@@ -32,8 +32,9 @@
   padding: 10px 12px;
   background: #f6f6f6;
   border-radius: 12px;
-
-  p {
+  overflow: hidden;
+  p,
+  pre {
     margin: 0;
     white-space: pre-wrap;
   }
@@ -47,11 +48,11 @@
   &.is-user {
     flex-direction: row-reverse;
   }
+}
 
-  .message-black {
-    flex: 0 0 34px;
-    pointer-events: none;
-  }
+.message-black {
+  flex: 0 0 34px;
+  pointer-events: none;
 }
 
 .footer {
@@ -59,7 +60,7 @@
   border-top: 1px solid #dddddd;
   padding: 20px 32px;
   background: #ffffff;
-  min-height: 100px;
+  min-height: 58px;
 }
 
 .message-input-border {
@@ -129,8 +130,16 @@
   justify-content: center;
 }
 
+.title-content {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 160px;
+  text-overflow: ellipsis;
+}
+
 .title-time {
   transform: scale(1.5);
+  transform-origin: left;
   color: var(--primary-color);
 }
 

@@ -69,6 +69,10 @@ const getApis = options => {
         url: `${prefix}/agent/saas/session/{session_id}/message/send/`,
         method: 'POST'
       },
+      sendSessionMessageStream: {
+        url: `${prefix}/agent/saas/session/{session_id}/stream_message/send/`,
+        method: 'POST'
+      },
       saveSession: {
         url: `${prefix}/agent/saas/session/{session_id}/update/`,
         method: 'PUT'
@@ -103,6 +107,10 @@ const getApis = options => {
       },
       sendSessionMessage: {
         url: `${prefix}/agent/chatbot/session/{session_id}/message/send/`,
+        method: 'POST'
+      },
+      sendSessionMessageStream: {
+        url: `${prefix}/agent/chatbot/session/{session_id}/stream_message/send/`,
         method: 'POST'
       },
       saveSession: {

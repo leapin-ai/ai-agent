@@ -4,6 +4,8 @@ import { Spin, Empty, message } from 'antd';
 import axios from 'axios';
 import { preset as remoteLoaderPreset } from '@kne/remote-loader';
 import omit from 'lodash/omit';
+import transform from 'lodash/transform';
+import qs from 'qs';
 import cookie from 'js-cookie';
 import ensureSlash from '@kne/ensure-slash';
 import md5 from 'md5';
@@ -80,6 +82,7 @@ export const globalInit = async () => {
       parseUrlParams(params);
       return instance(params);
     };
+
     ajax.postForm = config => {
       parseUrlParams(config);
       const { url, params, urlParams, data, method, ...options } = config;
@@ -89,6 +92,44 @@ export const globalInit = async () => {
 
       return axios.postForm(`${url}${queryString ? '?' + queryString : ''}`, data, Object.assign({}, { headers: defaultHeaders() }, options));
     };
+
+    ajax.sse = config => {
+      parseUrlParams(config);
+      const { url, params, urlParams, data, method, eventEmit, ...options } = config;
+      const queryString = qs.stringify(
+        transform(
+          Object.assign({}, params, data, {
+            token: cookie.get('token')
+          }),
+          (result, value, key) => {
+            if (value !== void 0) {
+              result[key] = value;
+            }
+          },
+          {}
+        )
+      );
+
+      return new Promise(resolve => {
+        const eventSource = new EventSource(`${url}${queryString ? '?' + queryString : ''}`);
+        const result = [];
+        eventSource.onmessage = event => {
+          // 处理服务器推送的消息
+          const data = JSON.parse(event.data);
+          result.push(data);
+          eventEmit && eventEmit(data, result);
+          if (['error', 'message_end'].indexOf(data.event) > -1) {
+            eventSource.close();
+            resolve(result);
+          }
+        };
+        eventSource.onerror = error => {
+          eventSource.close();
+          resolve(result);
+        };
+      });
+    };
+
     return ajax;
   })();
   fetchPreset({
@@ -116,9 +157,10 @@ export const globalInit = async () => {
       return response;
     }
   });
+
   const registry = {
-    url: 'https://cdn.jsdelivr.net',
-    tpl: '{{url}}/npm/@kne-components/{{remote}}@{{version}}/build'
+    url: 'https://cdn.leapin-ai.com',
+    tpl: '{{url}}/components/@kne-components/{{remote}}/{{version}}/build'
   };
 
   const componentsCoreRemote = {
@@ -126,7 +168,7 @@ export const globalInit = async () => {
     //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.3.0'
+    defaultVersion: '0.3.2'
   };
   remoteLoaderPreset({
     remotes: {
@@ -157,13 +199,13 @@ export const globalInit = async () => {
     ajax,
     enums: {
       atsStage: [
-        { description: '初筛', value: 0 },
-        { description: 'ai 面试', value: 1 },
-        { description: '复试', value: 3 },
-        { description: '待入职', value: 4 },
-        { description: '不合适', value: 5 },
-        { description: 'offer', value: 8 },
-        { description: '已入职', value: 9 }
+        { description: 'Primary screening', value: 0 },
+        { description: 'AI interview', value: 1 },
+        { description: 'Retest', value: 3 },
+        { description: 'Awaiting entry', value: 4 },
+        { description: 'Inappropriate', value: 5 },
+        { description: 'Offer', value: 8 },
+        { description: 'Inducted', value: 9 }
       ]
     },
     apis: Object.assign(
@@ -171,16 +213,18 @@ export const globalInit = async () => {
       {
         agent: getAgentApis(),
         file: {
+          contentWindowUrl: 'https://cdn.leapin-ai.com/components/@kne/iframe-resizer/0.1.3/dist/contentWindow.js',
+          //pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
-                          data: {
-                            code: 0,
-                            data: {
-                              src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                              filename: file.name
-                            }
-                          }
-                        };*/
+                                                                          data: {
+                                                                            code: 0,
+                                                                            data: {
+                                                                              src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                                                                              filename: file.name
+                                                                            }
+                                                                          }
+                                                                        };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},
