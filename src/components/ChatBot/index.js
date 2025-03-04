@@ -18,6 +18,7 @@ const ChartBotMessage = createWithRemoteLoader({
 })(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd }) => {
   const [LoadingButton, usePreset, SimpleBar, Image] = remoteModules;
   const [loading, setLoading] = useState(true);
+  const [evening, setEvening] = useState(false);
   const [list, setList] = useState(messageList || []);
   const { ajax } = usePreset();
   const { message } = App.useApp();
@@ -47,6 +48,8 @@ const ChartBotMessage = createWithRemoteLoader({
   }, [list, loading]);
   const sendMessage = useRefCallback(async ({ type, value }) => {
     setLoading(true);
+    setEvening(true);
+    const prevMessageId = last(list.filter(({ event }) => event !== 'error'))?.id;
     await ajax.sse(
       Object.assign({}, apis.sendSessionMessageStream, {
         urlParams: { session_id: sessionId },
@@ -55,12 +58,12 @@ const ChartBotMessage = createWithRemoteLoader({
             ? {
                 type,
                 user_selection: [value],
-                chat_message_id: last(list)?.id
+                chat_message_id: prevMessageId
               }
             : {
                 type,
                 user_content: value,
-                chat_message_id: last(list)?.id
+                chat_message_id: prevMessageId
               },
         eventEmit: data => {
           setList(list => {
@@ -85,6 +88,7 @@ const ChartBotMessage = createWithRemoteLoader({
     );
     setLoading(false);
     setCurrentMessage('');
+    setEvening(false);
     inputRef.current && inputRef.current.focus();
   });
   useEffect(() => {
@@ -170,7 +174,7 @@ const ChartBotMessage = createWithRemoteLoader({
                       setIsComposing(false);
                     }, 300);
                   }}
-                  disabled={loading}
+                  disabled={loading || evening}
                   className={style['message-input']}
                   autoSize={{ minRows: 1, maxRows: 6 }}
                   placeholder="Ask Elsa..."
@@ -193,7 +197,7 @@ const ChartBotMessage = createWithRemoteLoader({
                 <LoadingButton
                   className={style['message-sender']}
                   type="primary"
-                  loading={loading}
+                  loading={loading || evening}
                   icon={<img src={enter} alt="enter" />}
                   onClick={async () => {
                     const msg = currentMessage.trim();
