@@ -118,13 +118,14 @@ export const globalInit = async () => {
           const data = JSON.parse(event.data);
           result.push(data);
           eventEmit && eventEmit(data, result);
-          if (data.event === 'message_end') {
+          if (['error', 'message_end'].indexOf(data.event) > -1) {
             eventSource.close();
             resolve(result);
           }
         };
         eventSource.onerror = error => {
           eventSource.close();
+          resolve(result);
         };
       });
     };
@@ -216,14 +217,14 @@ export const globalInit = async () => {
           //pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
-                                                              data: {
-                                                                code: 0,
-                                                                data: {
-                                                                  src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                                                                  filename: file.name
-                                                                }
-                                                              }
-                                                            };*/
+                                                                          data: {
+                                                                            code: 0,
+                                                                            data: {
+                                                                              src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                                                                              filename: file.name
+                                                                            }
+                                                                          }
+                                                                        };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},

@@ -42,6 +42,7 @@ const Skill = createWithRemoteLoader({
           <MultiField
             name="skills"
             label="Agent skills"
+            rule="REQ"
             ignoreLabelWidth
             labelTips="When chatting with the agent, you can use one or more of the following skills"
             field={TextArea}
