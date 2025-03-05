@@ -57,12 +57,12 @@ const Applicants = createWithRemoteLoader({
                     list={[
                       [
                         /*<SuperSelectFilterItem name="status" label="State" single
-                                                                                   options={list.map((item) => {
-                                                                                       return {
-                                                                                           value: item.value,
-                                                                                           label: item.description
-                                                                                       };
-                                                                                   })}/>*/
+                                                                                                           options={list.map((item) => {
+                                                                                                               return {
+                                                                                                                   value: item.value,
+                                                                                                                   label: item.description
+                                                                                                               };
+                                                                                                           })}/>*/
                         <SuperSelectFilterItem
                           name="status"
                           label="Status"
@@ -70,7 +70,10 @@ const Applicants = createWithRemoteLoader({
                           showSelectedTag={false}
                           options={[
                             { label: 'Not started', value: 0 },
-                            { label: 'In progress', value: 1 },
+                            {
+                              label: 'In progress',
+                              value: 1
+                            },
                             { label: 'Completed', value: 2 }
                           ]}
                         />
@@ -159,6 +162,48 @@ const Applicants = createWithRemoteLoader({
                               title: 'Chat History',
                               footer: null,
                               children: <MessageList list={item.messages} startTime={item.start_time} />
+                            });
+                          }}
+                        >
+                          Check
+                        </Button>
+                      )
+                    );
+                  }
+                },
+                {
+                  name: 'result',
+                  title: 'Chat Result',
+                  getValueOf: item => {
+                    return (
+                      item.status === 2 && (
+                        <Button
+                          type="link"
+                          className="btn-no-padding"
+                          onClick={() => {
+                            modal({
+                              title: 'Chat History',
+                              size: 'small',
+                              footer: null,
+                              children: (
+                                <CentralContent
+                                  col={1}
+                                  columns={[
+                                    {
+                                      name: 'result',
+                                      title: 'Result'
+                                    },
+                                    {
+                                      name: 'description',
+                                      title: 'Description'
+                                    }
+                                  ]}
+                                  dataSource={{
+                                    result: get(item, 'intent_summary.user_intent_by_llm'),
+                                    description: get(item, 'intent_summary.summary_by_llm')
+                                  }}
+                                />
+                              )
                             });
                           }}
                         >
@@ -271,8 +316,7 @@ const Applicants = createWithRemoteLoader({
                           {
                             type: 'link',
                             danger: true,
-                            children: 'Rejected',
-                            //message: 'Sure reject?',
+                            children: 'Rejected', //message: 'Sure reject?',
                             onClick: async () => {
                               const { data: resData } = await ajax(
                                 Object.assign({}, apis.agent.job.rejected, {
