@@ -1,5 +1,5 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Flex, Input, App } from 'antd';
+import { Flex, Input, App, Row, Col, Splitter, Empty } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
@@ -12,19 +12,45 @@ import style from './style.module.scss';
 import get from 'lodash/get';
 import CheckList from './CheckList';
 import Countdown from './Countdown';
+import markdown from 'markdown-it';
+
+const md = markdown();
+
+const transformHTML = html => {
+  const dom = document.createElement('div');
+  dom.innerHTML = html;
+  const links = dom.querySelectorAll('a');
+  [].slice.call(links, 0).map(link => {
+    if (/\.(mp4|webm|ogv)$/i.test(link.href)) {
+      const video = document.createElement('video');
+      video.setAttribute('src', link.href);
+      video.setAttribute('autoplay', '');
+      link.replaceWith(video);
+    }
+    if (/\.(jpg|jpeg|png|gif|bmp|tiff|webp)$/i.test(link.href)) {
+      const img = document.createElement('img');
+      img.setAttribute('src', link.href);
+      link.replaceWith(img);
+    }
+  });
+
+  return dom.innerHTML;
+};
 
 const ChartBotMessage = createWithRemoteLoader({
   modules: ['components-core:LoadingButton', 'components-core:Global@usePreset', 'components-core:Common@SimpleBar', 'components-core:Image']
-})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd }) => {
+})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd, openSide }) => {
   const [LoadingButton, usePreset, SimpleBar, Image] = remoteModules;
   const [loading, setLoading] = useState(true);
   const [evening, setEvening] = useState(false);
   const [list, setList] = useState(messageList || []);
+  const [sideMessage, setSideMessage] = useState('');
   const { ajax } = usePreset();
   const { message } = App.useApp();
   const [currentMessage, setCurrentMessage] = useState('');
   const [isComposing, setIsComposing] = useState(false);
   const messageListRef = useRef(null);
+  const [sizes, setSizes] = useState(['50%', '50%']);
   const inputTimer = useRef(null);
   const inputRef = useRef(null);
   const endHandler = useRefCallback(async () => {
@@ -91,6 +117,30 @@ const ChartBotMessage = createWithRemoteLoader({
     setEvening(false);
     inputRef.current && inputRef.current.focus();
   });
+
+  const getSideInfo = useRefCallback(async message => {
+    if (!openSide) {
+      return;
+    }
+    const { data: resData } = await ajax(
+      Object.assign({}, apis.getSideInfo, {
+        urlParams: { agent_id: agentId },
+        params: { user_content: message }
+      })
+    );
+
+    if (resData.code !== 0) {
+      return;
+    }
+    setSideMessage(resData.data.text);
+  });
+
+  useEffect(() => {
+    if (!sideMessage && messageList.length > 0) {
+      getSideInfo(last(messageList).user_content);
+    }
+  }, [messageList, sideMessage, getSideInfo]);
+
   useEffect(() => {
     if (list.length === 0) {
       sendMessage({ value: '' });
@@ -98,34 +148,9 @@ const ChartBotMessage = createWithRemoteLoader({
       setLoading(false);
     }
   }, [list, sendMessage]);
-  return (
-    <Flex vertical className={classnames(className, style['chat'])} gap={8}>
-      <div className={style['title']}>
-        <Flex className={style['title-inner']} justify="space-between" align="center">
-          <Flex gap={8} flex={1}>
-            <Flex flex={0}>
-              <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
-            </Flex>
-            <Flex flex={1} vertical justify="center">
-              <div className={style['title-content']}>{sessionName || 'Conversations'}</div>
-              {!isEnd && (
-                <div className={style['title-time']}>
-                  <Countdown time={lastTime} onComplete={endHandler} />
-                </div>
-              )}
-            </Flex>
-          </Flex>
-          <Flex>
-            {!isEnd ? (
-              <LoadingButton type="primary" shape="round" onClick={endHandler}>
-                End
-              </LoadingButton>
-            ) : (
-              <div className={style['over-tips']}>Session's over</div>
-            )}
-          </Flex>
-        </Flex>
-      </div>
+
+  const botBody = (
+    <Flex vertical gap={8} className={style['bot-body']}>
       <SimpleBar
         className={classnames(style['message-list-outer'], 'message-list-scroller', {
           [style['is-end']]: isEnd
@@ -190,6 +215,7 @@ const ChartBotMessage = createWithRemoteLoader({
                         message.warning('The content sent cannot be empty');
                         return;
                       }
+                      getSideInfo(msg);
                       return sendMessage({ type: 'text', value: msg });
                     }
                   }}
@@ -212,6 +238,60 @@ const ChartBotMessage = createWithRemoteLoader({
             </div>
           )}
         </div>
+      )}
+    </Flex>
+  );
+
+  return (
+    <Flex vertical className={classnames(className, style['chat'])}>
+      <div className={style['title']}>
+        <Flex className={style['title-inner']} justify="space-between" align="center">
+          <Flex gap={8} flex={1}>
+            <Flex flex={0}>
+              <Image.Avatar src={agentAvatar || defaultAvatar} size={54} />
+            </Flex>
+            <Flex flex={1} vertical justify="center">
+              <div className={style['title-content']}>{sessionName || 'Conversations'}</div>
+              {!isEnd && (
+                <div className={style['title-time']}>
+                  <Countdown time={lastTime} onComplete={endHandler} />
+                </div>
+              )}
+            </Flex>
+          </Flex>
+          <Flex>
+            {!isEnd ? (
+              <LoadingButton type="primary" shape="round" onClick={endHandler}>
+                End
+              </LoadingButton>
+            ) : (
+              <div className={style['over-tips']}>Session's over</div>
+            )}
+          </Flex>
+        </Flex>
+      </div>
+      {openSide ? (
+        <Splitter onResize={setSizes}>
+          <Splitter.Panel size={!sideMessage ? '0%' : sizes[0]}>
+            {sideMessage ? (
+              <SimpleBar className={style['side-content-outer']}>
+                <div
+                  className={style['side-content']}
+                  dangerouslySetInnerHTML={{
+                    __html: transformHTML(md.render(sideMessage))
+                  }}
+                ></div>
+              </SimpleBar>
+            ) : (
+              <Flex align="center" justify="center" style={{ height: '100%' }}>
+                <Empty />
+              </Flex>
+            )}
+          </Splitter.Panel>
+          <Splitter.Panel size={!sideMessage ? '100%' : sizes[1]}>{botBody}</Splitter.Panel>
+        </Splitter>
+      ) : (
+        botBody
       )}
     </Flex>
   );
@@ -240,10 +320,11 @@ const ChartBot = createWithRemoteLoader({
             onComplete={() => {
               reload();
             }}
+            openSide={data.agent.slave_agents && data.agent.slave_agents.length > 0 && document.documentElement.clientWidth >= 600}
             lastTime={data.countdown_time}
             isEnd={data.status === 2}
             messageList={data.messages}
-            agentId={data.agent_application.id}
+            agentId={data.agent.id}
             agentAvatar={get(data, 'agent_application.agent.avatar')}
           />
         );
