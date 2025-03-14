@@ -33,6 +33,7 @@
   background: #f6f6f6;
   border-radius: 12px;
   overflow: hidden;
+
   p,
   pre {
     margin: 0;
@@ -61,6 +62,7 @@
   padding: 20px 32px;
   background: #ffffff;
   min-height: 58px;
+  flex: 1;
 }
 
 .message-input-border {
@@ -104,7 +106,7 @@
 
 .message-list-outer {
   flex: none;
-  height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 87px - 46px - 16px - 100px);
+  height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 87px - 46px - 8px - 100px);
   overflow: auto;
 
   &.is-end {
@@ -145,4 +147,22 @@
 
 .over-tips {
   color: var(--font-color-grey);
+}
+
+.bot-body {
+  height: 100%;
+}
+
+.side-content {
+  padding: 32px;
+
+  video,
+  img {
+    max-width: 100%;
+  }
+}
+
+.side-content-outer {
+  height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 87px - 46px);
+  overflow: auto;
 }
