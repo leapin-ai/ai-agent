@@ -31,12 +31,15 @@ const transformHTML = html => {
       }
       video.setAttribute('controls', '');
       link.replaceWith(video);
+      return;
     }
     if (/\.(jpg|jpeg|png|gif|bmp|tiff|webp)$/i.test(link.href)) {
       const img = document.createElement('img');
       img.setAttribute('src', link.href);
       link.replaceWith(img);
+      return;
     }
+    link.setAttribute('target', '_blank');
   });
 
   return dom.innerHTML;
