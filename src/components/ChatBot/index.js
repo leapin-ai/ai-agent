@@ -1,6 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { Flex, Input, App, Row, Col, Splitter, Empty } from 'antd';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
 import last from 'lodash/last';
@@ -144,6 +144,10 @@ const ChartBotMessage = createWithRemoteLoader({
     }
     setSideMessage(resData.data.text);
   });
+
+  const sideMessageHTML = useMemo(() => {
+    return sideMessage ? transformHTML(md.render(sideMessage)) : '';
+  }, [sideMessage]);
 
   useEffect(() => {
     if (!sideMessage && messageList.length === 0) {
@@ -294,7 +298,7 @@ const ChartBotMessage = createWithRemoteLoader({
                 <div
                   className={style['side-content']}
                   dangerouslySetInnerHTML={{
-                    __html: transformHTML(md.render(sideMessage))
+                    __html: sideMessageHTML
                   }}
                 ></div>
               </SimpleBar>
