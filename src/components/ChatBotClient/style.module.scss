@@ -4,6 +4,9 @@
   :global(.message-list-scroller) {
     height: calc(100vh - 87px - 16px - 100px);
   }
+  :global(.side-content-outer) {
+    height: calc(100vh - 87px - 16px);
+  }
 }
 
 @media screen and (max-width: 600px) {
