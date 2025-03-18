@@ -20,15 +20,10 @@ const transformHTML = html => {
   const dom = document.createElement('div');
   dom.innerHTML = html;
   const links = dom.querySelectorAll('a');
-  let videoAutoplay = true;
   [].slice.call(links, 0).map(link => {
     if (/\.(mp4|webm|ogv)$/i.test(link.href)) {
       const video = document.createElement('video');
       video.setAttribute('src', link.href);
-      if (videoAutoplay) {
-        video.setAttribute('autoplay', '');
-        videoAutoplay = false;
-      }
       video.setAttribute('controls', '');
       link.replaceWith(video);
       return;
@@ -43,6 +38,21 @@ const transformHTML = html => {
   });
 
   return dom.innerHTML;
+};
+
+const SideMessage = ({ message }) => {
+  const ref = useRef(null);
+  const sideMessageHTML = useMemo(() => {
+    return message ? transformHTML(md.render(message)) : '';
+  }, [message]);
+
+  useEffect(() => {
+    ref.current.innerHTML = sideMessageHTML;
+    const video = ref.current.querySelector('video');
+    video && video.setAttribute('autoplay', '');
+  }, [sideMessageHTML]);
+
+  return <div ref={ref} className={style['side-content']} />;
 };
 
 const ChartBotMessage = createWithRemoteLoader({
@@ -147,10 +157,6 @@ const ChartBotMessage = createWithRemoteLoader({
     }
     setSideMessage(resData.data.text);
   });
-
-  const sideMessageHTML = useMemo(() => {
-    return sideMessage ? transformHTML(md.render(sideMessage)) : '';
-  }, [sideMessage]);
 
   useEffect(() => {
     if (!sideMessage && messageList.length === 0) {
@@ -299,12 +305,7 @@ const ChartBotMessage = createWithRemoteLoader({
             {!sideMessageLoading ? (
               sideMessage ? (
                 <SimpleBar className={classnames(style['side-content-outer'], 'side-content-outer')}>
-                  <div
-                    className={style['side-content']}
-                    dangerouslySetInnerHTML={{
-                      __html: sideMessageHTML
-                    }}
-                  ></div>
+                  <SideMessage message={sideMessage} />
                 </SimpleBar>
               ) : (
                 <Flex align="center" justify="center" style={{ height: '100%' }}>
