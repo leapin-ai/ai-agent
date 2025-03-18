@@ -20,11 +20,16 @@ const transformHTML = html => {
   const dom = document.createElement('div');
   dom.innerHTML = html;
   const links = dom.querySelectorAll('a');
+  let videoAutoplay = true;
   [].slice.call(links, 0).map(link => {
     if (/\.(mp4|webm|ogv)$/i.test(link.href)) {
       const video = document.createElement('video');
       video.setAttribute('src', link.href);
-      video.setAttribute('autoplay', '');
+      if (videoAutoplay) {
+        video.setAttribute('autoplay', '');
+        videoAutoplay = false;
+      }
+      video.setAttribute('controls', '');
       link.replaceWith(video);
     }
     if (/\.(jpg|jpeg|png|gif|bmp|tiff|webp)$/i.test(link.href)) {
