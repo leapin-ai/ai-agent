@@ -1,5 +1,5 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Flex, Input, App, Row, Col, Splitter, Empty } from 'antd';
+import { Flex, Input, App, Spin, Splitter, Empty } from 'antd';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
@@ -57,6 +57,7 @@ const ChartBotMessage = createWithRemoteLoader({
   const { message } = App.useApp();
   const [currentMessage, setCurrentMessage] = useState('');
   const [isComposing, setIsComposing] = useState(false);
+  const [sideMessageLoading, setSideMessageLoading] = useState(false);
   const messageListRef = useRef(null);
   const [sizes, setSizes] = useState(['50%', '50%']);
   const inputTimer = useRef(null);
@@ -132,12 +133,14 @@ const ChartBotMessage = createWithRemoteLoader({
     if (!openSide) {
       return;
     }
+    setSideMessageLoading(true);
     const { data: resData } = await ajax(
       Object.assign({}, apis.getSideInfo, {
         urlParams: { agent_id: agentId },
         params: { user_content: message, token }
       })
     );
+    setSideMessageLoading(false);
 
     if (resData.code !== 0) {
       return;
@@ -292,23 +295,29 @@ const ChartBotMessage = createWithRemoteLoader({
       </div>
       {openSide ? (
         <Splitter onResize={setSizes}>
-          <Splitter.Panel size={!sideMessage ? '0%' : sizes[0]}>
-            {sideMessage ? (
-              <SimpleBar className={classnames(style['side-content-outer'], 'side-content-outer')}>
-                <div
-                  className={style['side-content']}
-                  dangerouslySetInnerHTML={{
-                    __html: sideMessageHTML
-                  }}
-                ></div>
-              </SimpleBar>
+          <Splitter.Panel size={!sideMessage && !sideMessageLoading ? '0%' : sizes[0]}>
+            {!sideMessageLoading ? (
+              sideMessage ? (
+                <SimpleBar className={classnames(style['side-content-outer'], 'side-content-outer')}>
+                  <div
+                    className={style['side-content']}
+                    dangerouslySetInnerHTML={{
+                      __html: sideMessageHTML
+                    }}
+                  ></div>
+                </SimpleBar>
+              ) : (
+                <Flex align="center" justify="center" style={{ height: '100%' }}>
+                  <Empty />
+                </Flex>
+              )
             ) : (
               <Flex align="center" justify="center" style={{ height: '100%' }}>
-                <Empty />
+                <Spin />
               </Flex>
             )}
           </Splitter.Panel>
-          <Splitter.Panel size={!sideMessage ? '100%' : sizes[1]}>{botBody}</Splitter.Panel>
+          <Splitter.Panel size={!sideMessage && !sideMessageLoading ? '100%' : sizes[1]}>{botBody}</Splitter.Panel>
         </Splitter>
       ) : (
         botBody
