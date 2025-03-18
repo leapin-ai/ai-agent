@@ -138,8 +138,13 @@ const ChartBotMessage = createWithRemoteLoader({
   });
 
   useEffect(() => {
+    if (!sideMessage && messageList.length === 0) {
+      getSideInfo('greeting');
+      return;
+    }
     if (!sideMessage && messageList.length > 0) {
       getSideInfo(last(messageList).user_content);
+      return;
     }
   }, [messageList, sideMessage, getSideInfo]);
 
@@ -262,13 +267,14 @@ const ChartBotMessage = createWithRemoteLoader({
             </Flex>
           </Flex>
           <Flex>
-            {!isEnd ? (
-              <LoadingButton type="primary" shape="round" onClick={endHandler}>
-                End
-              </LoadingButton>
-            ) : (
-              <div className={style['over-tips']}>Session's over</div>
-            )}
+            {lastTime &&
+              (!isEnd ? (
+                <LoadingButton type="primary" shape="round" onClick={endHandler}>
+                  End
+                </LoadingButton>
+              ) : (
+                <div className={style['over-tips']}>Session's over</div>
+              ))}
           </Flex>
         </Flex>
       </div>
