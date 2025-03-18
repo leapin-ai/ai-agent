@@ -39,7 +39,7 @@ const transformHTML = html => {
 
 const ChartBotMessage = createWithRemoteLoader({
   modules: ['components-core:LoadingButton', 'components-core:Global@usePreset', 'components-core:Common@SimpleBar', 'components-core:Image']
-})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd, openSide }) => {
+})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd, openSide, token }) => {
   const [LoadingButton, usePreset, SimpleBar, Image] = remoteModules;
   const [loading, setLoading] = useState(true);
   const [evening, setEvening] = useState(false);
@@ -57,6 +57,7 @@ const ChartBotMessage = createWithRemoteLoader({
     const { data: resData } = await ajax(
       Object.assign({}, apis.saveSession, {
         urlParams: { session_id: sessionId },
+        params: { token },
         data: {
           status: 2
         }
@@ -79,6 +80,7 @@ const ChartBotMessage = createWithRemoteLoader({
     await ajax.sse(
       Object.assign({}, apis.sendSessionMessageStream, {
         urlParams: { session_id: sessionId },
+        params: { token },
         data:
           type === 'condition'
             ? {
@@ -125,7 +127,7 @@ const ChartBotMessage = createWithRemoteLoader({
     const { data: resData } = await ajax(
       Object.assign({}, apis.getSideInfo, {
         urlParams: { agent_id: agentId },
-        params: { user_content: message }
+        params: { user_content: message, token }
       })
     );
 
@@ -252,7 +254,7 @@ const ChartBotMessage = createWithRemoteLoader({
             </Flex>
             <Flex flex={1} vertical justify="center">
               <div className={style['title-content']}>{sessionName || 'Conversations'}</div>
-              {!isEnd && (
+              {!isEnd && lastTime && (
                 <div className={style['title-time']}>
                   <Countdown time={lastTime} onComplete={endHandler} />
                 </div>
@@ -274,7 +276,7 @@ const ChartBotMessage = createWithRemoteLoader({
         <Splitter onResize={setSizes}>
           <Splitter.Panel size={!sideMessage ? '0%' : sizes[0]}>
             {sideMessage ? (
-              <SimpleBar className={style['side-content-outer']}>
+              <SimpleBar className={classnames(style['side-content-outer'], 'side-content-outer')}>
                 <div
                   className={style['side-content']}
                   dangerouslySetInnerHTML={{
@@ -299,18 +301,20 @@ const ChartBotMessage = createWithRemoteLoader({
 
 const ChartBot = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, className, apiName, id, baseUrl, onComplete }) => {
+})(({ remoteModules, className, apiName, id, baseUrl, token, onComplete }) => {
   const [usePreset] = remoteModules;
   const { apis } = usePreset();
   const currentApis = apis.agent[apiName];
   return (
     <Fetch
       {...Object.assign({}, currentApis.getSessionDetail, {
-        urlParams: { session_id: id }
+        urlParams: { session_id: id },
+        params: { token }
       })}
       render={({ data, reload }) => {
         return (
           <ChartBotMessage
+            token={token}
             className={className}
             apis={currentApis}
             sessionId={data.id}

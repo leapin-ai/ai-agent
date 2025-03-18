@@ -124,6 +124,10 @@ const getApis = options => {
       saveSession: {
         url: `${prefix}/agent/chatbot/session/{session_id}/update/`,
         method: 'PUT'
+      },
+      createChatBot: {
+        url: `${prefix}/agent/anonymous/code/`,
+        method: 'GET'
       }
     }
   };
