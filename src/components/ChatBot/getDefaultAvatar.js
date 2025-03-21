@@ -1,3 +1,5 @@
+import { getPublicPath } from '@kne/remote-loader';
+
 const key = 'default-avatar';
 const getDefaultAvatar = () => {
   let value = window.localStorage.getItem(key);
@@ -5,7 +7,7 @@ const getDefaultAvatar = () => {
     value = Math.floor(Math.random() * 20) + 1;
     window.localStorage.setItem(key, value);
   }
-  return `${window.PUBLIC_URL}/defaultAvatar/${value}.svg`;
+  return `${getPublicPath('leapin-ai-agent')}/defaultAvatar/${value}.svg`;
 };
 
 export default getDefaultAvatar;
