@@ -150,7 +150,6 @@
 }
 
 .bot-body {
-  height: 100%;
 }
 
 .side-content {
@@ -163,6 +162,6 @@
 }
 
 .side-content-outer {
-  height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 87px - 46px);
+  height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 46px);
   overflow: auto;
 }
