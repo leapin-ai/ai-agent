@@ -178,100 +178,7 @@ const ChartBotMessage = createWithRemoteLoader({
   }, [list, sendMessage]);
 
   const botBody = (
-    <Flex vertical gap={8} className={style['bot-body']}>
-      <SimpleBar
-        className={classnames(style['message-list-outer'], 'message-list-scroller', {
-          [style['is-end']]: isEnd
-        })}
-        scrollableNodeProps={{ ref: messageListRef }}
-      >
-        <MessageList
-          isEnd={isEnd}
-          agentAvatar={agentAvatar}
-          list={list}
-          startTime={startTime}
-          currentMessage={loading && currentMessage}
-          onResend={data => {
-            sendMessage({ type: data.type, value: data.user_content });
-          }}
-          onConditionChange={item => {
-            setCurrentMessage(item.label);
-            sendMessage({ type: 'condition', value: item });
-          }}
-        />
-      </SimpleBar>
-      {!isEnd && (
-        <div className={style['footer']}>
-          {get(last(list), 'type') === 'condition' ? (
-            <div className={style['message-input-checklist']}>
-              <CheckList
-                loading={loading}
-                options={last(list).options || []}
-                onChange={item => {
-                  setCurrentMessage(item.label);
-                  sendMessage({ type: 'condition', value: item });
-                }}
-              />
-            </div>
-          ) : (
-            <div className={style['message-input-border']}>
-              <Flex className={style['message-input-outer']}>
-                <Input.TextArea
-                  ref={inputRef}
-                  onCompositionStart={() => {
-                    setIsComposing(true);
-                    inputTimer.current && clearTimeout(inputTimer.current);
-                  }}
-                  onCompositionEnd={() => {
-                    inputTimer.current = setTimeout(() => {
-                      setIsComposing(false);
-                    }, 300);
-                  }}
-                  disabled={loading || evening}
-                  className={style['message-input']}
-                  autoSize={{ minRows: 1, maxRows: 6 }}
-                  placeholder="Ask Elsa..."
-                  value={currentMessage}
-                  onChange={e => {
-                    setCurrentMessage(e.target.value);
-                  }}
-                  onKeyUp={e => {
-                    if (e.key === 'Enter' && !isComposing) {
-                      const msg = currentMessage.trim();
-                      setCurrentMessage(msg);
-                      if (msg.length === 0) {
-                        message.warning('The content sent cannot be empty');
-                        return;
-                      }
-                      getSideInfo(msg);
-                      return sendMessage({ type: 'text', value: msg });
-                    }
-                  }}
-                />
-                <LoadingButton
-                  className={style['message-sender']}
-                  type="primary"
-                  loading={loading || evening}
-                  icon={<img src={enter} alt="enter" />}
-                  onClick={async () => {
-                    const msg = currentMessage.trim();
-                    if (msg.length === 0) {
-                      message.warning('The content sent cannot be empty');
-                      return;
-                    }
-                    return sendMessage({ type: 'text', value: msg.trim() });
-                  }}
-                />
-              </Flex>
-            </div>
-          )}
-        </div>
-      )}
-    </Flex>
-  );
-
-  return (
-    <Flex vertical className={classnames(className, style['chat'])}>
+    <>
       <div className={style['title']}>
         <Flex className={style['title-inner']} justify="space-between" align="center">
           <Flex gap={8} flex={1}>
@@ -299,6 +206,101 @@ const ChartBotMessage = createWithRemoteLoader({
           </Flex>
         </Flex>
       </div>
+      <Flex vertical gap={8} className={style['bot-body']}>
+        <SimpleBar
+          className={classnames(style['message-list-outer'], 'message-list-scroller', {
+            [style['is-end']]: isEnd
+          })}
+          scrollableNodeProps={{ ref: messageListRef }}
+        >
+          <MessageList
+            isEnd={isEnd}
+            agentAvatar={agentAvatar}
+            list={list}
+            startTime={startTime}
+            currentMessage={loading && currentMessage}
+            onResend={data => {
+              sendMessage({ type: data.type, value: data.user_content });
+            }}
+            onConditionChange={item => {
+              setCurrentMessage(item.label);
+              sendMessage({ type: 'condition', value: item });
+            }}
+          />
+        </SimpleBar>
+        {!isEnd && (
+          <div className={style['footer']}>
+            {get(last(list), 'type') === 'condition' ? (
+              <div className={style['message-input-checklist']}>
+                <CheckList
+                  loading={loading}
+                  options={last(list).options || []}
+                  onChange={item => {
+                    setCurrentMessage(item.label);
+                    sendMessage({ type: 'condition', value: item });
+                  }}
+                />
+              </div>
+            ) : (
+              <div className={style['message-input-border']}>
+                <Flex className={style['message-input-outer']}>
+                  <Input.TextArea
+                    ref={inputRef}
+                    onCompositionStart={() => {
+                      setIsComposing(true);
+                      inputTimer.current && clearTimeout(inputTimer.current);
+                    }}
+                    onCompositionEnd={() => {
+                      inputTimer.current = setTimeout(() => {
+                        setIsComposing(false);
+                      }, 300);
+                    }}
+                    disabled={loading || evening}
+                    className={style['message-input']}
+                    autoSize={{ minRows: 1, maxRows: 6 }}
+                    placeholder="Ask Elsa..."
+                    value={currentMessage}
+                    onChange={e => {
+                      setCurrentMessage(e.target.value);
+                    }}
+                    onKeyUp={e => {
+                      if (e.key === 'Enter' && !isComposing) {
+                        const msg = currentMessage.trim();
+                        setCurrentMessage(msg);
+                        if (msg.length === 0) {
+                          message.warning('The content sent cannot be empty');
+                          return;
+                        }
+                        getSideInfo(msg);
+                        return sendMessage({ type: 'text', value: msg });
+                      }
+                    }}
+                  />
+                  <LoadingButton
+                    className={style['message-sender']}
+                    type="primary"
+                    loading={loading || evening}
+                    icon={<img src={enter} alt="enter" />}
+                    onClick={async () => {
+                      const msg = currentMessage.trim();
+                      if (msg.length === 0) {
+                        message.warning('The content sent cannot be empty');
+                        return;
+                      }
+                      return sendMessage({ type: 'text', value: msg.trim() });
+                    }}
+                  />
+                </Flex>
+              </div>
+            )}
+          </div>
+        )}
+      </Flex>
+    </>
+  );
+
+  return (
+    <Flex vertical className={classnames(className, style['chat'])}>
       {openSide ? (
         <Splitter onResize={setSizes}>
           <Splitter.Panel size={!sideMessage && !sideMessageLoading ? '0%' : sizes[0]}>
