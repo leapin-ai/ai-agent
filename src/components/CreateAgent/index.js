@@ -25,7 +25,7 @@ export const CreateAgentFormInner = createWithRemoteLoader({
           displayAvatar={value => ({ src: value })}
           defaultAvatar={defaultAvatar}
           apis={{
-            ossUpload: async ({ file }) => {
+            upload: async ({ file }) => {
               return new Promise(resolve => {
                 const reader = new FileReader();
                 reader.onload = e => {
