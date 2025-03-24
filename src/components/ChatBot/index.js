@@ -201,7 +201,7 @@ const ChartBotMessage = createWithRemoteLoader({
                   End
                 </LoadingButton>
               ) : (
-                <div className={style['over-tips']}>Session's over</div>
+                <div className={style['over-tips']}>Conversation End</div>
               ))}
           </Flex>
         </Flex>
