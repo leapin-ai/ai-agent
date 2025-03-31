@@ -13,6 +13,7 @@ import get from 'lodash/get';
 import CheckList from './CheckList';
 import Countdown from './Countdown';
 import markdown from 'markdown-it';
+import sse from '@root/common/sse';
 
 const md = markdown();
 
@@ -96,43 +97,44 @@ const ChartBotMessage = createWithRemoteLoader({
     setLoading(true);
     setEvening(true);
     const prevMessageId = last(list.filter(({ event }) => event !== 'error'))?.id;
-    await ajax.sse(
-      Object.assign({}, apis.sendSessionMessageStream, {
-        urlParams: { session_id: sessionId },
-        params: { token },
-        data:
-          type === 'condition'
-            ? {
-                type,
-                user_selection: [value],
-                chat_message_id: prevMessageId
-              }
-            : {
-                type,
-                user_content: value,
-                chat_message_id: prevMessageId
-              },
-        eventEmit: data => {
-          setList(list => {
-            const newList = list.slice(0);
-            const index = newList.findIndex(({ id }) => id === data.id);
 
-            if (index === -1) {
-              newList.push(data);
-            } else {
-              newList.splice(
-                index,
-                1,
-                Object.assign({}, newList[index], data, {
-                  chatbot_content: (newList[index].chatbot_content || '') + (data.chatbot_content || '')
-                })
-              );
+    const sseOptions = Object.assign({}, apis.sendSessionMessageStream, {
+      urlParams: { session_id: sessionId },
+      params: { token },
+      data:
+        type === 'condition'
+          ? {
+              type,
+              user_selection: [value],
+              chat_message_id: prevMessageId
             }
-            return newList;
-          });
-        }
-      })
-    );
+          : {
+              type,
+              user_content: value,
+              chat_message_id: prevMessageId
+            },
+      eventEmit: data => {
+        setList(list => {
+          const newList = list.slice(0);
+          const index = newList.findIndex(({ id }) => id === data.id);
+
+          if (index === -1) {
+            newList.push(data);
+          } else {
+            newList.splice(
+              index,
+              1,
+              Object.assign({}, newList[index], data, {
+                chatbot_content: (newList[index].chatbot_content || '') + (data.chatbot_content || '')
+              })
+            );
+          }
+          return newList;
+        });
+      }
+    });
+    ajax.parseUrlParams(sseOptions);
+    await sse(sseOptions);
     setLoading(false);
     setCurrentMessage('');
     setEvening(false);
