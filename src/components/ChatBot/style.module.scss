@@ -158,11 +158,19 @@
 
   video,
   img {
-    max-width: 100%;
+    width: 100%;
+    border-radius: 8px;
   }
 }
 
 .side-content-outer {
   height: calc(100vh - 2 * var(--padding-width) - var(--nav-height) - 46px);
   overflow: auto;
+}
+
+.job-card {
+  border-radius: 8px;
+  padding: 32px;
+  border: 1px solid #e6e8ea;
+  margin-bottom: 32px;
 }
