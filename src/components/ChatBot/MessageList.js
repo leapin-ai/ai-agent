@@ -6,14 +6,30 @@ import classnames from 'classnames';
 import { ReloadOutlined } from '@ant-design/icons';
 import defaultAvatar from '../../common/defaultAvatar.png';
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import markdown from 'markdown-it/index.mjs';
 import CheckList from './CheckList';
 import last from 'lodash/last';
 import get from 'lodash/get';
+import MarkdownRender from '@kne/markdown-components-render';
 import { ReactComponent as LoadingIcon } from './loading.svg';
 import getDefaultAvatar from './getDefaultAvatar';
 
-const md = markdown();
+const MarkdownView = ({ children }) => {
+  return (
+    <MarkdownRender
+      htmlTransform={html => {
+        const dom = document.createElement('div');
+        dom.innerHTML = html;
+        const components = dom.querySelectorAll('img,video,.yaml-components');
+        [].slice.call(components, 0).forEach(component => {
+          component.parentNode.removeChild(component);
+        });
+        return dom.innerHTML;
+      }}
+    >
+      {children}
+    </MarkdownRender>
+  );
+};
 
 const MessageList = createWithRemoteLoader({
   modules: ['components-cre:Image', 'components-cre:LoadingButton']
@@ -33,7 +49,7 @@ const MessageList = createWithRemoteLoader({
                 <div
                   className={style['message-content']}
                   dangerouslySetInnerHTML={{
-                    __html: item.type === 'condition' ? get(item, 'current_selection[0].label') : md.render(item.user_content || '')
+                    __html: item.type === 'condition' ? get(item, 'current_selection[0].label') : item.user_content || ''
                   }}
                 />
                 <div className={style['message-black']} />
@@ -44,7 +60,7 @@ const MessageList = createWithRemoteLoader({
                 <Image.Avatar className={style['message-avatar']} src={agentAvatar || defaultAvatar} size={28} />
                 {item.type === 'condition' && item === last(list) ? (
                   <Flex vertical gap={8} className={style['message-content']}>
-                    <div dangerouslySetInnerHTML={{ __html: md.render(item.chatbot_content || item.content || '') }} />
+                    <MarkdownView>{item.chatbot_content || item.content || ''}</MarkdownView>
                     {!isEnd && (
                       <div>
                         <CheckList loading={currentMessage} options={item.options} onChange={onConditionChange} />
@@ -52,7 +68,9 @@ const MessageList = createWithRemoteLoader({
                     )}
                   </Flex>
                 ) : (
-                  <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: md.render(item.chatbot_content || item.content || '') }} />
+                  <div className={style['message-content']}>
+                    <MarkdownView>{item.chatbot_content || item.content || ''}</MarkdownView>
+                  </div>
                 )}
                 <div className={style['message-black']} />
               </Flex>
@@ -79,7 +97,12 @@ const MessageList = createWithRemoteLoader({
         <>
           <Flex className={classnames(style['message'], style['is-user'])} gap={12}>
             <Image.Avatar className={style['message-avatar']} src={getDefaultAvatar()} size={28} />
-            <div className={style['message-content']} dangerouslySetInnerHTML={{ __html: md.render(currentMessage || '') }} />
+            <div
+              className={style['message-content']}
+              dangerouslySetInnerHTML={{
+                __html: currentMessage
+              }}
+            />
             <div className={style['message-black']} />
           </Flex>
           <Flex className={style['message']} gap={12}>
