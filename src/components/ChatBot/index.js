@@ -67,16 +67,13 @@ const transformHTML = html => {
   return results.map(element => element.outerHTML);
 };
 
-const SideMessage = ({ messages, evening }) => {
+const SideMessage = ({ messages }) => {
   const ref = useRef(null);
   const contentRef = useRef({ output: '', index: -1 });
   const [visibleFirst, setVisibleFirst] = useState(false);
   const content = useMemo(() => {
-    if (evening) {
-      return '';
-    }
     return get(last(messages), 'chatbot_content') || '';
-  }, [messages, evening]);
+  }, [messages]);
 
   const render = (content, index) => {
     return (
