@@ -1,5 +1,5 @@
-import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Flex, Input, App, Spin, Splitter, Button, Card } from 'antd';
+import { createWithRemoteLoader, getPublicPath } from '@kne/remote-loader';
+import { Flex, Input, App, Spin, Splitter, Button, Card, Typography } from 'antd';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
@@ -67,16 +67,13 @@ const transformHTML = html => {
   return results.map(element => element.outerHTML);
 };
 
-const SideMessage = ({ messages, evening }) => {
+const SideMessage = ({ messages }) => {
   const ref = useRef(null);
   const contentRef = useRef({ output: '', index: -1 });
   const [visibleFirst, setVisibleFirst] = useState(false);
   const content = useMemo(() => {
-    if (evening) {
-      return '';
-    }
     return get(last(messages), 'chatbot_content') || '';
-  }, [messages, evening]);
+  }, [messages]);
 
   const render = (content, index) => {
     return (
@@ -331,6 +328,9 @@ const ChartBotMessage = createWithRemoteLoader({
                 </Flex>
               </div>
             )}
+            <Typography.Link className={style['term']} target="_blank" href={`${getPublicPath('leapin-ai-agent')}/terms.html`}>
+              Privacy and terms
+            </Typography.Link>
           </div>
         )}
       </Flex>
