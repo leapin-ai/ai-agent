@@ -60,10 +60,11 @@
 .footer {
   box-shadow: 0 0 20px 0 #0000000d;
   border-top: 1px solid #dddddd;
-  padding: 20px 32px;
+  padding: 10px 32px 30px;
   background: #ffffff;
   min-height: 58px;
   flex: 1;
+  position: relative;
 }
 
 .message-input-border {
@@ -173,4 +174,13 @@
   padding: 32px;
   border: 1px solid #e6e8ea;
   margin-bottom: 32px;
+}
+
+.term {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--font-color-grey-2) !important;
 }
