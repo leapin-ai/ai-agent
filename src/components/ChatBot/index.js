@@ -7,6 +7,7 @@ import last from 'lodash/last';
 import first from 'lodash/first';
 import MessageList from './MessageList';
 import useRefCallback from '@kne/use-ref-callback';
+import { AudioFilled } from '@ant-design/icons';
 import defaultAvatar from '../../common/defaultAvatar.png';
 import enter from './enter.png';
 import style from './style.module.scss';
@@ -17,6 +18,7 @@ import MarkdownRender from '@kne/markdown-components-render';
 import sse from '@root/common/sse';
 import localStorage from '@kne/local-storage';
 import QueueAnim from 'rc-queue-anim';
+import Record from './Record';
 
 const JobCard = createWithRemoteLoader({
   modules: ['components-core:InfoPage']
@@ -153,6 +155,7 @@ const ChartBotMessage = createWithRemoteLoader({
     message.success('Success');
     onComplete && onComplete();
   });
+  const [isRecord, setIsRecord] = useState(false);
 
   useEffect(() => {
     messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
@@ -278,55 +281,81 @@ const ChartBotMessage = createWithRemoteLoader({
                 />
               </div>
             ) : (
-              <div className={style['message-input-border']}>
-                <Flex className={style['message-input-outer']}>
-                  <Input.TextArea
-                    ref={inputRef}
-                    onCompositionStart={() => {
-                      setIsComposing(true);
-                      inputTimer.current && clearTimeout(inputTimer.current);
+              <>
+                {isRecord ? (
+                  <Record
+                    agentId={agentId}
+                    onChange={msg => {
+                      setCurrentMessage(msg);
                     }}
-                    onCompositionEnd={() => {
-                      inputTimer.current = setTimeout(() => {
-                        setIsComposing(false);
-                      }, 0);
-                    }}
-                    disabled={loading || evening}
-                    className={style['message-input']}
-                    autoSize={{ minRows: 1, maxRows: 6 }}
-                    placeholder="Ask Elsa..."
-                    value={currentMessage}
-                    onChange={e => {
-                      setCurrentMessage(e.target.value);
-                    }}
-                    onKeyUp={e => {
-                      if (e.key === 'Enter' && !isComposing) {
-                        const msg = currentMessage.trim();
-                        setCurrentMessage(msg);
-                        if (msg.length === 0) {
-                          message.warning('The content sent cannot be empty');
-                          return;
-                        }
+                    onComplete={msg => {
+                      setIsRecord(false);
+                      if (msg) {
                         return sendMessage({ type: 'text', value: msg });
                       }
                     }}
                   />
-                  <LoadingButton
-                    className={style['message-sender']}
-                    type="primary"
-                    loading={loading || evening}
-                    icon={<img src={enter} alt="enter" />}
-                    onClick={async () => {
-                      const msg = currentMessage.trim();
-                      if (msg.length === 0) {
-                        message.warning('The content sent cannot be empty');
-                        return;
-                      }
-                      return sendMessage({ type: 'text', value: msg.trim() });
-                    }}
-                  />
-                </Flex>
-              </div>
+                ) : (
+                  <div className={style['message-input-border']}>
+                    <Flex className={style['message-input-outer']} align="center">
+                      <Input.TextArea
+                        ref={inputRef}
+                        onCompositionStart={() => {
+                          setIsComposing(true);
+                          inputTimer.current && clearTimeout(inputTimer.current);
+                        }}
+                        onCompositionEnd={() => {
+                          inputTimer.current = setTimeout(() => {
+                            setIsComposing(false);
+                          }, 0);
+                        }}
+                        disabled={loading || evening}
+                        className={style['message-input']}
+                        autoSize={{ minRows: 1, maxRows: 6 }}
+                        placeholder="Ask Elsa..."
+                        value={currentMessage}
+                        onChange={e => {
+                          setCurrentMessage(e.target.value);
+                        }}
+                        onKeyUp={e => {
+                          if (e.key === 'Enter' && !isComposing) {
+                            const msg = currentMessage.trim();
+                            setCurrentMessage(msg);
+                            if (msg.length === 0) {
+                              message.warning('The content sent cannot be empty');
+                              return;
+                            }
+                            return sendMessage({ type: 'text', value: msg });
+                          }
+                        }}
+                      />
+                      <Button
+                        size="small"
+                        icon={<AudioFilled />}
+                        shape="circle"
+                        type="link"
+                        onClick={() => {
+                          setIsRecord(true);
+                        }}
+                      />
+                      <LoadingButton
+                        className={style['message-sender']}
+                        type="primary"
+                        loading={loading || evening}
+                        icon={<img src={enter} alt="enter" />}
+                        onClick={async () => {
+                          const msg = currentMessage.trim();
+                          if (msg.length === 0) {
+                            message.warning('The content sent cannot be empty');
+                            return;
+                          }
+                          return sendMessage({ type: 'text', value: msg.trim() });
+                        }}
+                      />
+                    </Flex>
+                  </div>
+                )}
+              </>
             )}
             <Typography.Link className={style['term']} target="_blank" href={`${getPublicPath('leapin-ai-agent')}/terms.html`}>
               Privacy and terms
