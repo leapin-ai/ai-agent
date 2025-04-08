@@ -128,6 +128,9 @@ const getApis = options => {
       createChatBot: {
         url: `${prefix}/agent/anonymous/code/`,
         method: 'GET'
+      },
+      getSpeechToken: {
+        url: `${prefix}/agent/{agent_id}/asr/ali/token/`
       }
     }
   };
