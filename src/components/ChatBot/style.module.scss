@@ -93,6 +93,11 @@
   border-radius: 50%;
   color: #ffffff !important;
   background: var(--primary-color) !important;
+  flex: none;
+
+  &:global(.ant-btn-icon-only) {
+    font-size: 14px !important;
+  }
 
   img {
     width: 12px;
