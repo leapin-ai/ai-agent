@@ -51,7 +51,7 @@ const UploadCandidateExcel = createWithRemoteLoader({
       </Upload.Field>
       <div>
         Download template:
-        <Download type="link" filename="CandidateTemplate.xlsx" src={getPublicPath('leapin-ai-agent') + '/CandidateTemplate.xlsx'}>
+        <Download type="link" filename="CandidateTemplate.xlsx" src={window.PUBLIC_URL + '/CandidateTemplate.xlsx'}>
           Candidate template
         </Download>
       </div>
