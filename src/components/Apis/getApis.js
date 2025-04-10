@@ -73,6 +73,10 @@ const getApis = options => {
         url: `${prefix}/agent/saas/session/{session_id}/stream_message/send/`,
         method: 'POST'
       },
+      getSideInfo: {
+        url: `${prefix}/api/agent/{agent_id}/message/intent_identification/`,
+        method: 'GET'
+      },
       saveSession: {
         url: `${prefix}/agent/saas/session/{session_id}/update/`,
         method: 'PUT'
@@ -113,9 +117,20 @@ const getApis = options => {
         url: `${prefix}/agent/chatbot/session/{session_id}/stream_message/send/`,
         method: 'POST'
       },
+      getSideInfo: {
+        url: `${prefix}/api/agent/{agent_id}/message/intent_identification/`,
+        method: 'GET'
+      },
       saveSession: {
         url: `${prefix}/agent/chatbot/session/{session_id}/update/`,
         method: 'PUT'
+      },
+      createChatBot: {
+        url: `${prefix}/agent/anonymous/code/`,
+        method: 'GET'
+      },
+      getSpeechToken: {
+        url: `${prefix}/agent/{agent_id}/asr/ali/token/`
       }
     }
   };

@@ -9,9 +9,9 @@ import { MessageList } from '@components/ChatBot';
 import style from './style.module.scss';
 
 const ChartHistory = createWithRemoteLoader({
-  modules: ['components-core:InfoPage@TableView', 'components-core:Global@usePreset', 'components-core:Common@SearchInput', 'components-core:Modal@useModal', 'components-core:StateTag']
+  modules: ['components-core:InfoPage@TableView', 'components-core:InfoPage@CentralContent', 'components-core:Global@usePreset', 'components-core:Common@SearchInput', 'components-core:Modal@useModal', 'components-core:StateTag']
 })(({ remoteModules, baseUrl }) => {
-  const [TableView, usePreset, SearchInput, useModal, StateTag] = remoteModules;
+  const [TableView, CentralContent, usePreset, SearchInput, useModal, StateTag] = remoteModules;
   const { apis } = usePreset();
   const [keyword, setKeyword] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
@@ -122,6 +122,48 @@ const ChartHistory = createWithRemoteLoader({
                         >
                           Check
                         </Button>
+                      );
+                    }
+                  },
+                  {
+                    name: 'result',
+                    title: 'Chat Result',
+                    getValueOf: item => {
+                      return (
+                        item.status === 2 && (
+                          <Button
+                            type="link"
+                            className="btn-no-padding"
+                            onClick={() => {
+                              modal({
+                                title: 'Chat History',
+                                size: 'small',
+                                footer: null,
+                                children: (
+                                  <CentralContent
+                                    col={1}
+                                    columns={[
+                                      {
+                                        name: 'result',
+                                        title: 'Result'
+                                      },
+                                      {
+                                        name: 'description',
+                                        title: 'Description'
+                                      }
+                                    ]}
+                                    dataSource={{
+                                      result: get(item, 'intent_summary.user_intent_by_llm'),
+                                      description: get(item, 'intent_summary.summary_by_llm')
+                                    }}
+                                  />
+                                )
+                              });
+                            }}
+                          >
+                            Check
+                          </Button>
+                        )
                       );
                     }
                   },

@@ -5,7 +5,10 @@ module.exports = function (app) {
     '/api',
     createProxyMiddleware({
       target: 'https://staging.app.leapin-ai.com',
-      changeOrigin: true
+      changeOrigin: true,
+      onProxyRes: (proxyRes, req, res) => {
+        proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+      }
     })
   );
 };

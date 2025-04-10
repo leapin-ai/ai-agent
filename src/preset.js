@@ -93,42 +93,7 @@ export const globalInit = async () => {
       return axios.postForm(`${url}${queryString ? '?' + queryString : ''}`, data, Object.assign({}, { headers: defaultHeaders() }, options));
     };
 
-    ajax.sse = config => {
-      parseUrlParams(config);
-      const { url, params, urlParams, data, method, eventEmit, ...options } = config;
-      const queryString = qs.stringify(
-        transform(
-          Object.assign({}, params, data, {
-            token: cookie.get('token')
-          }),
-          (result, value, key) => {
-            if (value !== void 0) {
-              result[key] = value;
-            }
-          },
-          {}
-        )
-      );
-
-      return new Promise(resolve => {
-        const eventSource = new EventSource(`${url}${queryString ? '?' + queryString : ''}`);
-        const result = [];
-        eventSource.onmessage = event => {
-          // 处理服务器推送的消息
-          const data = JSON.parse(event.data);
-          result.push(data);
-          eventEmit && eventEmit(data, result);
-          if (['error', 'message_end'].indexOf(data.event) > -1) {
-            eventSource.close();
-            resolve(result);
-          }
-        };
-        eventSource.onerror = error => {
-          eventSource.close();
-          resolve(result);
-        };
-      });
-    };
+    ajax.parseUrlParams = parseUrlParams;
 
     return ajax;
   })();
@@ -168,7 +133,7 @@ export const globalInit = async () => {
     //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.3.2'
+    defaultVersion: '0.3.12'
   };
   remoteLoaderPreset({
     remotes: {
@@ -188,9 +153,9 @@ export const globalInit = async () => {
               defaultVersion: process.env.DEFAULT_VERSION
             }
           : {
-              ...registry,
               remote: 'leapin-ai-agent',
-              defaultVersion: process.env.DEFAULT_VERSION
+              url: 'https://app.ap.leapin-ai.com',
+              tpl: '{{url}}/ai-agent'
             }
     }
   });
@@ -217,14 +182,14 @@ export const globalInit = async () => {
           //pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
-                                                                          data: {
-                                                                            code: 0,
-                                                                            data: {
-                                                                              src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                                                                              filename: file.name
-                                                                            }
-                                                                          }
-                                                                        };*/
+                                                                                      data: {
+                                                                                        code: 0,
+                                                                                        data: {
+                                                                                          src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                                                                                          filename: file.name
+                                                                                        }
+                                                                                      }
+                                                                                    };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},
