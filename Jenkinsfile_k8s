@@ -4,6 +4,8 @@ standardK8sPipeline {
     projectName = "leapin-ai-agent-web"
     isMultiBranch = true
     imageRepo = "leapin-ai-agent-web"
-    deployBranch = ['master', 'main', "k8s-jenkins"]
-    deployBranchEnvMap = ['master': 'prod', 'main': 'prod', 'k8s-jenkins': 'prod']
+    deployBranch = ['master', 'main']
+    deployBranchEnvMap = ['master': 'prod', 'main': 'prod']
+    deployBranchCn = ['develop']
+    deployBranchCnEnvMap = ['develop': 'staging']
 }
