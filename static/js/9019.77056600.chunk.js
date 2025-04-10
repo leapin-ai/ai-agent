@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_kne_components_leapin_ai_agent=self.webpackChunk_kne_components_leapin_ai_agent||[]).push([[1400,9019],{81400:(e,n,t)=>{t.r(n),t.d(n,{default:()=>c});var u=t(73884);const c=function(e){let n=arguments.length>1&&void 0!==arguments[1]&&arguments[1];const t=(0,u.useRef)(e);return n||(t.current=e),(0,u.useCallback)((function(){return t.current&&t.current(...arguments)}),[])}}}]);
+//# sourceMappingURL=9019.77056600.chunk.js.map

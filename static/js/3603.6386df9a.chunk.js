@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunk_kne_components_leapin_ai_agent=self.webpackChunk_kne_components_leapin_ai_agent||[]).push([[3603],{3603:(e,t,n)=>{n.r(t),n.d(t,{default:()=>u});var a=n(5199),s=n(4679),i=n(579);const u=()=>{const e=(0,s.useNavigate)();return(0,i.jsx)(a.Result,{status:"404",title:"404",subTitle:"\u8bbf\u95ee\u7684\u9875\u9762\u4e0d\u5b58\u5728",extra:(0,i.jsx)(a.Button,{type:"primary",onClick:()=>{e("/ai-agent")},children:"\u8fd4\u56de\u9996\u9875"})})}}}]);
-//# sourceMappingURL=3603.6386df9a.chunk.js.map
