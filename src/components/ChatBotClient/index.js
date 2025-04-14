@@ -6,7 +6,7 @@ import style from './style.module.scss';
 
 const ChatBotClient = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, baseUrl, code, error }) => {
+})(({ remoteModules, baseUrl, code, error, getOpenApi }) => {
   const [usePreset] = remoteModules;
   const [searchParams] = useSearchParams();
   const { apis } = usePreset();
@@ -19,7 +19,7 @@ const ChatBotClient = createWithRemoteLoader({
       })}
       error={error || <Navigate to={`${baseUrl}/error`} />}
       render={({ data }) => {
-        return <ChatBot className={style['chat-bot']} id={data.session?.id} token={data.token} apiName="chatBotClient" />;
+        return <ChatBot className={style['chat-bot']} id={data.session?.id} token={data.token} getOpenApi={getOpenApi} apiName="chatBotClient" />;
       }}
     />
   );
