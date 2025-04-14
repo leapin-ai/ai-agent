@@ -1,6 +1,6 @@
 import { createWithRemoteLoader, getPublicPath } from '@kne/remote-loader';
 import { Flex, Input, App, Spin, Splitter, Button, Card, Typography } from 'antd';
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Fetch from '@kne/react-fetch';
 import classnames from 'classnames';
 import last from 'lodash/last';
