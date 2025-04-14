@@ -158,7 +158,7 @@ const ChartBotMessage = createWithRemoteLoader({
   const [isRecord, setIsRecord] = useState(false);
 
   const setOpenApi = useRefCallback(() => {
-    getOpenApi({
+    getOpenApi && getOpenApi({
       end: endHandler,
       sessionId
     });
