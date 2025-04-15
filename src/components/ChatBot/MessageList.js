@@ -38,7 +38,7 @@ const MessageList = createWithRemoteLoader({
   return (
     <Flex className={classnames(style['message-list'], 'message-list')} vertical gap={20}>
       <Flex justify="center" className={style['message-time']}>
-        {dayjs(startTime).format('YYYY-MM-DD HH:mm:ss')}
+        {(startTime ? dayjs(startTime) : dayjs()).format('YYYY-MM-DD HH:mm:ss')}
       </Flex>
       {list.map((item, index) => {
         return (
