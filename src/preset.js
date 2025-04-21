@@ -4,8 +4,6 @@ import { Spin, Empty, message } from 'antd';
 import axios from 'axios';
 import { preset as remoteLoaderPreset } from '@kne/remote-loader';
 import omit from 'lodash/omit';
-import transform from 'lodash/transform';
-import qs from 'qs';
 import cookie from 'js-cookie';
 import ensureSlash from '@kne/ensure-slash';
 import md5 from 'md5';
