@@ -57,12 +57,12 @@ const Applicants = createWithRemoteLoader({
                     list={[
                       [
                         /*<SuperSelectFilterItem name="status" label="State" single
-                                                                                                           options={list.map((item) => {
-                                                                                                               return {
-                                                                                                                   value: item.value,
-                                                                                                                   label: item.description
-                                                                                                               };
-                                                                                                           })}/>*/
+                                                                                                                                   options={list.map((item) => {
+                                                                                                                                       return {
+                                                                                                                                           value: item.value,
+                                                                                                                                           label: item.description
+                                                                                                                                       };
+                                                                                                                                   })}/>*/
                         <SuperSelectFilterItem
                           name="status"
                           label="Status"
@@ -234,6 +234,13 @@ const Applicants = createWithRemoteLoader({
                             type: 'link',
                             children: 'Resend invitation',
                             onClick: () => {
+                              const getRegExp = code => new RegExp(`^(?:\\+${code}\\s*|${code}\\s*)`);
+                              const countryCode = (get(item, 'application.mobile_country_code') || '').replace(/^\+/, '');
+                              let phone = get(item, 'application.mobile') || '';
+                              if (countryCode) {
+                                phone = `+${countryCode} ` + phone.replace(getRegExp(countryCode), '');
+                              }
+
                               formModal({
                                 title: 'Resend invitation',
                                 autoClose: true,
@@ -243,7 +250,7 @@ const Applicants = createWithRemoteLoader({
                                   data: {
                                     name: get(item, 'application.name'),
                                     email: get(item, 'application.email'),
-                                    phone: `${get(item, 'application.mobile_country_code') || ''} ${get(item, 'application.mobile')}`
+                                    phone
                                   },
                                   onSubmit: async data => {
                                     const phoneProps = (() => {

@@ -126,7 +126,7 @@ const SideMessage = ({ messages }) => {
 
 const ChartBotMessage = createWithRemoteLoader({
   modules: ['components-core:LoadingButton', 'components-core:Global@usePreset', 'components-core:Common@SimpleBar', 'components-core:Image']
-})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd, openSide, token }) => {
+})(({ remoteModules, messageList, agentId, agentAvatar, sessionId, sessionName, startTime, lastTime, apis, onComplete, className, isEnd, openSide, token, getOpenApi }) => {
   const [LoadingButton, usePreset, SimpleBar, Image] = remoteModules;
   const [loading, setLoading] = useState(true);
   const [evening, setEvening] = useState(false);
@@ -152,10 +152,21 @@ const ChartBotMessage = createWithRemoteLoader({
     if (resData.code !== 0) {
       return;
     }
-    message.success('Success');
     onComplete && onComplete();
   });
   const [isRecord, setIsRecord] = useState(false);
+
+  const setOpenApi = useRefCallback(() => {
+    getOpenApi &&
+      getOpenApi({
+        end: endHandler,
+        sessionId
+      });
+  });
+
+  useEffect(() => {
+    setOpenApi();
+  }, []);
 
   useEffect(() => {
     messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
@@ -396,7 +407,7 @@ const ChartBotMessage = createWithRemoteLoader({
 
 const ChartBot = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, className, apiName, id, baseUrl, token, onComplete }) => {
+})(({ remoteModules, className, apiName, id, baseUrl, token, getOpenApi }) => {
   const [usePreset] = remoteModules;
   const { apis } = usePreset();
   const currentApis = apis.agent[apiName];
@@ -424,6 +435,7 @@ const ChartBot = createWithRemoteLoader({
             isEnd={data.status === 2}
             messageList={data.messages}
             agentId={data.agent.id}
+            getOpenApi={getOpenApi}
             agentAvatar={get(data, 'agent_application.agent.avatar')}
           />
         );
