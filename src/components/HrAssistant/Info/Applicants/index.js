@@ -235,7 +235,7 @@ const Applicants = createWithRemoteLoader({
                             children: 'Resend invitation',
                             onClick: () => {
                               const getRegExp = code => new RegExp(`^(?:\\+${code}\\s*|${code}\\s*)`);
-                              const countryCode = (get(item, 'application.mobile_country_code') || '').replace('^\+', '');
+                              const countryCode = (get(item, 'application.mobile_country_code') || '').replace(/^+/, '');
                               let phone = get(item, 'application.mobile') || '';
                               if (countryCode) {
                                 phone = `+${countryCode} ` + phone.replace(getRegExp(countryCode), '');
