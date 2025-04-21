@@ -243,7 +243,7 @@ const Applicants = createWithRemoteLoader({
                                   data: {
                                     name: get(item, 'application.name'),
                                     email: get(item, 'application.email'),
-                                    phone: `${get(item, 'application.mobile_country_code') || ''} ${get(item, 'application.mobile')}`
+                                    phone: `+${get(item, 'application.mobile_country_code') || ''} ${get(item, 'application.mobile')}`
                                   },
                                   onSubmit: async data => {
                                     const phoneProps = (() => {
