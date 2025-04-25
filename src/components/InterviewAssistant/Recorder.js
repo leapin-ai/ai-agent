@@ -4,6 +4,7 @@ import { Spin, App } from 'antd';
 import React, { forwardRef, useState, useEffect, useRef, useImperativeHandle } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import useRefCallback from '@kne/use-ref-callback';
+import voiceData from './voice.json';
 
 const Recorder = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
@@ -49,7 +50,7 @@ const Recorder = createWithRemoteLoader({
     };
   }, [processHandler, completeHandler, message]);
 
-  return recording ? <DotLottieReact className={className} src={`${getPublicPath('leapin-ai-agent') + '/voice.json'}`} loop autoplay /> : <Spin />;
+  return recording ? <DotLottieReact className={className} data={voiceData} loop autoplay /> : <Spin />;
 });
 
 export default Recorder;
