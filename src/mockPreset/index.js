@@ -1,6 +1,8 @@
 import applicationDetail from './application-detail.json';
+import interviewReport from './interview-report.json';
+import resumeData from './resume-data.json';
 
-export { applicationDetail };
+export { applicationDetail, interviewReport, resumeData };
 
 const preset = {
   apis: {

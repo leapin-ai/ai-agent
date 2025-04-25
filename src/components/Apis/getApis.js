@@ -80,6 +80,10 @@ const getApis = options => {
       saveSession: {
         url: `${prefix}/agent/saas/session/{session_id}/update/`,
         method: 'PUT'
+      },
+      rtasrSign: {
+        url: `${prefix}/agent/saas/{agent_id}/rtasr/iflytek/sign/`,
+        method: 'GET'
       }
     },
     job: {
@@ -97,6 +101,10 @@ const getApis = options => {
       },
       rejected: {
         url: `${prefix}/candidate/candidate/applications/change_status/`,
+        method: 'POST'
+      },
+      resumeParse: {
+        url: `${prefix}/resume/parser_resume/`,
         method: 'POST'
       }
     },
