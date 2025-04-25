@@ -1,0 +1,10 @@
+.outer {
+  background: var(--bg-color-grey-1);
+  padding: 100px;
+
+  .score {
+    font-size: 16px;
+    color: #6d40a8;
+    font-weight: bold;
+  }
+}
