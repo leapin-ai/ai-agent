@@ -1,30 +1,23 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Splitter, Flex, Space } from 'antd';
-import localStorage from '@kne/local-storage';
-import style from './style.module.scss';
+import { Flex, Badge } from 'antd';
 import { useState } from 'react';
-import { Timer } from '@kne/count-down';
 import get from 'lodash/get';
 import Fetch from '@kne/react-fetch';
 import Recorder from './Recorder';
-import Message from './Message';
-import classnames from 'classnames';
-import QueueAnim from 'rc-queue-anim';
-import { ReactComponent as TipsIcon } from './tips.svg';
 import useRefCallback from '@kne/use-ref-callback';
 import { useNavigate } from 'react-router-dom';
-
-const LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES = 'LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES';
+import Interview from './Interview';
+import Message from './Message';
+import last from 'lodash/last';
 
 const InterviewAssistantContent = createWithRemoteLoader({
-  modules: ['components-core:Global@usePreset', 'components-core:StateBar', 'components-core:LoadingButton', 'components-core:FilePreview', 'components-ckeditor:Editor.Content', 'components-core:Common@SimpleBar']
-})(({ remoteModules, baseUrl, sessionId, agentId, apis, token, data }) => {
-  const [usePreset, StateBar, LoadingButton, FilePreview, EditorContent, SimpleBar] = remoteModules;
-  const [contentTab, setContentTab] = useState('resume');
-  const [start, setStart] = useState(false);
-  const [sizes, setSizes] = useState(localStorage.getItem(LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES) || ['50%', '50%']);
+  modules: ['components-core:Global@usePreset']
+})(({ remoteModules, baseUrl, sessionId, agentId, apis, token, data, operation, reload, setData, messageList }) => {
+  const [usePreset] = remoteModules;
   const { ajax } = usePreset();
   const navigate = useNavigate();
+  const [stage, setStage] = useState(null);
+
   const endHandler = useRefCallback(async () => {
     const { data: resData } = await ajax(
       Object.assign({}, apis.saveSession, {
@@ -42,110 +35,143 @@ const InterviewAssistantContent = createWithRemoteLoader({
   });
 
   return (
-    <Splitter
-      className={style['container']}
-      onResize={sizes => {
-        localStorage.setItem(LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES, sizes);
-        setSizes(sizes);
+    <Message
+      sessionId={sessionId}
+      apis={apis}
+      token={token}
+      list={messageList}
+      onMessage={outputData => {
+        if (outputData?.user_content?.action === 'stage') {
+          setStage(
+            Object.assign({}, get(outputData, 'chatbot_content.data'), {
+              success: !!get(outputData, 'chatbot_content.data'),
+              advice: (get(outputData, 'chatbot_content.data.advice') || []).map((item, index) => {
+                return Object.assign({}, item, {
+                  id: `${outputData.id}-${index}`
+                });
+              })
+            })
+          );
+          return;
+        }
+        const advice = get(outputData, 'chatbot_content.data.advice');
+        if (advice && advice.length > 0) {
+          setStage(stage => {
+            return Object.assign({}, stage, {
+              advice: (advice || []).map((item, index) => {
+                return Object.assign({}, item, {
+                  id: `${outputData.id}-${index}`
+                });
+              })
+            });
+          });
+          return;
+        }
       }}
     >
-      <Splitter.Panel size={sizes[0]}>
-        <StateBar
-          activeKey={contentTab}
-          onChange={setContentTab}
-          stateOption={[
-            { tab: 'Resume', key: 'resume' },
-            { tab: 'JD', key: 'jd' }
-          ]}
-        />
-        <SimpleBar className={style['scroller']}>
-          {contentTab === 'resume' && <FilePreview src={get(data, 'resume.src')} />}
-          {contentTab === 'jd' && <EditorContent>{get(data, 'jd')}</EditorContent>}
-        </SimpleBar>
-      </Splitter.Panel>
-      <Splitter.Panel size={sizes[1]}>
-        <Flex vertical gap={24} className={style['container-right']}>
-          <Flex justify="center" className={style['header']}>
-            {start ? (
-              <Flex justify="space-between" flex={1} align="center">
-                <div className={style['header-text']}>
-                  <Timer />
-                </div>
-                <LoadingButton
-                  type="primary"
-                  shape="round"
-                  onClick={async () => {
-                    setStart(false);
-                    await endHandler();
+      {({ start, sendMessage }) => {
+        return (
+          <Interview
+            resume={data.resume}
+            jd={data.jd}
+            list={data.stages}
+            jobTitle={data.jobTitle}
+            stage={stage}
+            operation={operation}
+            onOperation={async ({ action, target }) => {
+              const stageAction = [
+                ...(get(operation, 'stageAction') || []).filter(item => {
+                  return item.target.id !== target.id;
+                }),
+                {
+                  action,
+                  stage: stage.stage,
+                  target,
+                  time: new Date()
+                }
+              ];
+
+              const { data: resData } = await ajax(
+                Object.assign({}, apis.saveSession, {
+                  urlParams: { session_id: sessionId },
+                  params: { token },
+                  data: {
+                    operation_history: Object.assign({}, operation, {
+                      stageAction
+                    })
+                  }
+                })
+              );
+              if (resData.code !== 0) {
+                return;
+              }
+              if (['pin', 'delete'].indexOf(action) > -1) {
+                await sendMessage(Object.assign({}, { question: target.text }, { action: 'question' }));
+              }
+              reload();
+            }}
+            recorder={callback => {
+              return (
+                <Recorder
+                  id={sessionId}
+                  apis={apis}
+                  onProgress={message => {
+                    sendMessage(Object.assign({}, message, { action: 'message' }));
                   }}
                 >
-                  End
-                </LoadingButton>
-              </Flex>
-            ) : (
-              <span className={style['header-text']}>Ready</span>
-            )}
-          </Flex>
-          <Flex justify="center" align="center" flex={1}>
-            {start ? (
-              <div className={style['right-content']}>
-                <Message sessionId={sessionId} token={token} apis={apis}>
-                  {({ sendMessage, list }) => {
-                    return (
-                      <Flex vertical gap={24}>
-                        <Flex justify="center">
-                          <Recorder
-                            className={classnames(style['recorder'], {
-                              [style['has-message']]: list?.length > 1
-                            })}
-                            id={agentId}
-                            apis={apis}
-                            onProgress={data => {
-                              sendMessage(data);
-                            }}
-                            onComplete={() => {
-                              setStart(false);
-                            }}
-                          />
+                  {({ recording, message }) => {
+                    const colors = ['green', 'pink', 'red', 'yellow', 'orange', 'cyan', 'blue', 'purple', 'geekblue', 'magenta', 'volcano', 'gold', 'lime'];
+                    return callback({
+                      ready: recording,
+                      text: message && message.message && (
+                        <Flex gap={4} align="center">
+                          <Badge color={colors[message.type]} />
+                          <span className="message">{message.message}</span>
                         </Flex>
-                        <SimpleBar
-                          className={classnames(style['result-scroller'], {
-                            [style['has-message']]: list?.length > 1
-                          })}
-                        >
-                          <QueueAnim className={style['queue-anim']} duration={1000} interval={500} type={['top', 'bottom']}>
-                            {list.map(({ id, content }) => {
-                              return (
-                                <div key={id} className={style['card-item']}>
-                                  <div className={style['card-slider']}>
-                                    <TipsIcon />
-                                  </div>
-                                  <div className={style['card-content']}>{content}</div>
-                                </div>
-                              );
-                            })}
-                          </QueueAnim>
-                        </SimpleBar>
-                      </Flex>
-                    );
+                      )
+                    });
                   }}
-                </Message>
-              </div>
-            ) : (
-              <LoadingButton
-                type="primary"
-                shape="round"
-                onClick={() => {
-                  setStart(true);
-                }}
-              >
-                Start Interview
-              </LoadingButton>
-            )}
-          </Flex>
-        </Flex>
-      </Splitter.Panel>
-    </Splitter>
+                </Recorder>
+              );
+            }}
+            isContinue={messageList && messageList.length > 0}
+            onStart={start}
+            onStageChange={async stage => {
+              const stageOperation = [
+                ...(get(operation, 'stageOperation') || []),
+                {
+                  stage: stage.value,
+                  time: new Date()
+                }
+              ];
+              setData(data => {
+                return Object.assign({}, data, {
+                  operation_history: Object.assign({}, data.operation_history, { stageOperation })
+                });
+              });
+              const { data: resData } = await ajax(
+                Object.assign({}, apis.saveSession, {
+                  urlParams: { session_id: sessionId },
+                  params: { token },
+                  data: {
+                    operation_history: Object.assign({}, operation, {
+                      stageOperation
+                    })
+                  }
+                })
+              );
+              if (resData.code !== 0) {
+                await reload();
+                return;
+              }
+              setStage(null);
+              await sendMessage(Object.assign({}, { stage: stage.value }, { action: 'stage' }));
+            }}
+            onComplete={endHandler}
+          />
+        );
+      }}
+    </Message>
   );
 });
 
@@ -162,7 +188,7 @@ const InterviewAssistant = createWithRemoteLoader({
         urlParams: { session_id: id },
         params: { token }
       })}
-      render={({ data, reload }) => {
+      render={({ data, reload, setData }) => {
         return (
           <InterviewAssistantContent
             token={token}
@@ -170,10 +196,10 @@ const InterviewAssistant = createWithRemoteLoader({
             apis={currentApis}
             sessionId={data.id}
             baseUrl={baseUrl}
-            onComplete={() => {
-              reload();
-            }}
+            reload={reload}
+            setData={setData}
             data={get(data, 'extra_info.data')}
+            operation={get(data, 'operation_history')}
             isEnd={data.status === 2}
             messageList={data.messages}
             agentId={data.agent.id}

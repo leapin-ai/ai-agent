@@ -1,18 +1,28 @@
-import { createWithRemoteLoader, getPublicPath } from '@kne/remote-loader';
+import { createWithRemoteLoader } from '@kne/remote-loader';
 import { realtimeXfyun } from '@kne/speech-text';
-import { Spin, App } from 'antd';
-import React, { forwardRef, useState, useEffect, useRef, useImperativeHandle } from 'react';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { App } from 'antd';
+import { useState, useEffect, useRef } from 'react';
 import useRefCallback from '@kne/use-ref-callback';
-import voiceData from './voice.json';
 
 const Recorder = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, className, id, apis: currentApis, onProgress, onComplete }) => {
+})(({ remoteModules, id, apis: currentApis, onProgress, onComplete, children }) => {
   const [usePreset] = remoteModules;
   const { apis, ajax } = usePreset();
+  const [currentMessage, setCurrentMessage] = useState({ type: 0, message: 'Ready' });
   const [recording, setRecording] = useState(false);
-  const processHandler = useRefCallback(onProgress);
+  const timerRef = useRef(null);
+  const processHandler = useRefCallback(message => {
+    onProgress && onProgress(message);
+    setCurrentMessage({
+      type: message.type,
+      message: String(message.message).replace(/^[\s\u3000-\u303F\uFF00-\uFFEF!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+/, '')
+    });
+    timerRef.current && clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setCurrentMessage(null);
+    }, 3000);
+  });
   const completeHandler = useRefCallback(onComplete);
   const { message } = App.useApp();
   useEffect(() => {
@@ -50,7 +60,7 @@ const Recorder = createWithRemoteLoader({
     };
   }, [processHandler, completeHandler, message]);
 
-  return recording ? <DotLottieReact className={className} data={voiceData} loop autoplay /> : <Spin />;
+  return children({ recording, message: currentMessage });
 });
 
 export default Recorder;

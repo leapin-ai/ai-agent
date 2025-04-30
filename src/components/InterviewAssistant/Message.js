@@ -2,7 +2,7 @@ import { createWithRemoteLoader } from '@kne/remote-loader';
 import sse from '@root/common/sse';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import last from 'lodash/last';
-import transform from 'lodash/transform';
+import merge from 'lodash/merge';
 
 class TaskScheduler {
   constructor() {
@@ -60,14 +60,31 @@ class TaskScheduler {
   }
 }
 
+const formatOutput = input => {
+  if (input && typeof input === 'string') {
+    try {
+      return JSON.parse(input);
+    } catch (e) {}
+  }
+  return input;
+};
+
 const Message = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, sessionId, apis, token, children }) => {
-  const [list, setList] = useState([]);
+})(({ remoteModules, sessionId, apis, token, list: messageList, onMessage, children }) => {
+  const formatMessage = message => {
+    const newMessage = Object.assign({}, message);
+    newMessage.chatbot_content = formatOutput(message.chatbot_content);
+    newMessage.user_content = formatOutput(message.user_content);
+    return newMessage;
+  };
+  const [list, setList] = useState((messageList || []).map(formatMessage));
+  const [error, setError] = useState(null);
   const [usePreset] = remoteModules;
   const { ajax } = usePreset();
   const listRef = useRef(list);
   const taskSchedulerRef = useRef(new TaskScheduler());
+
   const send = async message => {
     const prevMessageId = last(listRef.current.filter(({ event }) => event !== 'error'))?.id;
     const sseOptions = Object.assign({}, apis.sendSessionMessageStream, {
@@ -77,7 +94,7 @@ const Message = createWithRemoteLoader({
         user_content: message
           ? JSON.stringify(
               Object.assign({}, message, {
-                time: new Date(message.time).valueOf()
+                time: (message.time ? new Date(message.time) : new Date()).valueOf()
               })
             )
           : '',
@@ -94,22 +111,26 @@ const Message = createWithRemoteLoader({
               index,
               1,
               Object.assign({}, newList[index], data, {
-                chatbot_content: (newList[index].chatbot_content || '') + (data.chatbot_content || '')
+                chatbot_content: merge({}, newList[index].chatbot_content, formatOutput(data.chatbot_content || ''))
               })
             );
           }
-          listRef.current = newList;
-          return newList;
+
+          listRef.current = newList.map(formatMessage);
+          onMessage && onMessage(last(listRef.current));
+          return listRef.current;
         });
       }
     });
     ajax.parseUrlParams(sseOptions);
-    await sse(sseOptions);
+    try {
+      await sse(sseOptions);
+    } catch (err) {
+      console.log(err);
+      setError(err);
+    }
   };
   useEffect(() => {
-    send('').then(() => {
-      return taskSchedulerRef.current.run();
-    });
     return () => {
       taskSchedulerRef.current.destroy();
     };
@@ -119,36 +140,14 @@ const Message = createWithRemoteLoader({
     taskSchedulerRef.current.addTask(() => send(message));
   };
 
-  const targetList = useMemo(() => {
-    return transform(
-      list
-        .slice(0)
-        .reverse()
-        .filter(item => {
-          return !(
-            item.type === 'error' ||
-            String(item.chatbot_content).trim() === '' ||
-            (item => {
-              try {
-                const target = JSON.parse(item.chatbot_content);
-                return !(target.data && target.data.length > 0);
-              } catch (e) {
-                return true;
-              }
-            })(item)
-          );
-        }),
-      (result, item) => {
-        const { data } = JSON.parse(item.chatbot_content);
-        data.forEach((content, index) => {
-          result.push({ id: `${item.id}-${index}`, content });
-        });
-      },
-      []
-    );
-  }, [list]);
-
-  return children({ sendMessage, list: targetList.slice(0, 4) });
+  return children({
+    start: async () => {
+      list.length === 0 && taskSchedulerRef.current.addTask(() => send(''));
+    },
+    sendMessage,
+    error,
+    list
+  });
 });
 
 export default Message;
