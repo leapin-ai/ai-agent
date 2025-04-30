@@ -184,7 +184,7 @@ const InterViewProgressInner = createWithRemoteLoader({
     };
   }, [list, operation]);
 
-  const stageAction = (operation.stageAction || []).filter(item => item.stage === stage?.stage);
+  const stageAction = (get(operation, 'stageAction') || []).filter(item => item.stage === stage?.stage);
 
   const stageChange = async stage => {
     setLoading(true);
