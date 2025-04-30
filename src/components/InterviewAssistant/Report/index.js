@@ -1,4 +1,3 @@
-import ReportView from '@components/ReportView';
 import { Flex } from 'antd';
 import { PrinterOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
@@ -7,9 +6,9 @@ import style from './style.module.scss';
 import { useRef } from 'react';
 
 const Report = createWithRemoteLoader({
-  modules: ['components-core:File@PrintButton']
+  modules: ['components-core:File@PrintButton', 'components-core:InfoPage@Report']
 })(({ remoteModules, data, extraData, startTime, endTime }) => {
-  const [PrintButton] = remoteModules;
+  const [PrintButton, ReportView] = remoteModules;
   const contentRef = useRef(null);
   return (
     <div className={style['report-outer']}>

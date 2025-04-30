@@ -1,6 +1,7 @@
 import qs from 'qs';
 import transform from 'lodash/transform';
 import cookie from 'js-cookie';
+import { message } from 'antd';
 
 const sse = config => {
   const { url, params, urlParams, data, method, eventEmit, ...options } = config;
@@ -18,7 +19,7 @@ const sse = config => {
     )
   );
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const eventSource = new EventSource(`${url}${queryString ? '?' + queryString : ''}`);
     const result = [];
     eventSource.onmessage = event => {
@@ -28,13 +29,20 @@ const sse = config => {
       eventEmit && eventEmit(data, result);
       if (['error', 'message_end'].indexOf(data.event) > -1) {
         eventSource.close();
+      }
+      if (data.event === 'message_end') {
         resolve(result);
+      } else if (data.event === 'error') {
+        reject(new Error(data.chatbot_content));
       }
     };
     eventSource.onerror = error => {
       eventSource.close();
-      resolve(result);
+      reject(error);
     };
+  }).catch(error => {
+    message.error(error.message || 'send message error');
+    return Promise.reject(error);
   });
 };
 
