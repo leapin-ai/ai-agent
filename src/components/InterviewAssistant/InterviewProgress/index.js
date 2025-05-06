@@ -90,7 +90,7 @@ const FlowStage = createWithRemoteLoader({
               <Flex vertical className={style['process-tips']}>
                 <Flex className={style['process-tips-header']} gap={8} align="center">
                   <TipsIcon className={style['process-tips-icon']} />
-                  面试结构
+                  阶段指引
                 </Flex>
                 {stage.description.map((item, index) => {
                   return (
