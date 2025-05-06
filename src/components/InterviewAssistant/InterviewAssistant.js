@@ -1,0 +1,214 @@
+import { createWithRemoteLoader } from '@kne/remote-loader';
+import { Flex, Badge } from 'antd';
+import { useState } from 'react';
+import get from 'lodash/get';
+import Fetch from '@kne/react-fetch';
+import Recorder from './Recorder';
+import useRefCallback from '@kne/use-ref-callback';
+import { useNavigate } from 'react-router-dom';
+import Interview from './Interview';
+import Message from './Message';
+import last from 'lodash/last';
+
+const InterviewAssistantContent = createWithRemoteLoader({
+  modules: ['components-core:Global@usePreset']
+})(({ remoteModules, baseUrl, sessionId, agentId, apis, token, data, operation, reload, setData, messageList }) => {
+  const [usePreset] = remoteModules;
+  const { ajax } = usePreset();
+  const navigate = useNavigate();
+  const [stage, setStage] = useState(null);
+
+  const endHandler = useRefCallback(async () => {
+    const { data: resData } = await ajax(
+      Object.assign({}, apis.saveSession, {
+        urlParams: { session_id: sessionId },
+        params: { token },
+        data: {
+          status: 2
+        }
+      })
+    );
+    if (resData.code !== 0) {
+      return;
+    }
+    navigate(`${baseUrl}/detail?id=${agentId}`);
+  });
+
+  return (
+    <Message
+      sessionId={sessionId}
+      apis={apis}
+      token={token}
+      list={messageList}
+      onMessage={outputData => {
+        if (outputData?.user_content?.action === 'stage') {
+          setStage(
+            Object.assign({}, get(outputData, 'chatbot_content.data'), {
+              success: !!get(outputData, 'chatbot_content.data'),
+              advice: (get(outputData, 'chatbot_content.data.advice') || []).map((item, index) => {
+                return Object.assign({}, item, {
+                  id: `${outputData.id}-${index}`
+                });
+              })
+            })
+          );
+          return;
+        }
+        const advice = get(outputData, 'chatbot_content.data.advice');
+        if (advice && advice.length > 0) {
+          setStage(stage => {
+            return Object.assign({}, stage, {
+              advice: (advice || []).map((item, index) => {
+                return Object.assign({}, item, {
+                  id: `${outputData.id}-${index}`
+                });
+              })
+            });
+          });
+          return;
+        }
+      }}
+    >
+      {({ start, sendMessage }) => {
+        return (
+          <Interview
+            resume={data.resume}
+            jd={data.jd}
+            list={data.stages}
+            jobTitle={data.jobTitle}
+            stage={stage}
+            operation={operation}
+            onOperation={async ({ action, target }) => {
+              const stageAction = [
+                ...(get(operation, 'stageAction') || []).filter(item => {
+                  return item.target.id !== target.id;
+                }),
+                {
+                  action,
+                  stage: stage.stage,
+                  target,
+                  time: new Date()
+                }
+              ];
+
+              const { data: resData } = await ajax(
+                Object.assign({}, apis.saveSession, {
+                  urlParams: { session_id: sessionId },
+                  params: { token },
+                  data: {
+                    operation_history: Object.assign({}, operation, {
+                      stageAction
+                    })
+                  }
+                })
+              );
+              if (resData.code !== 0) {
+                return;
+              }
+              if (['pin', 'delete'].indexOf(action) > -1) {
+                await sendMessage(Object.assign({}, { question: target.text }, { action: 'question' }));
+              }
+              reload();
+            }}
+            recorder={callback => {
+              return (
+                <Recorder
+                  id={sessionId}
+                  apis={apis}
+                  onProgress={message => {
+                    sendMessage(Object.assign({}, message, { action: 'message' }));
+                  }}
+                >
+                  {({ recording, message }) => {
+                    const colors = ['green', 'pink', 'red', 'yellow', 'orange', 'cyan', 'blue', 'purple', 'geekblue', 'magenta', 'volcano', 'gold', 'lime'];
+                    return callback({
+                      ready: recording,
+                      text: message && message.message && (
+                        <Flex gap={4} align="center">
+                          <Badge color={colors[message.type]} />
+                          <span className="message">{message.message}</span>
+                        </Flex>
+                      )
+                    });
+                  }}
+                </Recorder>
+              );
+            }}
+            isContinue={messageList && messageList.length > 0}
+            onStart={start}
+            onStageChange={async stage => {
+              const stageOperation = [
+                ...(get(operation, 'stageOperation') || []),
+                {
+                  stage: stage.value,
+                  time: new Date()
+                }
+              ];
+              setData(data => {
+                return Object.assign({}, data, {
+                  operation_history: Object.assign({}, data.operation_history, { stageOperation })
+                });
+              });
+              const { data: resData } = await ajax(
+                Object.assign({}, apis.saveSession, {
+                  urlParams: { session_id: sessionId },
+                  params: { token },
+                  data: {
+                    operation_history: Object.assign({}, operation, {
+                      stageOperation
+                    })
+                  }
+                })
+              );
+              if (resData.code !== 0) {
+                await reload();
+                return;
+              }
+              setStage(null);
+              await sendMessage(Object.assign({}, { stage: stage.value }, { action: 'stage' }));
+            }}
+            onComplete={endHandler}
+          />
+        );
+      }}
+    </Message>
+  );
+});
+
+const InterviewAssistant = createWithRemoteLoader({
+  modules: ['components-core:Global@usePreset']
+})(({ remoteModules, className, apiName, id, baseUrl, token, getOpenApi }) => {
+  const [usePreset] = remoteModules;
+  const { apis } = usePreset();
+  const currentApis = apis.agent[apiName];
+
+  return (
+    <Fetch
+      {...Object.assign({}, currentApis.getSessionDetail, {
+        urlParams: { session_id: id },
+        params: { token }
+      })}
+      render={({ data, reload, setData }) => {
+        return (
+          <InterviewAssistantContent
+            token={token}
+            className={className}
+            apis={currentApis}
+            sessionId={data.id}
+            baseUrl={baseUrl}
+            reload={reload}
+            setData={setData}
+            data={get(data, 'extra_info.data')}
+            operation={get(data, 'operation_history')}
+            isEnd={data.status === 2}
+            messageList={data.messages}
+            agentId={data.agent.id}
+            getOpenApi={getOpenApi}
+          />
+        );
+      }}
+    />
+  );
+});
+
+export default InterviewAssistant;

@@ -8,6 +8,7 @@ import cookie from 'js-cookie';
 import ensureSlash from '@kne/ensure-slash';
 import md5 from 'md5';
 import { getApis as getAgentApis } from '@components/Apis';
+import { enums as interviewAssistantEnums } from '@components/InterviewAssistant';
 
 window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
 
@@ -127,11 +128,10 @@ export const globalInit = async () => {
   };
 
   const componentsCoreRemote = {
-    ...registry,
-    //url: 'http://localhost:3001',
+    ...registry, //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.3.12'
+    defaultVersion: '0.3.17'
   };
   remoteLoaderPreset({
     remotes: {
@@ -140,7 +140,13 @@ export const globalInit = async () => {
       'components-iconfont': {
         ...registry,
         remote: 'components-iconfont',
-        defaultVersion: '0.1.8'
+        defaultVersion: '0.2.1'
+      },
+      'components-ckeditor': {
+        ...registry, //url: 'http://localhost:3002',
+        //tpl: '{{url}}',
+        remote: 'components-ckeditor',
+        defaultVersion: '0.2.5'
       },
       'leapin-ai-agent':
         process.env.NODE_ENV === 'development'
@@ -160,34 +166,47 @@ export const globalInit = async () => {
 
   return {
     ajax,
-    enums: {
-      atsStage: [
-        { description: 'Primary screening', value: 0 },
-        { description: 'AI interview', value: 1 },
-        { description: 'Retest', value: 3 },
-        { description: 'Awaiting entry', value: 4 },
-        { description: 'Inappropriate', value: 5 },
-        { description: 'Offer', value: 8 },
-        { description: 'Inducted', value: 9 }
-      ]
-    },
+    enums: Object.assign(
+      {},
+      {
+        atsStage: [
+          { description: 'Primary screening', value: 0 },
+          {
+            description: 'AI interview',
+            value: 1
+          },
+          { description: 'Retest', value: 3 },
+          {
+            description: 'Awaiting entry',
+            value: 4
+          },
+          { description: 'Inappropriate', value: 5 },
+          { description: 'Offer', value: 8 },
+          {
+            description: 'Inducted',
+            value: 9
+          }
+        ]
+      },
+      interviewAssistantEnums
+    ),
     apis: Object.assign(
       {},
       {
         agent: getAgentApis(),
         file: {
-          contentWindowUrl: 'https://cdn.leapin-ai.com/components/@kne/iframe-resizer/0.1.3/dist/contentWindow.js',
-          //pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
+          speechTextUrl: window.PUBLIC_URL + '/xfyun-dist', //speechTextUrl: 'https://cdn.leapin-ai.com/components/@kne/speech-text/0.2.3/xfyun-dist', //window.PUBLIC_URL + '/xfyun-dist'
+          contentWindowUrl: 'https://cdn.leapin-ai.com/components/@kne/iframe-resizer/0.1.3/dist/contentWindow.js', //pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
-                                                                                      data: {
-                                                                                        code: 0,
-                                                                                        data: {
-                                                                                          src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
-                                                                                          filename: file.name
-                                                                                        }
-                                                                                      }
-                                                                                    };*/
+                                                                                                                          data: {
+                                                                                                                            code: 0,
+                                                                                                                            data: {
+                                                                                                                              src: 'https://user-video-staging.oss-cn-hangzhou.aliyuncs.com/tenant-89/candidate/cv/17700713ccc28c0ce29d6b87237bb8b5.pdf',
+                                                                                                                              filename: file.name
+                                                                                                                            }
+                                                                                                                          }
+                                                                                                                        };*/
             const { data: resData } = await ajax(
               Object.assign(
                 {},
