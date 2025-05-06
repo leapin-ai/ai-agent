@@ -41,7 +41,7 @@ const sse = config => {
       reject(error);
     };
   }).catch(error => {
-    message.error(error.message || 'send message error');
+    error.message && message.error(error.message);
     return Promise.reject(error);
   });
 };
