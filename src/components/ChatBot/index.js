@@ -38,6 +38,20 @@ const JobCard = createWithRemoteLoader({
   );
 });
 
+const IFrame = createWithRemoteLoader({
+  modules: ['components-core:InfoPage']
+})(({ remoteModules, url, title, height }) => {
+  const [InfoPage] = remoteModules;
+
+  return (
+    <InfoPage>
+      <InfoPage.Part title={title}>
+        <iframe src={url} frameBorder="0" height={height || 500} style={{ width: '100%' }} />
+      </InfoPage.Part>
+    </InfoPage>
+  );
+});
+
 const transformHTML = html => {
   const dom = document.createElement('div');
   dom.innerHTML = html;
@@ -83,7 +97,8 @@ const SideMessage = ({ messages }) => {
         htmlTransform={transformHTML}
         components={{
           Card,
-          JobCard
+          JobCard,
+          IFrame
         }}
         render={output => {
           if (output && output.length > 0) {
