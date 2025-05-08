@@ -227,7 +227,11 @@ const ChartBotMessage = createWithRemoteLoader({
       }
     });
     ajax.parseUrlParams(sseOptions);
-    await sse(sseOptions);
+    try {
+      await sse(sseOptions);
+    } catch (e) {
+      console.log(e);
+    }
     setLoading(false);
     setCurrentMessage('');
     setEvening(false);
