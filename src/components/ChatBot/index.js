@@ -39,13 +39,13 @@ const JobCard = createWithRemoteLoader({
 });
 
 const IFrame = createWithRemoteLoader({
-  modules: ['components-core:InfoPage']
+  modules: ['components-core:InfoPage', 'components-core:Icon']
 })(({ remoteModules, url, title, height }) => {
-  const [InfoPage] = remoteModules;
+  const [InfoPage, Icon] = remoteModules;
 
   return (
     <InfoPage>
-      <InfoPage.Part title={title}>
+      <InfoPage.Part title={title} extra={<Button shape="circle" type="link" href={url} target="_blank" icon={<Icon type="tuichudenglu" />} />}>
         <iframe src={url} frameBorder="0" height={height || 500} style={{ width: '100%' }} />
       </InfoPage.Part>
     </InfoPage>
