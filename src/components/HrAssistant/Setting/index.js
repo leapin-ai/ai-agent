@@ -1,7 +1,9 @@
 import InterviewAssistant from './InterviewAssistant';
+import AIInterview from './AIInterview';
 
 const mapping = {
-  2: InterviewAssistant
+  2: InterviewAssistant,
+  3: AIInterview
 };
 
 const Setting = ({ type, empty, ...props }) => {
