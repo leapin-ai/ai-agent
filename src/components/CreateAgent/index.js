@@ -48,6 +48,7 @@ export const CreateAgentFormInner = createWithRemoteLoader({
           options={[
             { label: 'Recruit', value: 0 },
             { label: 'Interview assistant', value: 2 },
+            { label: 'AI interview', value: 3 },
             {
               label: 'Other',
               value: 1
