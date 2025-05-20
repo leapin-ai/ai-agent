@@ -39,7 +39,7 @@ const InterviewAssistant = createWithRemoteLoader({
       </Flex>
       <Fetch
         {...Object.assign({}, apis.agent.getSessionList, {
-          params: { page, page_size: pageSize, keyword, use_scene: type }
+          params: { page, page_size: pageSize, keyword, agent_id: searchParams.get('id'), use_scene: type }
         })}
         render={({ data, isComplete }) => {
           return (
@@ -184,168 +184,168 @@ const InterviewAssistant = createWithRemoteLoader({
             </Flex>
           );
           /*return (
-                                <Flex vertical gap={8}>
-                                    <TableView
-                                        dataSource={data.results}
-                                        columns={[
-                                            {
-                                                name: 'name',
-                                                title: 'Name',
-                                                getValueOf: item => {
-                                                    const info = get(item, 'agent_application.application') || get(item, 'agent_application.employee');
+                                          <Flex vertical gap={8}>
+                                              <TableView
+                                                  dataSource={data.results}
+                                                  columns={[
+                                                      {
+                                                          name: 'name',
+                                                          title: 'Name',
+                                                          getValueOf: item => {
+                                                              const info = get(item, 'agent_application.application') || get(item, 'agent_application.employee');
 
-                                                    return info?.name;
-                                                }
-                                            },
-                                            {
-                                                name: 'phone',
-                                                title: 'Phone',
-                                                getValueOf: item => {
-                                                    const info = get(item, 'agent_application.application') || get(item, 'agent_application.employee');
+                                                              return info?.name;
+                                                          }
+                                                      },
+                                                      {
+                                                          name: 'phone',
+                                                          title: 'Phone',
+                                                          getValueOf: item => {
+                                                              const info = get(item, 'agent_application.application') || get(item, 'agent_application.employee');
 
-                                                    return info?.mobile;
-                                                }
-                                            },
-                                            {
-                                                name: 'email',
-                                                title: 'Email',
-                                                getValueOf: item => {
-                                                    const info = get(item, 'agent_application.application') || get(item, 'agent_application.employee');
+                                                              return info?.mobile;
+                                                          }
+                                                      },
+                                                      {
+                                                          name: 'email',
+                                                          title: 'Email',
+                                                          getValueOf: item => {
+                                                              const info = get(item, 'agent_application.application') || get(item, 'agent_application.employee');
 
-                                                    return info?.email;
-                                                }
-                                            },
-                                            {
-                                                name: 'role',
-                                                title: 'Role',
-                                                getValueOf: item => {
-                                                    return (
-                                                        <Space wrap>
-                                                            {(get(item, 'agent_application.agent.role') || []).map(role => (
-                                                                <div key={role} className={style['tag']}>
-                                                                    {role}
-                                                                </div>
-                                                            ))}
-                                                        </Space>
-                                                    );
-                                                }
-                                            },
-                                            {
-                                                name: 'agentName',
-                                                title: 'Agent Name',
-                                                getValueOf: item => {
-                                                    return <Link to={`${baseUrl}/detail?id=${get(item, 'agent_application.agent.id')}`}>{get(item, 'agent_application.agent.name')}</Link>;
-                                                }
-                                            },
-                                            {
-                                                name: 'status',
-                                                title: 'Status',
-                                                render: status => {
-                                                    if (status === 0) {
-                                                        return <StateTag text="Not started" />;
-                                                    }
-                                                    if (status === 1) {
-                                                        return <StateTag type="progress" text="In progress" />;
-                                                    }
+                                                              return info?.email;
+                                                          }
+                                                      },
+                                                      {
+                                                          name: 'role',
+                                                          title: 'Role',
+                                                          getValueOf: item => {
+                                                              return (
+                                                                  <Space wrap>
+                                                                      {(get(item, 'agent_application.agent.role') || []).map(role => (
+                                                                          <div key={role} className={style['tag']}>
+                                                                              {role}
+                                                                          </div>
+                                                                      ))}
+                                                                  </Space>
+                                                              );
+                                                          }
+                                                      },
+                                                      {
+                                                          name: 'agentName',
+                                                          title: 'Agent Name',
+                                                          getValueOf: item => {
+                                                              return <Link to={`${baseUrl}/detail?id=${get(item, 'agent_application.agent.id')}`}>{get(item, 'agent_application.agent.name')}</Link>;
+                                                          }
+                                                      },
+                                                      {
+                                                          name: 'status',
+                                                          title: 'Status',
+                                                          render: status => {
+                                                              if (status === 0) {
+                                                                  return <StateTag text="Not started" />;
+                                                              }
+                                                              if (status === 1) {
+                                                                  return <StateTag type="progress" text="In progress" />;
+                                                              }
 
-                                                    if (status === 2) {
-                                                        return <StateTag type="success" text="Completed" />;
-                                                    }
+                                                              if (status === 2) {
+                                                                  return <StateTag type="success" text="Completed" />;
+                                                              }
 
-                                                    return <StateTag text="Unknown" />;
-                                                }
-                                            },
-                                            {
-                                                name: 'messages',
-                                                title: 'Chat History',
-                                                getValueOf: item => {
-                                                    return (
-                                                        <Button
-                                                            className="btn-no-padding"
-                                                            type="link"
-                                                            onClick={() => {
-                                                                modal({
-                                                                    title: 'Chat History',
-                                                                    footer: null,
-                                                                    children: <MessageList agentAvatar={get(item, 'agent_application.agent.avatar')} list={item.messages} startTime={item.start_time} />
-                                                                });
-                                                            }}
-                                                        >
-                                                            Check
-                                                        </Button>
-                                                    );
-                                                }
-                                            },
-                                            {
-                                                name: 'result',
-                                                title: 'Chat Result',
-                                                getValueOf: item => {
-                                                    return (
-                                                        item.status === 2 && (
-                                                            <Button
-                                                                type="link"
-                                                                className="btn-no-padding"
-                                                                onClick={() => {
-                                                                    modal({
-                                                                        title: 'Chat History',
-                                                                        size: 'small',
-                                                                        footer: null,
-                                                                        children: (
-                                                                            <CentralContent
-                                                                                col={1}
-                                                                                columns={[
-                                                                                    {
-                                                                                        name: 'result',
-                                                                                        title: 'Result'
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'description',
-                                                                                        title: 'Description'
-                                                                                    }
-                                                                                ]}
-                                                                                dataSource={{
-                                                                                    result: get(item, 'intent_summary.user_intent_by_llm'),
-                                                                                    description: get(item, 'intent_summary.summary_by_llm')
-                                                                                }}
-                                                                            />
-                                                                        )
-                                                                    });
-                                                                }}
-                                                            >
-                                                                Check
-                                                            </Button>
-                                                        )
-                                                    );
-                                                }
-                                            },
-                                            {
-                                                name: 'start_time',
-                                                title: 'Start Time',
-                                                format: 'date-DD.MM.YYYY()HH:mm'
-                                            },
-                                            {
-                                                name: 'end_time',
-                                                title: 'End Time',
-                                                format: 'date-DD.MM.YYYY()HH:mm'
-                                            }
-                                        ]}
-                                    />
-                                    <Flex justify="flex-end">
-                                        <Pagination
-                                            showSizeChanger={false}
-                                            hideOnSinglePage
-                                            total={data.count}
-                                            current={page}
-                                            pageSize={pageSize}
-                                            onChange={page => {
-                                                const newSearchParams = new URLSearchParams(searchParams);
-                                                newSearchParams.set('page', page);
-                                                setSearchParams(newSearchParams);
-                                            }}
-                                        />
-                                    </Flex>
-                                </Flex>
-                            );*/
+                                                              return <StateTag text="Unknown" />;
+                                                          }
+                                                      },
+                                                      {
+                                                          name: 'messages',
+                                                          title: 'Chat History',
+                                                          getValueOf: item => {
+                                                              return (
+                                                                  <Button
+                                                                      className="btn-no-padding"
+                                                                      type="link"
+                                                                      onClick={() => {
+                                                                          modal({
+                                                                              title: 'Chat History',
+                                                                              footer: null,
+                                                                              children: <MessageList agentAvatar={get(item, 'agent_application.agent.avatar')} list={item.messages} startTime={item.start_time} />
+                                                                          });
+                                                                      }}
+                                                                  >
+                                                                      Check
+                                                                  </Button>
+                                                              );
+                                                          }
+                                                      },
+                                                      {
+                                                          name: 'result',
+                                                          title: 'Chat Result',
+                                                          getValueOf: item => {
+                                                              return (
+                                                                  item.status === 2 && (
+                                                                      <Button
+                                                                          type="link"
+                                                                          className="btn-no-padding"
+                                                                          onClick={() => {
+                                                                              modal({
+                                                                                  title: 'Chat History',
+                                                                                  size: 'small',
+                                                                                  footer: null,
+                                                                                  children: (
+                                                                                      <CentralContent
+                                                                                          col={1}
+                                                                                          columns={[
+                                                                                              {
+                                                                                                  name: 'result',
+                                                                                                  title: 'Result'
+                                                                                              },
+                                                                                              {
+                                                                                                  name: 'description',
+                                                                                                  title: 'Description'
+                                                                                              }
+                                                                                          ]}
+                                                                                          dataSource={{
+                                                                                              result: get(item, 'intent_summary.user_intent_by_llm'),
+                                                                                              description: get(item, 'intent_summary.summary_by_llm')
+                                                                                          }}
+                                                                                      />
+                                                                                  )
+                                                                              });
+                                                                          }}
+                                                                      >
+                                                                          Check
+                                                                      </Button>
+                                                                  )
+                                                              );
+                                                          }
+                                                      },
+                                                      {
+                                                          name: 'start_time',
+                                                          title: 'Start Time',
+                                                          format: 'date-DD.MM.YYYY()HH:mm'
+                                                      },
+                                                      {
+                                                          name: 'end_time',
+                                                          title: 'End Time',
+                                                          format: 'date-DD.MM.YYYY()HH:mm'
+                                                      }
+                                                  ]}
+                                              />
+                                              <Flex justify="flex-end">
+                                                  <Pagination
+                                                      showSizeChanger={false}
+                                                      hideOnSinglePage
+                                                      total={data.count}
+                                                      current={page}
+                                                      pageSize={pageSize}
+                                                      onChange={page => {
+                                                          const newSearchParams = new URLSearchParams(searchParams);
+                                                          newSearchParams.set('page', page);
+                                                          setSearchParams(newSearchParams);
+                                                      }}
+                                                  />
+                                              </Flex>
+                                          </Flex>
+                                      );*/
         }}
       />
     </Flex>
