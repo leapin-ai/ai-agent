@@ -1,5 +1,31 @@
-.container{
+.container {
   background: #ffffff;
   border-radius: 4px;
   padding: 24px;
+}
+
+.report-message {
+  background: var(--bg-color-grey);
+  border-radius: 8px;
+}
+
+.import-value {
+  color: var(--primary-color);
+  transform: scale(1.5) translateY(-2px);
+  display: inline-block;
+  padding: 0 6px;
+}
+
+.pass-value {
+  font-weight: bold;
+  color: #a2de91;
+}
+
+.fail-value {
+  font-weight: bold;
+  color: #f66969;
+}
+
+.report-scale {
+  color: var(--font-color-grey);
 }
