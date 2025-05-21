@@ -6,6 +6,7 @@ import style from './style.module.scss';
 import Fetch from '@kne/react-fetch';
 import get from 'lodash/get';
 import classnames from 'classnames';
+import { MessageList } from '@components/ChatBot';
 import { Report } from '@components/InterviewAssistant';
 
 const AIInterview = createWithRemoteLoader({
@@ -13,21 +14,23 @@ const AIInterview = createWithRemoteLoader({
     'components-core:Global@usePreset',
     'components-core:Common@SearchInput',
     'components-core:InfoPage@TableView',
-    'components-core:File@FileLink',
     'components-core:Modal@ModalButton',
+    'components-core:Modal@useModal',
     'components-ckeditor:Editor.Content',
     'components-core:StateTag',
     'components-core:ButtonGroup',
     'components-core:Icon'
   ]
 })(({ remoteModules, type, baseUrl }) => {
-  const [usePreset, SearchInput, TableView, FileLink, ModalButton, EditorContent, StateTag, ButtonGroup, Icon] = remoteModules;
+  const [usePreset, SearchInput, TableView, ModalButton, useModal, EditorContent, StateTag, ButtonGroup, Icon] = remoteModules;
   const { apis } = usePreset();
   const [keyword, setKeyword] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const page = searchParams.get('page') || 1,
     pageSize = 10;
+
+  const modal = useModal();
 
   return (
     <Flex className={style['container']} vertical gap={24}>
@@ -48,8 +51,7 @@ const AIInterview = createWithRemoteLoader({
                 'is-loading': !isComplete
               })}
               vertical
-              gap={8}
-            >
+              gap={8}>
               <TableView
                 dataSource={data.results}
                 columns={[
@@ -57,30 +59,23 @@ const AIInterview = createWithRemoteLoader({
                     name: 'name',
                     title: 'Name',
                     getValueOf: item => {
-                      return get(item, 'extra_info.data.resume.resumeData.name');
+                      return get(item, 'extra_info.applicant_name');
                     }
                   },
                   {
-                    name: 'resume',
-                    title: 'Resume',
-                    getValueOf: item => get(item, 'extra_info.data.resume.src'),
-                    render: item => {
-                      return (
-                        <FileLink title="Resume" src={item}>
-                          Click Checked
-                        </FileLink>
-                      );
-                    }
+                    name: 'email',
+                    title: 'Email',
+                    getValueOf: item => get(item, 'extra_info.applicant_email')
                   },
                   {
                     name: 'jobTitle',
                     title: 'Job title',
-                    getValueOf: item => get(item, 'extra_info.data.jobTitle')
+                    getValueOf: item => get(item, 'extra_info.data.job_title')
                   },
                   {
                     name: 'jd',
                     title: 'JD',
-                    getValueOf: item => get(item, 'extra_info.data.jd'),
+                    getValueOf: item => get(item, 'extra_info.data.job_description'),
                     render: item => {
                       return (
                         <ModalButton
@@ -90,8 +85,7 @@ const AIInterview = createWithRemoteLoader({
                             title: 'JD',
                             children: <EditorContent>{item}</EditorContent>,
                             footer: null
-                          }}
-                        >
+                          }}>
                           Click Checked
                         </ModalButton>
                       );
@@ -122,6 +116,26 @@ const AIInterview = createWithRemoteLoader({
                     format: 'date-DD.MM.YYYY()HH:mm'
                   },
                   {
+                    name: 'messages',
+                    title: 'Chat History',
+                    getValueOf: item => {
+                      return (
+                        <Button
+                          className="btn-no-padding"
+                          type="link"
+                          onClick={() => {
+                            modal({
+                              title: 'Chat History',
+                              footer: null,
+                              children: <MessageList agentAvatar={get(item, 'agent_application.agent.avatar')} list={item.messages} startTime={item.start_time} />
+                            });
+                          }}>
+                          Check
+                        </Button>
+                      );
+                    }
+                  },
+                  {
                     name: 'result',
                     title: 'Result',
                     getValueOf: item => get(item, 'intent_summary.summary_by_llm'),
@@ -134,8 +148,7 @@ const AIInterview = createWithRemoteLoader({
                             size: 'large',
                             children: <Report data={item} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} />,
                             footer: null
-                          }}
-                        >
+                          }}>
                           Click checked
                         </ModalButton>
                       );
