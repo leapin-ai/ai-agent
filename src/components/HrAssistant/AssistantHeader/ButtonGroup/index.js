@@ -8,7 +8,7 @@ const ButtonGroup = ({ type, ...props }) => {
       0: Recruit,
       1: Chatbot,
       2: InterviewAssistant
-    }[type] || Chatbot;
+    }[type] || (() => null);
   return <Component {...props} />;
 };
 
