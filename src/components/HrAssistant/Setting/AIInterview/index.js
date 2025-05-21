@@ -7,7 +7,7 @@ import Fetch from '@kne/react-fetch';
 import get from 'lodash/get';
 import classnames from 'classnames';
 import { MessageList } from '@components/ChatBot';
-import { Report } from '@components/InterviewAssistant';
+import Report from './Report';
 
 const AIInterview = createWithRemoteLoader({
   modules: [
@@ -146,7 +146,7 @@ const AIInterview = createWithRemoteLoader({
                           className="btn-no-padding"
                           modalProps={{
                             size: 'large',
-                            children: <Report data={item} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} />,
+                            children: <Report data={item.output} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} />,
                             footer: null
                           }}>
                           Click checked
