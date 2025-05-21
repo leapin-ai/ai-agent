@@ -38,7 +38,7 @@ const ChatMessage = createWithRemoteLoader({
             }}>
             Collapsible
           </Button>
-          <MessageList list={list} />
+          <MessageList list={list} agentAvatar={agentAvatar} />
         </Flex>
       ) : (
         <Button
@@ -56,7 +56,7 @@ const ChatMessage = createWithRemoteLoader({
 
 const Report = createWithRemoteLoader({
   modules: ['components-core:InfoPage@Content', 'components-core:InfoPage@Report', 'components-core:Enum', 'components-core:StateTag', 'components-core:LoadingButton']
-})(({ remoteModules, startTime, endTime, data, extraData }) => {
+})(({ remoteModules, startTime, endTime, messages, data, agentAvatar, flowData, extraData }) => {
   const [Content, ReportView, Enum, StateTag] = remoteModules;
   const formattedTime = dayjs(startTime).isSame(endTime, 'day') ? `${dayjs(startTime).format('YYYY-MM-DD HH:mm')}~${dayjs(endTime).format('HH:mm')}` : `${dayjs(startTime).format('YYYY-MM-DD HH:mm')} ~ ${dayjs(endTime).format('HH:mm')}`;
   return (
@@ -67,7 +67,7 @@ const Report = createWithRemoteLoader({
             <ReportView.List
               report={{
                 list: [
-                  /*{
+                  {
                     label: 'Basic',
                     content: (
                       <Content
@@ -75,24 +75,20 @@ const Report = createWithRemoteLoader({
                         list={[
                           {
                             label: 'Candidate',
-                            content: get(data, 'deliveryRecord.candidateSnapshot.name')
+                            content: get(extraData, 'applicant_name')
                           },
                           {
                             label: 'Job name',
-                            content: get(data, 'agent.job.title')
-                          },
-                          {
-                            label: 'Step',
-                            content: <Enum moduleName="deliveryStep" name={get(data, 'results.step')} />
+                            content: get(extraData, 'job_title')
                           },
                           {
                             label: 'Agent',
-                            content: get(data, 'agent.name')
+                            content: get(data, 'agent_name')
                           }
                         ]}
                       />
                     )
-                  },*/
+                  },
                   {
                     label: 'Conclusion',
                     content: get(data, 'pass') ? <span className={style['pass-value']}>PASS</span> : <span className={style['fail-value']}>FAIL</span>
@@ -194,7 +190,6 @@ const Report = createWithRemoteLoader({
                   }
                 ],
                 footer: (item, index) => {
-                  const flowData = get(data, 'results.flowData');
                   if (!flowData) {
                     return null;
                   }
@@ -203,12 +198,12 @@ const Report = createWithRemoteLoader({
                     return null;
                   }
                   const [start, end] = result[index];
-                  const list = (get(data, 'results.messages') || []).slice(start, end + 1);
+                  const list = (messages || []).slice(start, end + 1);
                   if (!(list && list.length > 0)) {
                     return null;
                   }
 
-                  return <ChatMessage startTime={get(list, '[0].create_time')} list={list} agentAvatar={get(data, 'agent.avatar')} />;
+                  return <ChatMessage startTime={get(list, '[0].create_time')} list={list} agentAvatar={agentAvatar} />;
                 }
               }}
             />

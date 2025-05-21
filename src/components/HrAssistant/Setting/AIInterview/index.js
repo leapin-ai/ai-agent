@@ -146,7 +146,17 @@ const AIInterview = createWithRemoteLoader({
                           className="btn-no-padding"
                           modalProps={{
                             size: 'large',
-                            children: <Report data={item.output} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} />,
+                            children: (
+                              <Report
+                                data={item.output}
+                                flowData={get(target['flow_data'], 'QA_history','').split(',')}
+                                messages={target.messages}
+                                agentAvatar={get(target, 'agent_application.agent.avatar')}
+                                extraData={get(target, 'extra_info.data')}
+                                startTime={get(target, 'start_time')}
+                                endTime={get(target, 'end_time')}
+                              />
+                            ),
                             footer: null
                           }}>
                           Click checked
