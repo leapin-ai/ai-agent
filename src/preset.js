@@ -131,7 +131,7 @@ export const globalInit = async () => {
     ...registry, //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.3.17'
+    defaultVersion: '0.3.18'
   };
   remoteLoaderPreset({
     remotes: {
