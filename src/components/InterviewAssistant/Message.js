@@ -1,6 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import sse from '@root/common/sse';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import last from 'lodash/last';
 import merge from 'lodash/merge';
 
@@ -131,8 +131,9 @@ const Message = createWithRemoteLoader({
     }
   };
   useEffect(() => {
+    const task = taskSchedulerRef.current;
     return () => {
-      taskSchedulerRef.current.destroy();
+      task.destroy();
     };
   }, []);
 

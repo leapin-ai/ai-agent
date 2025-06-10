@@ -1,6 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import React, { useState, useRef, useEffect, memo, useMemo } from 'react';
-import { Row, Col, Flex, Button, Spin } from 'antd';
+import { Row, Col, Flex, Spin } from 'antd';
 import { Timer } from '@kne/count-down';
 import style from './style.module.scss';
 import aiIconVideo from './ai-icon.webm';
@@ -11,7 +11,6 @@ import dayjs from 'dayjs';
 import useRefCallback from '@kne/use-ref-callback';
 import isEqual from 'lodash/isEqual';
 import classnames from 'classnames';
-import QueueAnim from 'rc-queue-anim';
 import get from 'lodash/get';
 import last from 'lodash/last';
 
@@ -200,7 +199,7 @@ const InterViewProgressInner = createWithRemoteLoader({
 
   useEffect(() => {
     init();
-  }, []);
+  }, [init]);
 
   const loadingStage = loading || !stage;
 

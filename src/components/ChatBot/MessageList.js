@@ -1,6 +1,6 @@
 import style from './style.module.scss';
 import { Fragment } from 'react';
-import { Flex, Button } from 'antd';
+import { Flex } from 'antd';
 import dayjs from 'dayjs';
 import classnames from 'classnames';
 import { ReloadOutlined } from '@ant-design/icons';

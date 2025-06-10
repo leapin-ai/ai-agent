@@ -1,6 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import InterviewAssistant from '@components/InterviewAssistant';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 import { useContext } from '../../context';
 import LeftMenu from '@components/LeftMenu';
@@ -12,6 +12,7 @@ const HrAssistantPage = createWithRemoteLoader({
   const { baseUrl } = useContext();
   const [Page] = remoteModules;
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   return (
     <Page menuWidth="200px" menuCloseWidth="80px" backgroundColor="transparent" menu={({ open }) => <LeftMenu baseUrl={baseUrl} open={open} />}>
       <Breadcrumb
@@ -24,7 +25,9 @@ const HrAssistantPage = createWithRemoteLoader({
           { title: 'Interview Assistant' }
         ]}
       />
-      <InterviewAssistant baseUrl={baseUrl} apiName="chatBot" id={searchParams.get('sessionId')} />
+      <InterviewAssistant baseUrl={baseUrl} apiName="chatBot" id={searchParams.get('sessionId')} onComplate={()=>{
+        navigate(`${baseUrl}/detail?id=${searchParams.get('id')}`);
+      }}/>
     </Page>
   );
 });

@@ -46,7 +46,7 @@ const IFrame = createWithRemoteLoader({
   return (
     <InfoPage>
       <InfoPage.Part title={title} extra={<Button shape="circle" type="link" href={url} target="_blank" icon={<Icon type="tuichudenglu" />} />}>
-        <iframe src={url} frameBorder="0" height={height || 500} style={{ width: '100%' }} />
+        <iframe src={url} title="outsie content" height={height || 500} style={{ width: '100%',border:'none' }} />
       </InfoPage.Part>
     </InfoPage>
   );

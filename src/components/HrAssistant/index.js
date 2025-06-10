@@ -21,7 +21,7 @@ const HrAssistant = createWithRemoteLoader({
       render={({ data, reload }) => {
         return (
           <Flex vertical gap={16}>
-            <AssistantHeader baseUrl={baseUrl} reload={reload} id={data.id} type={data.use_scene} status={data.status} avatar={data.avatar} name={data.name} roles={data.role} />
+            <AssistantHeader baseUrl={baseUrl} code={data.app_secret} reload={reload} id={data.id} type={data.use_scene} status={data.status} avatar={data.avatar} name={data.name} roles={data.role} />
             <Setting type={data.use_scene} baseUrl={baseUrl} empty={<Info data={data} reload={reload} baseUrl={baseUrl} />} />
           </Flex>
         );

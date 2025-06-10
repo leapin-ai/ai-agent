@@ -46,8 +46,8 @@
 
 .voice-outer {
   position: absolute;
-  bottom: 14px;
-  right: 14px;
+  bottom: var(--recorder-voice-bottom, 14px);
+  right: var(--recorder-voice-right, 14px);;
   pointer-events: none;
 }
 
@@ -67,6 +67,7 @@
 
 .voice-text {
   white-space: nowrap;
+
   :global {
     .message {
       max-width: 200px;
