@@ -200,6 +200,7 @@ export const globalInit = async () => {
                 {},
                 {
                   url: ossConfig.host,
+                  showError: false,
                   data: {
                     key: `${ensureSlash(ossConfig.dir, true)}${targetFileName}`,
                     'x-oss-object-acl': 'public-read',
