@@ -6,7 +6,7 @@ import style from './style.module.scss';
 import Fetch from '@kne/react-fetch';
 import get from 'lodash/get';
 import classnames from 'classnames';
-import { Report } from '@components/InterviewAssistant';
+import { Report, ConferenceInfo } from '@components/InterviewAssistant';
 
 const InterviewAssistant = createWithRemoteLoader({
   modules: [
@@ -15,19 +15,22 @@ const InterviewAssistant = createWithRemoteLoader({
     'components-core:InfoPage@TableView',
     'components-core:File@FileLink',
     'components-core:Modal@ModalButton',
+    'components-core:Modal@useModal',
     'components-ckeditor:Editor.Content',
     'components-core:StateTag',
     'components-core:ButtonGroup',
     'components-core:Icon'
   ]
 })(({ remoteModules, type, baseUrl }) => {
-  const [usePreset, SearchInput, TableView, FileLink, ModalButton, EditorContent, StateTag, ButtonGroup, Icon] = remoteModules;
+  const [usePreset, SearchInput, TableView, FileLink, ModalButton, useModal, EditorContent, StateTag, ButtonGroup, Icon] = remoteModules;
   const { apis } = usePreset();
   const [keyword, setKeyword] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const page = searchParams.get('page') || 1,
     pageSize = 10;
+
+  const modal = useModal();
 
   return (
     <Flex className={style['container']} vertical gap={24}>
@@ -48,8 +51,7 @@ const InterviewAssistant = createWithRemoteLoader({
                 'is-loading': !isComplete
               })}
               vertical
-              gap={8}
-            >
+              gap={8}>
               <TableView
                 dataSource={data.results}
                 columns={[
@@ -90,8 +92,7 @@ const InterviewAssistant = createWithRemoteLoader({
                             title: 'JD',
                             children: <EditorContent>{item}</EditorContent>,
                             footer: null
-                          }}
-                        >
+                          }}>
                           Click Checked
                         </ModalButton>
                       );
@@ -134,8 +135,7 @@ const InterviewAssistant = createWithRemoteLoader({
                             size: 'large',
                             children: <Report data={item} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} />,
                             footer: null
-                          }}
-                        >
+                          }}>
                           Click checked
                         </ModalButton>
                       );
@@ -147,6 +147,28 @@ const InterviewAssistant = createWithRemoteLoader({
                     getValueOf: item => {
                       if (get(item, 'status') === 2) {
                         return null;
+                      }
+                      if (get(item, 'extra_info.data.online') === true) {
+                        return (
+                          <ButtonGroup
+                            showLength={0}
+                            list={[
+                              {
+                                type: 'link',
+                                children: 'Conference details',
+                                onClick: () => {
+                                  modal({
+                                    title: 'Conference info',
+                                    size: 'small',
+                                    footer: null,
+                                    children: <ConferenceInfo id={get(item, 'conference_info.id')} />
+                                  });
+                                }
+                              }
+                            ]}
+                            more={<Button icon={<Icon type="icon-gengduo2" />} className="btn-no-padding" type="link" />}
+                          />
+                        );
                       }
                       return (
                         <ButtonGroup

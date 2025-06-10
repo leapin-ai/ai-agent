@@ -1,6 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { useState } from 'react';
-import { Button, Flex, Pagination, Space } from 'antd';
+import { Button, Flex, Pagination } from 'antd';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import style from './style.module.scss';
 import Fetch from '@kne/react-fetch';

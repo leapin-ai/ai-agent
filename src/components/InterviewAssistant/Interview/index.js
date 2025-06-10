@@ -1,6 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import style from './style.module.scss';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import localStorage from '@kne/local-storage';
 import { Splitter, Spin, Flex, Button } from 'antd';
 import InterviewProgress from '../InterviewProgress';
@@ -13,7 +13,7 @@ const LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES = 'LEAPIN_INTERVIEW_ASSISTANT_WIND
 
 const Interview = createWithRemoteLoader({
   modules: ['components-core:StateBar', 'components-core:Common@SimpleBar', 'components-core:FilePreview', 'components-ckeditor:Editor.Content', 'components-core:Tooltip', 'components-core:Icon']
-})(({ remoteModules, resume, jobTitle, recorder, jd, list, stage, operation, isContinue, onStart, onStageChange, onOperation, onComplete }) => {
+})(({ remoteModules, className, resume, jobTitle, recorder, jd, list, stage, operation, isContinue, onStart, onStageChange, onOperation, onComplete }) => {
   const [StateBar, SimpleBar, FilePreview, EditorContent, Tooltip, Icon] = remoteModules;
   const [contentTab, setContentTab] = useState('resume');
   const [sizes, setSizes] = useState(localStorage.getItem(LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES) || ['50%', '50%']);
@@ -21,12 +21,11 @@ const Interview = createWithRemoteLoader({
 
   return (
     <Splitter
-      className={style['container']}
+      className={classnames(className, style['container'])}
       onResize={sizes => {
         localStorage.setItem(LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES, sizes);
         setSizes(sizes);
-      }}
-    >
+      }}>
       <Splitter.Panel size={sizes[0]}>
         <StateBar
           activeKey={contentTab}
@@ -98,8 +97,7 @@ const Interview = createWithRemoteLoader({
               onClick={() => {
                 setStart(true);
                 onStart && onStart();
-              }}
-            >
+              }}>
               {isContinue ? '继续面试' : '开始面试'}
             </Button>
           </Flex>
