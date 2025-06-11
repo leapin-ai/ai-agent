@@ -1,4 +1,4 @@
-import { Flex } from 'antd';
+import { Flex, Typography } from 'antd';
 import { PrinterOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
 import { createWithRemoteLoader } from '@kne/remote-loader';
@@ -6,9 +6,9 @@ import style from './style.module.scss';
 import { useRef } from 'react';
 
 const Report = createWithRemoteLoader({
-  modules: ['components-core:File@PrintButton', 'components-core:InfoPage@Report']
+  modules: ['components-core:File@PrintButton', 'components-core:InfoPage@Report', 'components-core:InfoPage']
 })(({ remoteModules, data, extraData, startTime, endTime }) => {
-  const [PrintButton, ReportView] = remoteModules;
+  const [PrintButton, ReportView, InfoPage] = remoteModules;
   const contentRef = useRef(null);
   return (
     <div className={style['report-outer']}>
@@ -190,6 +190,36 @@ const Report = createWithRemoteLoader({
                   ]
                 }}
               />
+            </ReportView>
+          )}
+          {get(data, 'report.summary') && data.report.summary.length > 0 && (
+            <ReportView title="面试详情" border={false}>
+              <Flex vertical gap={12}>
+                {data.report.summary.map((item, index) => {
+                  if (item.type === 'section') {
+                    return <InfoPage.Part key={index} title={item.content}></InfoPage.Part>;
+                  }
+                  if (item.type === 'question') {
+                    return (
+                      <InfoPage.Part key={index}>
+                        <InfoPage.Part title={item.time}>
+                          <Typography.Paragraph className={style['question-title']}>
+                            <Typography.Text className={style['question-role']}>{item.role}:</Typography.Text>
+                            {item.content}
+                          </Typography.Paragraph>
+                        </InfoPage.Part>
+                      </InfoPage.Part>
+                    );
+                  }
+
+                  return (
+                    <Typography.Paragraph key={index}>
+                      <Typography.Text className={style['question-role']}>{item.role}:</Typography.Text>
+                      {item.content}
+                    </Typography.Paragraph>
+                  );
+                })}
+              </Flex>
             </ReportView>
           )}
           {get(data, 'report.error') && (
