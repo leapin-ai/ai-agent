@@ -1,11 +1,13 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import style from './style.module.scss';
 import { Flex, Button } from 'antd';
+import { useRef } from 'react';
 
 const PreparationInfo = createWithRemoteLoader({
-  modules: ['components-core:InfoPage', 'components-core:StateTag']
+  modules: ['components-core:InfoPage', 'components-core:StateTag', 'components-core:File@PrintButton']
 })(({ remoteModules, data, reload }) => {
-  const [InfoPage, StateTag] = remoteModules;
+  const [InfoPage, StateTag, PrintButton] = remoteModules;
+  const ref = useRef(null);
   if (!(data && data.length > 0)) {
     return (
       <Flex align="center" justify="center" className={style['no-data']} vertical gap={12}>
@@ -22,24 +24,33 @@ const PreparationInfo = createWithRemoteLoader({
     );
   }
   return (
-    <InfoPage>
-      {(data || []).map(({ title, subtitle, advices }, index) => {
-        return (
-          <InfoPage.Part title={title} subtitle={subtitle} key={index}>
-            <ul className={style['questions-list']}>
-              {(advices || []).map(({ question, tag }, index) => {
-                return (
-                  <li key={index}>
-                    <StateTag type="info" text={tag} />
-                    {question}
-                  </li>
-                );
-              })}
-            </ul>
-          </InfoPage.Part>
-        );
-      })}
-    </InfoPage>
+    <>
+      <div ref={ref} className={style['outer-container']}>
+        <InfoPage>
+          {(data || []).map(({ title, subtitle, advices }, index) => {
+            return (
+              <InfoPage.Part title={title} subtitle={subtitle} key={index}>
+                <ul className={style['questions-list']}>
+                  {(advices || []).map(({ question, tag }, index) => {
+                    return (
+                      <li key={index}>
+                        <StateTag type="info" text={tag} />
+                        {question}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </InfoPage.Part>
+            );
+          })}
+        </InfoPage>
+      </div>
+      <Flex justify="center">
+        <PrintButton contentRef={ref} shape="round">
+          Print
+        </PrintButton>
+      </Flex>
+    </>
   );
 });
 

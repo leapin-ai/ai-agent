@@ -20,3 +20,9 @@
 .no-data-subtitle {
   margin-bottom: 32px;
 }
+
+@media print {
+  .outer-container {
+    padding: 24px;
+  }
+}
