@@ -118,7 +118,7 @@ const InterviewAssistant = createWithRemoteLoader({
                       if (item) {
                         return <StateTag type="info" text="Ended" />;
                       }
-                      if (get(item, 'extra_info.data.online') === true && !get(item, 'conversation_id.id')) {
+                      if (get(item, 'extra_info.data.online') === true && !get(item, 'conference_info.id')) {
                         return <StateTag type="danger" text="Conference create Error" />;
                       }
                       return <StateTag type="progress" text="Progress" />;
@@ -145,7 +145,7 @@ const InterviewAssistant = createWithRemoteLoader({
                           className="btn-no-padding"
                           modalProps={{
                             size: 'large',
-                            children: <Report data={item} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} />,
+                            children: <Report data={item} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} reload={reload}/>,
                             footer: null
                           }}>
                           Click checked
@@ -172,7 +172,7 @@ const InterviewAssistant = createWithRemoteLoader({
                         return <ButtonGroup showLength={0} list={[preparationPreview]} more={<Button icon={<Icon type="icon-gengduo2" />} className="btn-no-padding" type="link" />} />;
                       }
 
-                      if (get(item, 'extra_info.data.online') === true && !get(item, 'conversation_id.id')) {
+                      if (get(item, 'extra_info.data.online') === true && !get(item, 'conference_info.id')) {
                         return <ButtonGroup showLength={0} list={[preparationPreview]} more={<Button icon={<Icon type="icon-gengduo2" />} className="btn-no-padding" type="link" />} />;
                       }
 

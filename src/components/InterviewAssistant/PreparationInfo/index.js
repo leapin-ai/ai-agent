@@ -13,7 +13,7 @@ const PreparationInfo = createWithRemoteLoader({
       <Flex align="center" justify="center" className={style['no-data']} vertical gap={12}>
         <h2 className={style['no-data-title']}>Getting things ready...</h2>
         <div className={style['no-data-subtitle']}>Your interview materials will be ready in about 2 minutes.</div>
-        <Button
+        <Button shape="round"
           type="primary"
           onClick={() => {
             reload && reload();
