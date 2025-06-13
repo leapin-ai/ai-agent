@@ -44,9 +44,14 @@ const Report = createWithRemoteLoader({
                           span: 4
                         },
                         {
+                          title: '维度说明',
+                          name: 'comment',
+                          span: 6
+                        },
+                        {
                           title: '具体表现建议',
                           name: 'description',
-                          span: 14
+                          span: 8
                         }
                       ],
                       list: get(data, 'report.interviewer.metrics')
@@ -192,7 +197,7 @@ const Report = createWithRemoteLoader({
               />
             </ReportView>
           )}
-          {get(data, 'report.summary') && data.report.summary.length > 0 && (
+          {/*get(data, 'report.summary') && data.report.summary.length > 0 && (
             <ReportView title="面试详情" border={false}>
               <Flex vertical gap={12}>
                 {data.report.summary.map((item, index) => {
@@ -220,6 +225,19 @@ const Report = createWithRemoteLoader({
                   );
                 })}
               </Flex>
+            </ReportView>
+          )*/}
+          {get(data, 'report.key_questions') && data.report.key_questions.length > 0 && (
+            <ReportView title="关键问题" border={false}>
+              <InfoPage.Part>
+                {data.report.key_questions.map(({ time, question }, index) => {
+                  return (
+                    <InfoPage.Part key={index} title={time}>
+                      {question}
+                    </InfoPage.Part>
+                  );
+                })}
+              </InfoPage.Part>
             </ReportView>
           )}
           {get(data, 'report.error') && (
