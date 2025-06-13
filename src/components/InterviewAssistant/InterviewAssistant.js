@@ -75,6 +75,7 @@ const InterviewAssistantContent = createWithRemoteLoader({
             list={data.stages}
             jobTitle={data.jobTitle}
             stage={stage}
+            reload={reload}
             operation={operation}
             onOperation={async ({ action, target }) => {
               const stageAction = [

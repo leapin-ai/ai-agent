@@ -14,7 +14,7 @@ const LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES = 'LEAPIN_INTERVIEW_ASSISTANT_WIND
 
 const Interview = createWithRemoteLoader({
   modules: ['components-core:StateBar', 'components-core:Common@SimpleBar', 'components-core:FilePreview', 'components-ckeditor:Editor.Content', 'components-core:Tooltip', 'components-core:Icon']
-})(({ remoteModules, className, resume, preparationInfo, jobTitle, recorder, jd, list, stage, operation, isContinue, onStart, onStageChange, onOperation, onComplete }) => {
+})(({ remoteModules, className, resume, preparationInfo, jobTitle, recorder, reload, jd, list, stage, operation, isContinue, onStart, onStageChange, onOperation, onComplete }) => {
   const [StateBar, SimpleBar, FilePreview, EditorContent, Tooltip, Icon] = remoteModules;
   const [contentTab, setContentTab] = useState('resume');
   const [sizes, setSizes] = useState(localStorage.getItem(LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES) || ['50%', '50%']);
@@ -27,7 +27,7 @@ const Interview = createWithRemoteLoader({
         setSizes(sizes);
       }}>
       <Splitter.Panel size={sizes[0]}>
-        <InterviewInfo jd={jd} resume={resume} preparationInfo={preparationInfo} />
+        <InterviewInfo jd={jd} resume={resume} preparationInfo={preparationInfo} reload={reload} />
       </Splitter.Panel>
       <Splitter.Panel size={sizes[1]}>
         {start ? (

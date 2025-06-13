@@ -5,9 +5,9 @@ import React, { useState } from 'react';
 
 const InterviewInfo = createWithRemoteLoader({
   modules: ['components-core:StateBar', 'components-core:Common@SimpleBar', 'components-core:FilePreview', 'components-ckeditor:Editor.Content', 'components-core:Tooltip', 'components-core:Icon']
-})(({ remoteModules, resume, jd, preparationInfo }) => {
+})(({ remoteModules, active, resume, jd, preparationInfo, reload }) => {
   const [StateBar, SimpleBar, FilePreview, EditorContent] = remoteModules;
-  const [contentTab, setContentTab] = useState('resume');
+  const [contentTab, setContentTab] = useState(active || 'resume');
   return (
     <>
       <StateBar
@@ -25,7 +25,7 @@ const InterviewInfo = createWithRemoteLoader({
       <SimpleBar className={style['scroller']}>
         {contentTab === 'resume' && <FilePreview {...Object.assign({}, resume)} />}
         {contentTab === 'jd' && <EditorContent>{jd || ''}</EditorContent>}
-        {contentTab === 'preparation' && <PreparationInfo data={preparationInfo} />}
+        {contentTab === 'preparation' && <PreparationInfo data={preparationInfo} reload={reload}/>}
       </SimpleBar>
     </>
   );
