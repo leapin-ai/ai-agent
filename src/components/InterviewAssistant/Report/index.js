@@ -1,4 +1,4 @@
-import { Flex, Typography } from 'antd';
+import { Flex } from 'antd';
 import { PrinterOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
 import { createWithRemoteLoader } from '@kne/remote-loader';
@@ -20,8 +20,8 @@ const Report = createWithRemoteLoader({
           <ReportView border={false}>
             <h1>面试报告</h1>
             <Flex gap={20}>
-              <div>姓名:{get(extraData, 'resume.resumeData.name', 'Default')}</div>
-              <div>面试职位:{get(extraData, 'jobTitle') || ''}</div>
+              <div>姓名: {get(extraData, 'resume.resumeData.name', 'Default')}</div>
+              <div>面试职位: {get(extraData, 'jobTitle') || ''}</div>
               <div>面试时间: {startTime || ''}</div>
             </Flex>
           </ReportView>
@@ -35,7 +35,7 @@ const Report = createWithRemoteLoader({
                         {
                           title: '评估维度',
                           name: 'title',
-                          span: 6
+                          span: 4
                         },
                         {
                           title: '评分',
@@ -46,7 +46,8 @@ const Report = createWithRemoteLoader({
                         {
                           title: '维度说明',
                           name: 'comment',
-                          span: 6
+                          span: 8,
+                          valueOf: item => <div className={style['report-description']}>{item}</div>
                         },
                         {
                           title: '具体表现建议',
@@ -110,7 +111,8 @@ const Report = createWithRemoteLoader({
                         {
                           title: '评估维度',
                           name: 'title',
-                          span: 6
+                          span: 4,
+                          valueOf: item => <div className={style['report-title']}>{item}</div>
                         },
                         {
                           title: '评分',
@@ -121,7 +123,8 @@ const Report = createWithRemoteLoader({
                         {
                           title: '关键证据',
                           name: 'comment',
-                          span: 6
+                          span: 8,
+                          valueOf: item => <div className={style['report-description']}>{item}</div>
                         },
                         {
                           title: '分析逻辑',
