@@ -1,13 +1,25 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import style from './style.module.scss';
-import { Flex } from 'antd';
+import { Flex, Button } from 'antd';
 
 const PreparationInfo = createWithRemoteLoader({
   modules: ['components-core:InfoPage']
-})(({ remoteModules, data }) => {
+})(({ remoteModules, data, reload }) => {
   const [InfoPage] = remoteModules;
   if (!(data && data.length > 0)) {
-    return <Flex align="center" justify="center" className={style['no-data']}>Preparing for interview...</Flex>;
+    return (
+      <Flex align="center" justify="center" className={style['no-data']} vertical gap={12}>
+        <h2 className={style['no-data-title']}>Getting things ready...</h2>
+        <div className={style['no-data-subtitle']}>Your interview materials will be ready in about 2 minutes.</div>
+        <Button
+          type="primary"
+          onClick={() => {
+            reload && reload();
+          }}>
+          Reload
+        </Button>
+      </Flex>
+    );
   }
   return (
     <InfoPage>
@@ -15,7 +27,7 @@ const PreparationInfo = createWithRemoteLoader({
         return (
           <InfoPage.Part title={title} subtitle={subtitle} key={index}>
             <ul className={style['questions-list']}>
-              {questions.map((question, index) => {
+              {(questions || []).map((question, index) => {
                 return <li key={index}>{question}</li>;
               })}
             </ul>

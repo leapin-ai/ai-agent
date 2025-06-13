@@ -6,8 +6,17 @@
 }
 
 .no-data {
-  font-size: 22px;
-  font-weight: bold;
   color: var(--font-color-grey-2);
   height: calc(var(--container-height) - 46px);
+  box-sizing: border-box;
+  padding: 16px;
+}
+
+.no-data-title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.no-data-subtitle {
+  margin-bottom: 32px;
 }

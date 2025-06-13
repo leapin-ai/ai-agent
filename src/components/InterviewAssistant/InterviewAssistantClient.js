@@ -22,9 +22,9 @@ const InterviewAssistantClient = createWithRemoteLoader({
       error={error => {
         return <Result status="500" title="Error" subTitle={error} />;
       }}
-      render={({ data }) => {
+      render={({ data, reload }) => {
         if (conferenceStep === 'waiting') {
-          return <InterviewInfo jd={get(data, 'session.extra_info.data.jd')} resume={get(data, 'session.extra_info.data.resume')} preparationInfo={get(data, 'session.preparation_info.guide')} />;
+          return <InterviewInfo active="preparation" reload={reload} jd={get(data, 'session.extra_info.data.jd')} resume={get(data, 'session.extra_info.data.resume')} preparationInfo={get(data, 'session.preparation_info.guide')} />;
         }
         return (
           <InterviewAssistant
