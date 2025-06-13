@@ -158,6 +158,14 @@ const InterviewAssistant = createWithRemoteLoader({
               if (resData.code !== 0) {
                 return;
               }
+              const { data: prepareResData } = await ajax(
+                Object.assign({}, apis.agent.chatBot.interviewPrepare, {
+                  urlParams: { session_id: resData.data.id }
+                })
+              );
+              if (prepareResData.code !== 0) {
+                return;
+              }
               formApi.close();
               if (data.interviewType !== 0) {
                 navigate(`${baseUrl}/interview-assistant-test?id=${id}&sessionId=${resData.data.id}`);

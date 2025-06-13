@@ -8,17 +8,17 @@ import { ReactComponent as LogoIcon } from '../InterviewProgress/logo.svg';
 import classnames from 'classnames';
 import voiceData from '../voice.json';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import InterviewInfo from '../InterviewInfo';
 
 const LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES = 'LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES';
 
 const Interview = createWithRemoteLoader({
   modules: ['components-core:StateBar', 'components-core:Common@SimpleBar', 'components-core:FilePreview', 'components-ckeditor:Editor.Content', 'components-core:Tooltip', 'components-core:Icon']
-})(({ remoteModules, className, resume, jobTitle, recorder, jd, list, stage, operation, isContinue, onStart, onStageChange, onOperation, onComplete }) => {
+})(({ remoteModules, className, resume, preparationInfo, jobTitle, recorder, jd, list, stage, operation, isContinue, onStart, onStageChange, onOperation, onComplete }) => {
   const [StateBar, SimpleBar, FilePreview, EditorContent, Tooltip, Icon] = remoteModules;
   const [contentTab, setContentTab] = useState('resume');
   const [sizes, setSizes] = useState(localStorage.getItem(LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES) || ['50%', '50%']);
   const [start, setStart] = useState(false);
-
   return (
     <Splitter
       className={classnames(className, style['container'])}
@@ -27,18 +27,7 @@ const Interview = createWithRemoteLoader({
         setSizes(sizes);
       }}>
       <Splitter.Panel size={sizes[0]}>
-        <StateBar
-          activeKey={contentTab}
-          onChange={setContentTab}
-          stateOption={[
-            { tab: 'Resume', key: 'resume' },
-            { tab: 'JD', key: 'jd' }
-          ]}
-        />
-        <SimpleBar className={style['scroller']}>
-          {contentTab === 'resume' && <FilePreview {...Object.assign({}, resume)} />}
-          {contentTab === 'jd' && <EditorContent>{jd || ''}</EditorContent>}
-        </SimpleBar>
+        <InterviewInfo jd={jd} resume={resume} preparationInfo={preparationInfo} />
       </Splitter.Panel>
       <Splitter.Panel size={sizes[1]}>
         {start ? (

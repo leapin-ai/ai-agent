@@ -10,7 +10,7 @@ import Message from './Message';
 
 const InterviewAssistantContent = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, className, baseUrl, sessionId, agentId, apis, token, data, operation, reload, setData, messageList, online = false, onStart, onComplete, getSpeechInput }) => {
+})(({ remoteModules, className, baseUrl, sessionId, agentId, apis, token, data, preparationInfo, operation, reload, setData, messageList, online = false, onStart, onComplete, getSpeechInput }) => {
   const [usePreset] = remoteModules;
   const { ajax } = usePreset();
   const [stage, setStage] = useState(null);
@@ -71,6 +71,7 @@ const InterviewAssistantContent = createWithRemoteLoader({
             className={className}
             resume={data.resume}
             jd={data.jd}
+            preparationInfo={preparationInfo}
             list={data.stages}
             jobTitle={data.jobTitle}
             stage={stage}
@@ -202,6 +203,7 @@ const InterviewAssistant = createWithRemoteLoader({
             setData={setData}
             data={get(data, 'extra_info.data')}
             operation={get(data, 'operation_history')}
+            preparationInfo={get(data, 'preparation_info.guide')}
             isEnd={data.status === 2}
             messageList={data.messages}
             agentId={data.agent.id}

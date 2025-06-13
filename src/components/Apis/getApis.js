@@ -65,6 +65,10 @@ const getApis = options => {
         url: `${prefix}/api/agent/saas/session/add/`,
         method: 'POST'
       },
+      interviewPrepare: {
+        url: `${prefix}/agent/saas/session/{session_id}/interview/prepare/`,
+        method: 'GET'
+      },
       getSessionDetail: {
         url: `${prefix}/agent/saas/session/{session_id}/detail/`,
         method: 'GET'
