@@ -158,7 +158,6 @@ const InterviewAssistant = createWithRemoteLoader({
               if (resData.code !== 0) {
                 return;
               }
-              reload && reload();
               const { data: prepareResData } = await ajax(
                 Object.assign({}, apis.agent.chatBot.interviewPrepare, {
                   urlParams: { session_id: resData.data.id }
@@ -231,6 +230,8 @@ const InterviewAssistant = createWithRemoteLoader({
               if (saveSessionResData.code !== 0) {
                 return;
               }
+
+              reload && reload();
 
               modal({
                 title: 'Conference Info',
