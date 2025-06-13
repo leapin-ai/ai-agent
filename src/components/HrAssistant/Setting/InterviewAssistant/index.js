@@ -99,6 +99,14 @@ const InterviewAssistant = createWithRemoteLoader({
                     }
                   },
                   {
+                    name: 'type',
+                    title: 'Type',
+                    getValueOf: item => get(item, 'extra_info.data.interviewType') === 0,
+                    render: item => {
+                      return item ? <StateTag type="success" text="Online" /> : <StateTag type="info" text="Onsite" />;
+                    }
+                  },
+                  {
                     name: 'status',
                     title: 'Status',
                     getValueOf: item => get(item, 'summary_status') === 1 && get(item, 'status') === 2,

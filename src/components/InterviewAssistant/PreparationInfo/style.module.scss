@@ -1,0 +1,13 @@
+.questions-list {
+  color: var(--font-color-grey);
+  line-height: 2;
+  padding-left: 1em;
+  margin: 0;
+}
+
+.no-data {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--font-color-grey-2);
+  height: calc(var(--container-height) - 46px);
+}

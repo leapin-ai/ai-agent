@@ -1,12 +1,14 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import Fetch from '@kne/react-fetch';
 import InterviewAssistant from './InterviewAssistant';
 import { Result } from 'antd';
+import InterviewInfo from './InterviewInfo';
+import get from 'lodash/get';
 
 const InterviewAssistantClient = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, code, onSpeechStart, onSpeechEnd, getSpeechInput, ...props }) => {
+})(({ remoteModules, code, conferenceStep, onSpeechStart, onSpeechEnd, getSpeechInput, ...props }) => {
   const [usePreset] = remoteModules;
   const [searchParams] = useSearchParams();
   const { apis } = usePreset();
@@ -21,6 +23,9 @@ const InterviewAssistantClient = createWithRemoteLoader({
         return <Result status="500" title="Error" subTitle={error} />;
       }}
       render={({ data }) => {
+        if (conferenceStep === 'waiting') {
+          return <InterviewInfo jd={get(data, 'session.extra_info.data.jd')} resume={get(data, 'session.extra_info.data.resume')} preparationInfo={get(data, 'session.preparation_info.guide')} />;
+        }
         return (
           <InterviewAssistant
             {...props}

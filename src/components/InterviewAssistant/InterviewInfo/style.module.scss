@@ -1,0 +1,10 @@
+.scroller {
+  padding-right: 24px;
+  height: calc(var(--container-height) - 46px);
+
+  :global {
+    .hyc-common-markdown.hyc-common-markdown-style {
+      width: auto !important;
+    }
+  }
+}
