@@ -196,6 +196,7 @@ const InterviewAssistant = createWithRemoteLoader({
                     origin: 'ai-agent',
                     options: {
                       documentVisibleAll: false,
+                      documentTitle: '获取面试准备',
                       setting: {
                         layoutType: 3,
                         record: 'video',

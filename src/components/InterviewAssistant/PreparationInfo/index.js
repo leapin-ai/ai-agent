@@ -27,7 +27,7 @@ const PreparationInfo = createWithRemoteLoader({
         return (
           <InfoPage.Part title={title} subtitle={subtitle} key={index}>
             <ul className={style['questions-list']}>
-              {questions.map((question, index) => {
+              {(questions || []).map((question, index) => {
                 return <li key={index}>{question}</li>;
               })}
             </ul>
