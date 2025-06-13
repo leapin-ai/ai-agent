@@ -45,7 +45,7 @@ const PreparationInfo = createWithRemoteLoader({
           })}
         </InfoPage>
       </div>
-      <Flex justify="center">
+      <Flex justify="center" className={style['footer']}>
         <PrintButton contentRef={ref} shape="round">
           Print
         </PrintButton>
