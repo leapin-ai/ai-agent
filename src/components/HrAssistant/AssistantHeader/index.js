@@ -114,7 +114,7 @@ const AssistantHeader = createWithRemoteLoader({
             {status === 1 && <StateTag type="progress" text="Auditing" />}
           </Flex>
           <Flex gap={8}>
-            <ButtonGroup disabled={status !== 2} id={id} type={type} name={name} baseUrl={baseUrl} code={code}/>
+            <ButtonGroup disabled={status !== 2} id={id} type={type} name={name} baseUrl={baseUrl} code={code} reload={reload}/>
           </Flex>
         </Flex>
       </Flex>

@@ -123,7 +123,7 @@ const InterviewAssistantFormInner = createWithRemoteLoader({
 
 const InterviewAssistant = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset', 'components-core:LoadingButton', 'components-core:FormInfo', 'components-core:Modal@useModal']
-})(({ remoteModules, id, name, code, baseUrl }) => {
+})(({ remoteModules, id, name, code, baseUrl, reload }) => {
   const [usePreset, LoadingButton, FormInfo, useModal] = remoteModules;
   const { apis, ajax } = usePreset();
   const { useFormModal } = FormInfo;
@@ -158,6 +158,7 @@ const InterviewAssistant = createWithRemoteLoader({
               if (resData.code !== 0) {
                 return;
               }
+              reload && reload();
               const { data: prepareResData } = await ajax(
                 Object.assign({}, apis.agent.chatBot.interviewPrepare, {
                   urlParams: { session_id: resData.data.id }
