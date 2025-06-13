@@ -3,9 +3,9 @@ import style from './style.module.scss';
 import { Flex, Button } from 'antd';
 
 const PreparationInfo = createWithRemoteLoader({
-  modules: ['components-core:InfoPage']
+  modules: ['components-core:InfoPage', 'components-core:StateTag']
 })(({ remoteModules, data, reload }) => {
-  const [InfoPage] = remoteModules;
+  const [InfoPage, StateTag] = remoteModules;
   if (!(data && data.length > 0)) {
     return (
       <Flex align="center" justify="center" className={style['no-data']} vertical gap={12}>
@@ -23,12 +23,17 @@ const PreparationInfo = createWithRemoteLoader({
   }
   return (
     <InfoPage>
-      {(data || []).map(({ title, subtitle, questions }, index) => {
+      {(data || []).map(({ title, subtitle, advices }, index) => {
         return (
           <InfoPage.Part title={title} subtitle={subtitle} key={index}>
             <ul className={style['questions-list']}>
-              {(questions || []).map((question, index) => {
-                return <li key={index}>{question}</li>;
+              {(advices || []).map(({ question, tag }, index) => {
+                return (
+                  <li key={index}>
+                    <StateTag type="info" text={tag} />
+                    {question}
+                  </li>
+                );
               })}
             </ul>
           </InfoPage.Part>
