@@ -21,7 +21,7 @@ const AIInterview = createWithRemoteLoader({
     'components-core:ButtonGroup',
     'components-core:Icon'
   ]
-})(({ remoteModules, type, baseUrl }) => {
+})(({ remoteModules, type, baseUrl, getReload }) => {
   const [usePreset, SearchInput, TableView, ModalButton, useModal, EditorContent, StateTag, ButtonGroup, Icon] = remoteModules;
   const { apis } = usePreset();
   const [keyword, setKeyword] = useState('');
@@ -44,7 +44,8 @@ const AIInterview = createWithRemoteLoader({
         {...Object.assign({}, apis.agent.getSessionList, {
           params: { page, page_size: pageSize, keyword, use_scene: type }
         })}
-        render={({ data, isComplete }) => {
+        render={({ data, isComplete, reload }) => {
+          getReload && getReload(reload);
           return (
             <Flex
               className={classnames('loading-container', {
@@ -149,7 +150,7 @@ const AIInterview = createWithRemoteLoader({
                             children: (
                               <Report
                                 data={item.output}
-                                flowData={get(target['flow_data'], 'QA_history','').split(',')}
+                                flowData={get(target['flow_data'], 'QA_history', '').split(',')}
                                 messages={target.messages}
                                 agentAvatar={get(target, 'agent_application.agent.avatar')}
                                 extraData={get(target, 'extra_info.data')}

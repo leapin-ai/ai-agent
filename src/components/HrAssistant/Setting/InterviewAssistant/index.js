@@ -21,7 +21,7 @@ const InterviewAssistant = createWithRemoteLoader({
     'components-core:ButtonGroup',
     'components-core:Icon'
   ]
-})(({ remoteModules, type, baseUrl }) => {
+})(({ remoteModules, type, baseUrl, getReload }) => {
   const [usePreset, SearchInput, TableView, FileLink, ModalButton, useModal, EditorContent, StateTag, ButtonGroup, Icon] = remoteModules;
   const { apis } = usePreset();
   const [keyword, setKeyword] = useState('');
@@ -44,7 +44,8 @@ const InterviewAssistant = createWithRemoteLoader({
         {...Object.assign({}, apis.agent.getSessionList, {
           params: { page, page_size: pageSize, keyword, agent_id: searchParams.get('id'), use_scene: type }
         })}
-        render={({ data, isComplete }) => {
+        render={({ data, isComplete, reload }) => {
+          getReload && getReload(reload);
           return (
             <Flex
               className={classnames('loading-container', {
