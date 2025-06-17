@@ -43,7 +43,7 @@ const InterviewAssistantFormInner = createWithRemoteLoader({
           }}
           rule="REQ"
         />,
-        <Input name="jobTitle" label="Job title" rule="REQ" />,
+        <Input name="jobTitle" label="Job title" rule="REQ LEN-0-100" />,
         <Enum moduleName="interviewStage">
           {stageList => {
             return (
@@ -156,14 +156,6 @@ const InterviewAssistant = createWithRemoteLoader({
                 })
               );
               if (resData.code !== 0) {
-                return;
-              }
-              const { data: prepareResData } = await ajax(
-                Object.assign({}, apis.agent.chatBot.interviewPrepare, {
-                  urlParams: { session_id: resData.data.id }
-                })
-              );
-              if (prepareResData.code !== 0) {
                 return;
               }
               formApi.close();
