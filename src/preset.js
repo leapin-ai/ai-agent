@@ -14,7 +14,7 @@ window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
 const baseApiUrl = window.runtimeApiUrl || '';
 window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://api.gw.leapin-ai.com';
 const appName = 'ai-agent';
-const env = window.runtimeEnv?.['env'] || 'local';
+const env = window.runtimeEnv?.['env'] || 'prod';
 
 export const globalInit = async () => {
   const ajax = createAjax({
@@ -31,14 +31,12 @@ export const globalInit = async () => {
       interceptors.request.use(config => {
         if (config.headers['env'] !== 'local') {
           config.baseURL = `${config.baseURL}/${config.headers['appName']}/${config.headers['env']}`;
-          delete config.headers['appName'];
-          delete config.headers['env'];
         }
         if (config.headers['appName'] !== 'ai-agent') {
           config.baseURL = `${window.runtimeGatewayUrl}/${config.headers['appName']}/${config.headers['env']}`;
-          delete config.headers['appName'];
-          delete config.headers['env'];
         }
+        delete config.headers['appName'];
+        delete config.headers['env'];
         return config;
       });
 
