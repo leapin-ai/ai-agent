@@ -8,7 +8,7 @@ const ConferenceInfo = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset', 'components-core:InfoPage', 'LoadingButton']
 })(({ remoteModules, id }) => {
   const [usePreset, InfoPage, LoadingButton] = remoteModules;
-  const { ajax, apis } = usePreset();
+  const { ajax, apis, conferenceHost } = usePreset();
   const { message } = App.useApp();
   return (
     <Fetch
@@ -47,12 +47,12 @@ const ConferenceInfo = createWithRemoteLoader({
         const candidateInfo = `    候选人您好，您有一场远程面试安排 
     名称：${data.name}
     时间：${formatConferenceTime({ startTime: data.startTime, duration: data.duration })}
-    点击链接直接加入会议： https://staging.video-conf.unfolds.ai/detail?code=${candidate?.shorten}
+    点击链接直接加入会议： ${conferenceHost}/detail?code=${candidate?.shorten}
           `;
         const interviewerInfo = `    面试官您好，您有一场远程面试安排 
     名称：${data.name}
     时间：${formatConferenceTime({ startTime: data.startTime, duration: data.duration })}
-    点击链接直接加入会议： https://staging.video-conf.unfolds.ai/detail?code=${interviewer?.shorten}
+    点击链接直接加入会议： ${conferenceHost}/detail?code=${interviewer?.shorten}
           `;
         return (
           <InfoPage>
@@ -83,7 +83,7 @@ const ConferenceInfo = createWithRemoteLoader({
                 <Button
                   type="primary"
                   onClick={() => {
-                    window.open(`https://staging.video-conf.unfolds.ai/detail?code=${interviewer?.shorten}`, '_blank');
+                    window.open(`${conferenceHost}/detail?code=${interviewer?.shorten}`, '_blank');
                   }}>
                   进入面试
                 </Button>
