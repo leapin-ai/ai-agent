@@ -7,17 +7,6 @@
   --container-height: calc(100vh - 254px);
 }
 
-.scroller {
-  padding-right: 24px;
-  height: calc(var(--container-height) - 46px);
-
-  :global {
-    .hyc-common-markdown.hyc-common-markdown-style {
-      width: auto !important;
-    }
-  }
-}
-
 .result-scroller {
   height: var(--container-height);
 }
@@ -46,8 +35,8 @@
 
 .voice-outer {
   position: absolute;
-  bottom: 14px;
-  right: 14px;
+  bottom: var(--recorder-voice-bottom, 14px);
+  right: var(--recorder-voice-right, 14px);;
   pointer-events: none;
 }
 
@@ -67,6 +56,7 @@
 
 .voice-text {
   white-space: nowrap;
+
   :global {
     .message {
       max-width: 200px;

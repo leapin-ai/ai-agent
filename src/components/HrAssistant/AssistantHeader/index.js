@@ -11,13 +11,10 @@ const AssistantHeader = createWithRemoteLoader({
     'components-core:Icon',
     'components-core:LoadingButton',
     'components-core:Modal@useConfirmModal',
-    'components-core:StateTag',
-    'components-core:FormInfo@useFormModal',
-    'components-core:FormInfo',
-    'components-core:File@Download'
+    'components-core:StateTag'
   ]
-})(({ remoteModules, id, avatar, name, roles, status, reload, baseUrl, type }) => {
-  const [usePreset, Icon, LoadingButton, useConfirmModal, StateTag, useFormModal, FormInfo, Download] = remoteModules;
+})(({ remoteModules, id, avatar, name, roles, status, reload, baseUrl, type, code }) => {
+  const [usePreset, Icon, LoadingButton, useConfirmModal, StateTag] = remoteModules;
   const { ajax, apis } = usePreset();
   const navigate = useNavigate();
   const { message } = App.useApp();
@@ -77,8 +74,7 @@ const AssistantHeader = createWithRemoteLoader({
                         }
                       }
                     ]
-                  }}
-                >
+                  }}>
                   <Button className={style['options']} type="small" shape="round" icon={<Icon type="gengduo2" />} />
                 </Dropdown>
               </div>
@@ -109,8 +105,7 @@ const AssistantHeader = createWithRemoteLoader({
                   }
                   message.success('Success');
                   reload();
-                }}
-              >
+                }}>
                 Publish
               </LoadingButton>
             )}
@@ -119,7 +114,7 @@ const AssistantHeader = createWithRemoteLoader({
             {status === 1 && <StateTag type="progress" text="Auditing" />}
           </Flex>
           <Flex gap={8}>
-            <ButtonGroup disabled={status !== 2} id={id} type={type} name={name} baseUrl={baseUrl} />
+            <ButtonGroup disabled={status !== 2} id={id} type={type} name={name} baseUrl={baseUrl} code={code} reload={reload}/>
           </Flex>
         </Flex>
       </Flex>

@@ -1,0 +1,32 @@
+.questions-list {
+  color: var(--font-color-grey);
+  line-height: 2;
+  padding-left: 1em;
+  margin: 0;
+}
+
+.no-data {
+  color: var(--font-color-grey-2);
+  height: calc(var(--container-height) - 46px);
+  box-sizing: border-box;
+  padding: 16px;
+}
+
+.no-data-title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.no-data-subtitle {
+  margin-bottom: 32px;
+}
+
+.footer {
+  margin: 32px 0 10px;
+}
+
+@media print {
+  .outer-container {
+    padding: 24px;
+  }
+}

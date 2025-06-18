@@ -1,6 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import style from './style.module.scss';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import localStorage from '@kne/local-storage';
 import { Splitter, Spin, Flex, Button } from 'antd';
 import InterviewProgress from '../InterviewProgress';
@@ -8,38 +8,26 @@ import { ReactComponent as LogoIcon } from '../InterviewProgress/logo.svg';
 import classnames from 'classnames';
 import voiceData from '../voice.json';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import InterviewInfo from '../InterviewInfo';
 
 const LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES = 'LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES';
 
 const Interview = createWithRemoteLoader({
   modules: ['components-core:StateBar', 'components-core:Common@SimpleBar', 'components-core:FilePreview', 'components-ckeditor:Editor.Content', 'components-core:Tooltip', 'components-core:Icon']
-})(({ remoteModules, resume, jobTitle, recorder, jd, list, stage, operation, isContinue, onStart, onStageChange, onOperation, onComplete }) => {
+})(({ remoteModules, className, resume, preparationInfo, jobTitle, recorder, reload, jd, list, stage, operation, isContinue, onStart, onStageChange, onOperation, onComplete }) => {
   const [StateBar, SimpleBar, FilePreview, EditorContent, Tooltip, Icon] = remoteModules;
   const [contentTab, setContentTab] = useState('resume');
   const [sizes, setSizes] = useState(localStorage.getItem(LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES) || ['50%', '50%']);
   const [start, setStart] = useState(false);
-
   return (
     <Splitter
-      className={style['container']}
+      className={classnames(className, style['container'])}
       onResize={sizes => {
         localStorage.setItem(LEAPIN_INTERVIEW_ASSISTANT_WINDOW_SIZES, sizes);
         setSizes(sizes);
-      }}
-    >
+      }}>
       <Splitter.Panel size={sizes[0]}>
-        <StateBar
-          activeKey={contentTab}
-          onChange={setContentTab}
-          stateOption={[
-            { tab: 'Resume', key: 'resume' },
-            { tab: 'JD', key: 'jd' }
-          ]}
-        />
-        <SimpleBar className={style['scroller']}>
-          {contentTab === 'resume' && <FilePreview {...Object.assign({}, resume)} />}
-          {contentTab === 'jd' && <EditorContent>{jd || ''}</EditorContent>}
-        </SimpleBar>
+        <InterviewInfo jd={jd} resume={resume} preparationInfo={preparationInfo} reload={reload} />
       </Splitter.Panel>
       <Splitter.Panel size={sizes[1]}>
         {start ? (
@@ -98,8 +86,7 @@ const Interview = createWithRemoteLoader({
               onClick={() => {
                 setStart(true);
                 onStart && onStart();
-              }}
-            >
+              }}>
               {isContinue ? '继续面试' : '开始面试'}
             </Button>
           </Flex>

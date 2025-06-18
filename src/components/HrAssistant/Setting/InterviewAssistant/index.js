@@ -6,7 +6,7 @@ import style from './style.module.scss';
 import Fetch from '@kne/react-fetch';
 import get from 'lodash/get';
 import classnames from 'classnames';
-import { Report } from '@components/InterviewAssistant';
+import { Report, ConferenceInfo, InterviewInfo } from '@components/InterviewAssistant';
 
 const InterviewAssistant = createWithRemoteLoader({
   modules: [
@@ -15,19 +15,22 @@ const InterviewAssistant = createWithRemoteLoader({
     'components-core:InfoPage@TableView',
     'components-core:File@FileLink',
     'components-core:Modal@ModalButton',
+    'components-core:Modal@useModal',
     'components-ckeditor:Editor.Content',
     'components-core:StateTag',
     'components-core:ButtonGroup',
     'components-core:Icon'
   ]
-})(({ remoteModules, type, baseUrl }) => {
-  const [usePreset, SearchInput, TableView, FileLink, ModalButton, EditorContent, StateTag, ButtonGroup, Icon] = remoteModules;
+})(({ remoteModules, type, baseUrl, getReload }) => {
+  const [usePreset, SearchInput, TableView, FileLink, ModalButton, useModal, EditorContent, StateTag, ButtonGroup, Icon] = remoteModules;
   const { apis } = usePreset();
   const [keyword, setKeyword] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const page = searchParams.get('page') || 1,
     pageSize = 10;
+
+  const modal = useModal();
 
   return (
     <Flex className={style['container']} vertical gap={24}>
@@ -41,15 +44,15 @@ const InterviewAssistant = createWithRemoteLoader({
         {...Object.assign({}, apis.agent.getSessionList, {
           params: { page, page_size: pageSize, keyword, agent_id: searchParams.get('id'), use_scene: type }
         })}
-        render={({ data, isComplete }) => {
+        render={({ data, isComplete, reload }) => {
+          getReload && getReload(reload);
           return (
             <Flex
               className={classnames('loading-container', {
                 'is-loading': !isComplete
               })}
               vertical
-              gap={8}
-            >
+              gap={8}>
               <TableView
                 dataSource={data.results}
                 columns={[
@@ -60,7 +63,7 @@ const InterviewAssistant = createWithRemoteLoader({
                       return get(item, 'extra_info.data.resume.resumeData.name');
                     }
                   },
-                  {
+                  /*{
                     name: 'resume',
                     title: 'Resume',
                     getValueOf: item => get(item, 'extra_info.data.resume.src'),
@@ -71,13 +74,13 @@ const InterviewAssistant = createWithRemoteLoader({
                         </FileLink>
                       );
                     }
-                  },
+                  },*/
                   {
                     name: 'jobTitle',
                     title: 'Job title',
                     getValueOf: item => get(item, 'extra_info.data.jobTitle')
                   },
-                  {
+                  /*{
                     name: 'jd',
                     title: 'JD',
                     getValueOf: item => get(item, 'extra_info.data.jd'),
@@ -90,11 +93,18 @@ const InterviewAssistant = createWithRemoteLoader({
                             title: 'JD',
                             children: <EditorContent>{item}</EditorContent>,
                             footer: null
-                          }}
-                        >
+                          }}>
                           Click Checked
                         </ModalButton>
                       );
+                    }
+                  },*/
+                  {
+                    name: 'type',
+                    title: 'Type',
+                    getValueOf: item => get(item, 'extra_info.data.interviewType') === 0,
+                    render: item => {
+                      return item ? <StateTag type="success" text="Online" /> : <StateTag type="info" text="Onsite" />;
                     }
                   },
                   {
@@ -107,6 +117,9 @@ const InterviewAssistant = createWithRemoteLoader({
                       }
                       if (item) {
                         return <StateTag type="info" text="Ended" />;
+                      }
+                      if (get(item, 'extra_info.data.online') === true && !get(item, 'conference_info.id')) {
+                        return <StateTag type="danger" text="Conference create Error" />;
                       }
                       return <StateTag type="progress" text="Progress" />;
                     }
@@ -132,10 +145,9 @@ const InterviewAssistant = createWithRemoteLoader({
                           className="btn-no-padding"
                           modalProps={{
                             size: 'large',
-                            children: <Report data={item} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} />,
+                            children: <Report data={item} extraData={get(target, 'extra_info.data')} startTime={get(target, 'start_time')} endTime={get(target, 'end_time')} reload={reload}/>,
                             footer: null
-                          }}
-                        >
+                          }}>
                           Click checked
                         </ModalButton>
                       );
@@ -145,8 +157,47 @@ const InterviewAssistant = createWithRemoteLoader({
                     name: 'options',
                     title: 'Options',
                     getValueOf: item => {
+                      const preparationPreview = {
+                        type: 'link',
+                        children: 'Preparation preview',
+                        onClick: () => {
+                          modal({
+                            title: 'Preparation preview',
+                            footer: null,
+                            children: <InterviewInfo active="preparation" jd={get(item, 'extra_info.data.jd')} resume={get(item, 'extra_info.data.resume')} preparationInfo={get(item, 'preparation_info.guide')} />
+                          });
+                        }
+                      };
                       if (get(item, 'status') === 2) {
-                        return null;
+                        return <ButtonGroup showLength={0} list={[preparationPreview]} more={<Button icon={<Icon type="icon-gengduo2" />} className="btn-no-padding" type="link" />} />;
+                      }
+
+                      if (get(item, 'extra_info.data.online') === true && !get(item, 'conference_info.id')) {
+                        return <ButtonGroup showLength={0} list={[preparationPreview]} more={<Button icon={<Icon type="icon-gengduo2" />} className="btn-no-padding" type="link" />} />;
+                      }
+
+                      if (get(item, 'extra_info.data.online') === true) {
+                        return (
+                          <ButtonGroup
+                            showLength={0}
+                            list={[
+                              {
+                                type: 'link',
+                                children: 'Conference details',
+                                onClick: () => {
+                                  modal({
+                                    title: 'Conference info',
+                                    size: 'small',
+                                    footer: null,
+                                    children: <ConferenceInfo id={get(item, 'conference_info.id')} />
+                                  });
+                                }
+                              },
+                              preparationPreview
+                            ]}
+                            more={<Button icon={<Icon type="icon-gengduo2" />} className="btn-no-padding" type="link" />}
+                          />
+                        );
                       }
                       return (
                         <ButtonGroup
@@ -158,7 +209,8 @@ const InterviewAssistant = createWithRemoteLoader({
                               onClick: () => {
                                 navigate(`${baseUrl}/interview-assistant-test?id=${item.agent.id}&sessionId=${item.id}`);
                               }
-                            }
+                            },
+                            preparationPreview
                           ]}
                           more={<Button icon={<Icon type="icon-gengduo2" />} className="btn-no-padding" type="link" />}
                         />

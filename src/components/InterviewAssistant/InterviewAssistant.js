@@ -5,17 +5,14 @@ import get from 'lodash/get';
 import Fetch from '@kne/react-fetch';
 import Recorder from './Recorder';
 import useRefCallback from '@kne/use-ref-callback';
-import { useNavigate } from 'react-router-dom';
 import Interview from './Interview';
 import Message from './Message';
-import last from 'lodash/last';
 
 const InterviewAssistantContent = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, baseUrl, sessionId, agentId, apis, token, data, operation, reload, setData, messageList }) => {
+})(({ remoteModules, className, baseUrl, sessionId, agentId, apis, token, data, preparationInfo, operation, reload, setData, messageList, online = false, onStart, onComplete, getSpeechInput }) => {
   const [usePreset] = remoteModules;
   const { ajax } = usePreset();
-  const navigate = useNavigate();
   const [stage, setStage] = useState(null);
 
   const endHandler = useRefCallback(async () => {
@@ -31,7 +28,7 @@ const InterviewAssistantContent = createWithRemoteLoader({
     if (resData.code !== 0) {
       return;
     }
-    navigate(`${baseUrl}/detail?id=${agentId}`);
+    onComplete && onComplete();
   });
 
   return (
@@ -67,16 +64,18 @@ const InterviewAssistantContent = createWithRemoteLoader({
           });
           return;
         }
-      }}
-    >
+      }}>
       {({ start, sendMessage }) => {
         return (
           <Interview
+            className={className}
             resume={data.resume}
             jd={data.jd}
+            preparationInfo={preparationInfo}
             list={data.stages}
             jobTitle={data.jobTitle}
             stage={stage}
+            reload={reload}
             operation={operation}
             onOperation={async ({ action, target }) => {
               const stageAction = [
@@ -113,19 +112,20 @@ const InterviewAssistantContent = createWithRemoteLoader({
             recorder={callback => {
               return (
                 <Recorder
+                  online={online}
+                  getSpeechInput={getSpeechInput}
                   id={sessionId}
                   apis={apis}
                   onProgress={message => {
                     sendMessage(Object.assign({}, message, { action: 'message' }));
-                  }}
-                >
+                  }}>
                   {({ recording, message }) => {
                     const colors = ['green', 'pink', 'red', 'yellow', 'orange', 'cyan', 'blue', 'purple', 'geekblue', 'magenta', 'volcano', 'gold', 'lime'];
                     return callback({
                       ready: recording,
                       text: message && message.message && (
                         <Flex gap={4} align="center">
-                          <Badge color={colors[message.type]} />
+                          <Badge color={Number.isInteger(message.type) ? colors[message.type] : 'green'} />
                           <span className="message">{message.message}</span>
                         </Flex>
                       )
@@ -135,7 +135,10 @@ const InterviewAssistantContent = createWithRemoteLoader({
               );
             }}
             isContinue={messageList && messageList.length > 0}
-            onStart={start}
+            onStart={() => {
+              start();
+              onStart && onStart();
+            }}
             onStageChange={async stage => {
               const stageOperation = [
                 ...(get(operation, 'stageOperation') || []),
@@ -177,7 +180,7 @@ const InterviewAssistantContent = createWithRemoteLoader({
 
 const InterviewAssistant = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, className, apiName, id, baseUrl, token, getOpenApi }) => {
+})(({ remoteModules, className, apiName, id, baseUrl, token, getOpenApi, ...props }) => {
   const [usePreset] = remoteModules;
   const { apis } = usePreset();
   const currentApis = apis.agent[apiName];
@@ -191,6 +194,7 @@ const InterviewAssistant = createWithRemoteLoader({
       render={({ data, reload, setData }) => {
         return (
           <InterviewAssistantContent
+            {...props}
             token={token}
             className={className}
             apis={currentApis}
@@ -200,6 +204,7 @@ const InterviewAssistant = createWithRemoteLoader({
             setData={setData}
             data={get(data, 'extra_info.data')}
             operation={get(data, 'operation_history')}
+            preparationInfo={get(data, 'preparation_info.guide')}
             isEnd={data.status === 2}
             messageList={data.messages}
             agentId={data.agent.id}

@@ -1,41 +1,46 @@
 import React from 'react';
 import { preset as fetchPreset } from '@kne/react-fetch';
 import { Spin, Empty, message } from 'antd';
-import axios from 'axios';
 import { preset as remoteLoaderPreset } from '@kne/remote-loader';
-import omit from 'lodash/omit';
 import cookie from 'js-cookie';
 import ensureSlash from '@kne/ensure-slash';
 import md5 from 'md5';
+import createAjax from '@kne/axios-fetch';
 import { getApis as getAgentApis } from '@components/Apis';
 import { enums as interviewAssistantEnums } from '@components/InterviewAssistant';
 
 window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
 
-export const defaultHeaders = headers => {
-  return Object.assign({}, headers, {
-    Authorization: `Bearer ${cookie.get('token')}`
-  });
-};
+const baseApiUrl = window.runtimeApiUrl || '';
+window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://api.gw.leapin-ai.com';
 
 export const globalInit = async () => {
-  const ajax = (() => {
-    const instance = axios.create({
-      validateStatus: function () {
-        return true;
-      }
-    });
+  const ajax = createAjax({
+    baseURL: baseApiUrl,
+    errorHandler: error => message.error(error),
+    getDefaultHeaders: () => {
+      return {
+        env: 'local',
+        appName: 'ai-agent',
+        Authorization: `Bearer ${cookie.get('token')}`
+      };
+    },
+    registerInterceptors: interceptors => {
+      interceptors.request.use(config => {
+        if (config.headers['env'] !== 'local') {
+          config.baseURL = `${config.baseURL}/${config.headers['appName']}/${config.headers['env']}`;
+          delete config.headers['appName'];
+          delete config.headers['env'];
+        }
+        if (config.headers['appName'] !== 'ai-agent') {
+          config.baseURL = `${window.runtimeGatewayUrl}/${config.headers['appName']}/${config.headers['env']}`;
+          delete config.headers['appName'];
+          delete config.headers['env'];
+        }
+        return config;
+      });
 
-    instance.interceptors.request.use(config => {
-      config.headers = Object.assign({}, defaultHeaders());
-      if (config.method.toUpperCase() !== 'GET' && !config.headers['Content-Type']) {
-        config.headers['Content-Type'] = 'application/json';
-      }
-      return config;
-    });
-
-    instance.interceptors.response.use(
-      response => {
+      interceptors.response.use(response => {
         if (response.status === 200 && response.data.code === 401) {
           window.location.href = '/login';
           return response;
@@ -45,57 +50,11 @@ export const globalInit = async () => {
           window.location.href = '/ai-agent/404';
           return response;
         }
-        if (response.status !== 200 || (response.data.hasOwnProperty('code') && response.data.code !== 0 && response.config.showError !== false)) {
-          message.error(response?.data?.msg || response?.data?.error_msg?.detail || response?.data?.error_msg || '请求发生错误');
-        }
+
         return response;
-      },
-      error => {
-        message.error(error.message || '请求发生错误');
-        return Promise.reject(error);
-      }
-    );
-
-    const parseUrlParams = params => {
-      if (typeof params.urlParams === 'object' && Object.keys(params.urlParams).length > 0 && typeof params.url === 'string') {
-        params.url = params.url.replace(/{([\s\S]+?)}/g, (match, name) => {
-          return params.urlParams.hasOwnProperty(name) ? params.urlParams[name] : match;
-        });
-      }
-    };
-
-    const ajax = params => {
-      if (params.hasOwnProperty('loader') && typeof params.loader === 'function') {
-        return Promise.resolve(params.loader(omit(params, ['loader'])))
-          .then(data => ({
-            data: {
-              code: 0,
-              data
-            }
-          }))
-          .catch(err => {
-            message.error(err.message || '请求发生错误');
-            return { data: { code: 500, msg: err.message } };
-          });
-      }
-      parseUrlParams(params);
-      return instance(params);
-    };
-
-    ajax.postForm = config => {
-      parseUrlParams(config);
-      const { url, params, urlParams, data, method, ...options } = config;
-      const searchParams = new URLSearchParams(params);
-
-      const queryString = searchParams.toString();
-
-      return axios.postForm(`${url}${queryString ? '?' + queryString : ''}`, data, Object.assign({}, { headers: defaultHeaders() }, options));
-    };
-
-    ajax.parseUrlParams = parseUrlParams;
-
-    return ajax;
-  })();
+      });
+    }
+  });
   fetchPreset({
     ajax,
     loading: (
@@ -131,7 +90,7 @@ export const globalInit = async () => {
     ...registry, //url: 'http://localhost:3001',
     //tpl: '{{url}}',
     remote: 'components-core',
-    defaultVersion: '0.3.18'
+    defaultVersion: '0.3.24'
   };
   remoteLoaderPreset({
     remotes: {
@@ -241,6 +200,7 @@ export const globalInit = async () => {
                 {},
                 {
                   url: ossConfig.host,
+                  showError: false,
                   data: {
                     key: `${ensureSlash(ossConfig.dir, true)}${targetFileName}`,
                     'x-oss-object-acl': 'public-read',

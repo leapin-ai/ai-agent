@@ -52,14 +52,22 @@ const getApis = options => {
       url: `${prefix}/agent/{agent_id}/application/list/`,
       method: 'GET'
     },
+    getSignature: {
+      url: `${prefix}/agent/conference/sign/`,
+      method: 'GET'
+    },
     getApplicationDetail: {
-      url: `${prefix}/api/candidate/candidate/applications/detail/{applications_id}/`,
+      url: `${prefix}/candidate/candidate/applications/detail/{applications_id}/`,
       method: 'GET'
     },
     chatBot: {
       addSession: {
         url: `${prefix}/api/agent/saas/session/add/`,
         method: 'POST'
+      },
+      interviewPrepare: {
+        url: `${prefix}/agent/saas/session/{session_id}/interview/prepare/`,
+        method: 'GET'
       },
       getSessionDetail: {
         url: `${prefix}/agent/saas/session/{session_id}/detail/`,
@@ -135,10 +143,20 @@ const getApis = options => {
       },
       createChatBot: {
         url: `${prefix}/agent/anonymous/code/`,
-        method: 'GET'
+        method: 'POST'
       },
       getSpeechToken: {
         url: `${prefix}/agent/{agent_id}/asr/ali/token/`
+      }
+    },
+    videoConference: {
+      createRoom: {
+        url: `${prefix}/v1/conference/open-api/create`,
+        method: 'POST'
+      },
+      getDetail: {
+        url: `${prefix}/v1/conference/open-api/detail`,
+        method: 'GET'
       }
     }
   };

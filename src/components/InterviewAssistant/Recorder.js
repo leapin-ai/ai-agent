@@ -6,7 +6,7 @@ import useRefCallback from '@kne/use-ref-callback';
 
 const Recorder = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, id, apis: currentApis, onProgress, onComplete, children }) => {
+})(({ remoteModules, id, apis: currentApis, onProgress, onComplete, online, getSpeechInput, children }) => {
   const [usePreset] = remoteModules;
   const { apis, ajax } = usePreset();
   const [currentMessage, setCurrentMessage] = useState({ type: 0, message: 'Ready' });
@@ -25,40 +25,52 @@ const Recorder = createWithRemoteLoader({
   });
   const completeHandler = useRefCallback(onComplete);
   const { message } = App.useApp();
-  useEffect(() => {
-    const promise = realtimeXfyun({
-      workerUrl: apis.file.speechTextUrl,
-      getToken: async () => {
-        const { data: resData } = await ajax(
-          Object.assign({}, currentApis.rtasrSign, {
-            urlParams: { agent_id: id }
-          })
-        );
-        if (resData.code !== 0) {
-          throw new Error('get token Error');
-        }
-        console.log(resData.data);
-        return resData.data;
-      },
-      onComplete: () => {
-        setRecording(false);
-        completeHandler();
-      },
-      onError: msg => {
-        message.error(msg);
-      },
-      onProgress: processHandler
-    });
-    promise
-      .then(({ start }) => start({ roleType: 2 }))
-      .then(() => {
+
+  const init = useRefCallback(() => {
+    let promise;
+    if (online && getSpeechInput) {
+      Promise.resolve(getSpeechInput && getSpeechInput(processHandler)).then(() => {
         setRecording(true);
       });
+    } else {
+      promise = realtimeXfyun({
+        workerUrl: apis.file.speechTextUrl,
+        getToken: async () => {
+          const { data: resData } = await ajax(
+            Object.assign({}, currentApis.rtasrSign, {
+              urlParams: { agent_id: id }
+            })
+          );
+          if (resData.code !== 0) {
+            throw new Error('get token Error');
+          }
+          console.log(resData.data);
+          return resData.data;
+        },
+        onComplete: () => {
+          setRecording(false);
+          completeHandler();
+        },
+        onError: msg => {
+          message.error(msg);
+        },
+        onProgress: processHandler
+      });
+      promise
+        .then(({ start }) => start({ roleType: 2 }))
+        .then(() => {
+          setRecording(true);
+        });
+    }
+    return promise;
+  });
+  useEffect(() => {
+    const promise = init();
 
     return () => {
-      promise.then(({ stop }) => stop());
+      promise && promise.then(({ stop }) => stop());
     };
-  }, [processHandler, completeHandler, message]);
+  }, [init]);
 
   return children({ recording, message: currentMessage });
 });

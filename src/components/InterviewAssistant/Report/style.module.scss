@@ -1,6 +1,14 @@
 .report {
   background: #ffffff;
   padding: 32px;
+
+  :global(._Zwg1J) {
+    padding: 0 24px;
+  }
+
+  :global(._gi7ot) {
+    font-weight: bold;
+  }
 }
 
 .report-outer {
@@ -11,4 +19,16 @@
   position: absolute;
   right: 64px;
   top: 80px;
+}
+
+.question-title {
+  font-weight: bold;
+}
+
+.question-role {
+  font-weight: bold;
+}
+
+.report-description {
+  color: var(--font-color-grey);
 }

@@ -6,9 +6,9 @@ import style from './style.module.scss';
 import { useRef } from 'react';
 
 const Report = createWithRemoteLoader({
-  modules: ['components-core:File@PrintButton', 'components-core:InfoPage@Report']
+  modules: ['components-core:File@PrintButton', 'components-core:InfoPage@Report', 'components-core:InfoPage']
 })(({ remoteModules, data, extraData, startTime, endTime }) => {
-  const [PrintButton, ReportView] = remoteModules;
+  const [PrintButton, ReportView, InfoPage] = remoteModules;
   const contentRef = useRef(null);
   return (
     <div className={style['report-outer']}>
@@ -20,8 +20,8 @@ const Report = createWithRemoteLoader({
           <ReportView border={false}>
             <h1>面试报告</h1>
             <Flex gap={20}>
-              <div>姓名:{get(extraData, 'resume.resumeData.name', 'Default')}</div>
-              <div>面试职位:{get(extraData, 'jobTitle') || ''}</div>
+              <div>姓名: {get(extraData, 'resume.resumeData.name', 'Default')}</div>
+              <div>面试职位: {get(extraData, 'jobTitle') || ''}</div>
               <div>面试时间: {startTime || ''}</div>
             </Flex>
           </ReportView>
@@ -35,7 +35,7 @@ const Report = createWithRemoteLoader({
                         {
                           title: '评估维度',
                           name: 'title',
-                          span: 6
+                          span: 4
                         },
                         {
                           title: '评分',
@@ -44,9 +44,15 @@ const Report = createWithRemoteLoader({
                           span: 4
                         },
                         {
+                          title: '维度说明',
+                          name: 'comment',
+                          span: 8,
+                          valueOf: item => <div className={style['report-description']}>{item}</div>
+                        },
+                        {
                           title: '具体表现建议',
                           name: 'description',
-                          span: 14
+                          span: 8
                         }
                       ],
                       list: get(data, 'report.interviewer.metrics')
@@ -105,7 +111,8 @@ const Report = createWithRemoteLoader({
                         {
                           title: '评估维度',
                           name: 'title',
-                          span: 6
+                          span: 4,
+                          valueOf: item => <div className={style['report-title']}>{item}</div>
                         },
                         {
                           title: '评分',
@@ -116,7 +123,8 @@ const Report = createWithRemoteLoader({
                         {
                           title: '关键证据',
                           name: 'comment',
-                          span: 6
+                          span: 8,
+                          valueOf: item => <div className={style['report-description']}>{item}</div>
                         },
                         {
                           title: '分析逻辑',
@@ -190,6 +198,49 @@ const Report = createWithRemoteLoader({
                   ]
                 }}
               />
+            </ReportView>
+          )}
+          {/*get(data, 'report.summary') && data.report.summary.length > 0 && (
+            <ReportView title="面试详情" border={false}>
+              <Flex vertical gap={12}>
+                {data.report.summary.map((item, index) => {
+                  if (item.type === 'section') {
+                    return <InfoPage.Part key={index} title={item.content}></InfoPage.Part>;
+                  }
+                  if (item.type === 'question') {
+                    return (
+                      <InfoPage.Part key={index}>
+                        <InfoPage.Part title={item.time}>
+                          <Typography.Paragraph className={style['question-title']}>
+                            <Typography.Text className={style['question-role']}>{item.role}:</Typography.Text>
+                            {item.content}
+                          </Typography.Paragraph>
+                        </InfoPage.Part>
+                      </InfoPage.Part>
+                    );
+                  }
+
+                  return (
+                    <Typography.Paragraph key={index}>
+                      <Typography.Text className={style['question-role']}>{item.role}:</Typography.Text>
+                      {item.content}
+                    </Typography.Paragraph>
+                  );
+                })}
+              </Flex>
+            </ReportView>
+          )*/}
+          {get(data, 'report.key_questions') && data.report.key_questions.length > 0 && (
+            <ReportView title="关键问题" border={false}>
+              <InfoPage.Part>
+                {data.report.key_questions.map(({ time, question }, index) => {
+                  return (
+                    <InfoPage.Part key={index} title={time}>
+                      {question}
+                    </InfoPage.Part>
+                  );
+                })}
+              </InfoPage.Part>
             </ReportView>
           )}
           {get(data, 'report.error') && (
