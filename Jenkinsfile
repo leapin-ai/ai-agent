@@ -1,6 +1,8 @@
 def build_command = "npm run build"
+def deployEnv = "staging"
 if (env.BRANCH_NAME == 'master') {
     build_command = "npm run build"
+    deployEnv = "prod"
 }
 
 standardPipeline {
@@ -15,4 +17,6 @@ standardPipeline {
     nodeVersion = "20.15.0"
     buildLocalPath = "build"
     deployBranch = ['develop', 'master']
+    isWebService = true
+    isWebCdn = true
 }
