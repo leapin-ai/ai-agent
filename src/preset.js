@@ -20,7 +20,7 @@ export const globalInit = async () => {
     errorHandler: error => message.error(error),
     getDefaultHeaders: () => {
       return {
-        env: 'local',
+        env: 'prod',
         appName: 'ai-agent',
         Authorization: `Bearer ${cookie.get('token')}`
       };
