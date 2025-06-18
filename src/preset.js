@@ -11,17 +11,20 @@ import { enums as interviewAssistantEnums } from '@components/InterviewAssistant
 
 window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
 
-const baseApiUrl = window.runtimeApiUrl || '';
+const baseApiUrl = window.runtimeApiUrl || 'https://api.gw.leapin-ai.com';
 window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://api.gw.leapin-ai.com';
+const appName = 'ai-agent';
+const env = window.runtimeEnv?.['env'] || 'prod';
+const conferenceHost = window.window.runtimeEnv?.['conferenceHost'] || 'https://video-conf.unfolds.ai';
 
 export const globalInit = async () => {
   const ajax = createAjax({
-    baseURL: baseApiUrl,
+    baseURL: env === 'local' ? '' : baseApiUrl,
     errorHandler: error => message.error(error),
     getDefaultHeaders: () => {
       return {
-        env: 'prod',
-        appName: 'ai-agent',
+        env,
+        appName,
         Authorization: `Bearer ${cookie.get('token')}`
       };
     },
@@ -29,14 +32,12 @@ export const globalInit = async () => {
       interceptors.request.use(config => {
         if (config.headers['env'] !== 'local') {
           config.baseURL = `${config.baseURL}/${config.headers['appName']}/${config.headers['env']}`;
-          delete config.headers['appName'];
-          delete config.headers['env'];
         }
         if (config.headers['appName'] !== 'ai-agent') {
           config.baseURL = `${window.runtimeGatewayUrl}/${config.headers['appName']}/${config.headers['env']}`;
-          delete config.headers['appName'];
-          delete config.headers['env'];
         }
+        delete config.headers['appName'];
+        delete config.headers['env'];
         return config;
       });
 
@@ -125,6 +126,7 @@ export const globalInit = async () => {
 
   return {
     ajax,
+    conferenceHost,
     enums: Object.assign(
       {},
       {
