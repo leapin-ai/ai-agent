@@ -14,7 +14,7 @@ window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
 const baseApiUrl = window.runtimeApiUrl || '';
 window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://api.gw.leapin-ai.com';
 const appName = 'ai-agent';
-const env = window.runtimeEnv?.['env'] || 'local';
+const env = window.runtimeEnv?.['env'] || 'prod';
 
 export const globalInit = async () => {
   const ajax = createAjax({
