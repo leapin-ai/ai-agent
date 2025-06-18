@@ -83,7 +83,7 @@ const ConferenceInfo = createWithRemoteLoader({
                 <Button
                   type="primary"
                   onClick={() => {
-                    window.open(`https://staging.video-conf.unfolds.ai/detail?code=${interviewer?.shorten}`, '_blank');
+                    window.open(`${conferenceHost}/detail?code=${interviewer?.shorten}`, '_blank');
                   }}>
                   进入面试
                 </Button>
