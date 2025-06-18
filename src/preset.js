@@ -11,11 +11,10 @@ import { enums as interviewAssistantEnums } from '@components/InterviewAssistant
 
 window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
 
-const baseApiUrl = window.runtimeApiUrl || 'https://api.gw.leapin-ai.com';
+const baseApiUrl = window.runtimeApiUrl || '';
 window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://api.gw.leapin-ai.com';
 const appName = 'ai-agent';
-const env = window.runtimeEnv?.['env'] || 'prod';
-const conferenceHost = window.window.runtimeEnv?.['conferenceHost'] || 'https://video-conf.unfolds.ai';
+const env = window.runtimeEnv?.['env'] || 'local';
 
 export const globalInit = async () => {
   const ajax = createAjax({
