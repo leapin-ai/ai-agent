@@ -8,7 +8,7 @@ import get from 'lodash/get';
 
 const InterviewAssistantClient = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, code, conferenceStep, onSpeechStart, onSpeechEnd, getSpeechInput, ...props }) => {
+})(({ remoteModules, code, conferenceStep, onSpeechStart, onSpeechEnd, getSpeechInput, getEndConferenceCallback, ...props }) => {
   const [usePreset] = remoteModules;
   const [searchParams] = useSearchParams();
   const { apis } = usePreset();
@@ -33,6 +33,7 @@ const InterviewAssistantClient = createWithRemoteLoader({
             token={data.token}
             onStart={onSpeechStart}
             onComplete={onSpeechEnd}
+            getEndCallback={getEndConferenceCallback}
             getSpeechInput={processHandler => {
               return getSpeechInput(message => {
                 processHandler({

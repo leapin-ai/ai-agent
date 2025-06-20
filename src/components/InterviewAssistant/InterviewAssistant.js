@@ -1,6 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { Flex, Badge } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import get from 'lodash/get';
 import Fetch from '@kne/react-fetch';
 import Recorder from './Recorder';
@@ -10,7 +10,7 @@ import Message from './Message';
 
 const InterviewAssistantContent = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, className, baseUrl, sessionId, agentId, apis, token, data, preparationInfo, operation, reload, setData, messageList, online = false, onStart, onComplete, getSpeechInput }) => {
+})(({ remoteModules, className, baseUrl, sessionId, agentId, apis, token, data, preparationInfo, operation, reload, setData, messageList, online = false, onStart, onComplete, getSpeechInput, getEndCallback }) => {
   const [usePreset] = remoteModules;
   const { ajax } = usePreset();
   const [stage, setStage] = useState(null);
@@ -30,6 +30,10 @@ const InterviewAssistantContent = createWithRemoteLoader({
     }
     onComplete && onComplete();
   });
+
+  useEffect(() => {
+    getEndCallback && getEndCallback(endHandler);
+  }, [endHandler]);
 
   return (
     <Message
