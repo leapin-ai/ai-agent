@@ -15,7 +15,7 @@ const baseApiUrl = window.runtimeApiUrl || 'https://api.gw.leapin-ai.com';
 window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://api.gw.leapin-ai.com';
 const appName = 'ai-agent';
 const env = window.runtimeEnv?.['env'] || 'local';
-const conferenceHost = window.window.runtimeEnv?.['conferenceHost'] || (env === 'local' ? 'https://staging.video-conf.unfolds.ai' :'https://video-conf.unfolds.ai');
+const conferenceHost = window.window.runtimeEnv?.['conferenceHost'] || (env === 'prod' ? 'https://video-conf.unfolds.ai' :'https://staging.video-conf.unfolds.ai');
 
 export const globalInit = async () => {
   const ajax = createAjax({
