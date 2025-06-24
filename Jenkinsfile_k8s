@@ -1,6 +1,6 @@
 @Library(['leapin-pipeline']) _
 
-standardK8sPipeline {
+standardK8sPipelineV2 {
     projectName = "leapin-ai-agent-web"
     isMultiBranch = true
     isWebCdn = true
