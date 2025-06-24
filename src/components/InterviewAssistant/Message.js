@@ -81,9 +81,10 @@ const Message = createWithRemoteLoader({
   const [list, setList] = useState((messageList || []).map(formatMessage));
   const [error, setError] = useState(null);
   const [usePreset] = remoteModules;
-  const { ajax } = usePreset();
+  const { ajax, appName, env } = usePreset();
   const listRef = useRef(list);
   const taskSchedulerRef = useRef(new TaskScheduler());
+  const [conversationId,setConversationId] = useState(null);
 
   const send = async message => {
     const prevMessageId = last(listRef.current.filter(({ event }) => event !== 'error'))?.id;
@@ -101,7 +102,10 @@ const Message = createWithRemoteLoader({
         chat_message_id: prevMessageId
       },
       eventEmit: data => {
-        setList(list => {
+        if(!conversationId){
+          setConversationId(data.conversation_id);
+        }
+        /*setList(list => {
           const newList = list.slice(0);
           const index = newList.findIndex(({ id }) => id === data.id);
           if (index === -1) {
@@ -119,12 +123,12 @@ const Message = createWithRemoteLoader({
           listRef.current = newList.map(formatMessage);
           onMessage && onMessage(last(listRef.current));
           return listRef.current;
-        });
+        });*/
       }
     });
     ajax.parseUrlParams(sseOptions);
     try {
-      await sse(sseOptions);
+      await sse(Object.assign({}, sseOptions, { url: `${ajax.baseURL}/${appName}/${env}${sseOptions.url}` }));
     } catch (err) {
       console.log(err);
       setError(err);
@@ -140,6 +144,51 @@ const Message = createWithRemoteLoader({
   const sendMessage = message => {
     taskSchedulerRef.current.addTask(() => send(message));
   };
+
+  useEffect(() => {
+    if (!conversationId) {
+      return;
+    }
+    const task = async () => {
+      const { data: resData } = await ajax(
+        Object.assign({}, apis.getMessageResult, {
+          urlParams: { session_id: conversationId }
+        })
+      );
+      if (resData.code !== 0) {
+        return;
+      }
+      if (!(resData.data && resData.data.advice?.length > 0)) {
+        return;
+      }
+
+      setList(list => {
+        const newList = list.slice(0);
+        newList.push({
+          user_content: { action: 'stage' },
+          chatbot_content: {
+            data: resData.data
+          }
+        });
+        return newList;
+      });
+
+      onMessage &&
+        onMessage({
+          user_content: resData.data.stage ? { action: 'stage' } : {},
+          chatbot_content: {
+            data: resData.data
+          }
+        });
+    };
+    task().then(() => {});
+    const timer = setInterval(async () => {
+      await task();
+    }, 5000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [conversationId]);
 
   return children({
     start: async () => {

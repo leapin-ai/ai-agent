@@ -56,6 +56,7 @@ const InterviewAssistantContent = createWithRemoteLoader({
           return;
         }
         const advice = get(outputData, 'chatbot_content.data.advice');
+
         if (advice && advice.length > 0) {
           setStage(stage => {
             return Object.assign({}, stage, {

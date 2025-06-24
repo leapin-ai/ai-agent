@@ -19,7 +19,7 @@ const conferenceHost = window.window.runtimeEnv?.['conferenceHost'] || (env === 
 
 export const globalInit = async () => {
   const ajax = createAjax({
-    baseURL: env === 'local' ? '' : baseApiUrl,
+    baseURL: baseApiUrl,
     errorHandler: error => message.error(error),
     getDefaultHeaders: () => {
       return {
@@ -30,9 +30,9 @@ export const globalInit = async () => {
     },
     registerInterceptors: interceptors => {
       interceptors.request.use(config => {
-        if (config.headers['env'] !== 'local') {
+        //if (config.headers['env'] !== 'local') {
           config.baseURL = `${config.baseURL}/${config.headers['appName']}/${config.headers['env']}`;
-        }
+        //}
         if (config.headers['appName'] !== 'ai-agent') {
           config.baseURL = `${window.runtimeGatewayUrl}/${config.headers['appName']}/${config.headers['env']}`;
         }
@@ -43,7 +43,7 @@ export const globalInit = async () => {
 
       interceptors.response.use(response => {
         if (response.status === 200 && response.data.code === 401) {
-          window.location.href = '/login';
+          //window.location.href = '/login';
           return response;
         }
 
@@ -126,6 +126,8 @@ export const globalInit = async () => {
 
   return {
     ajax,
+    appName,
+    env,
     conferenceHost,
     enums: Object.assign(
       {},
