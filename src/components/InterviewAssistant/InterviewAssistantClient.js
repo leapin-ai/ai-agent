@@ -8,7 +8,7 @@ import get from 'lodash/get';
 
 const InterviewAssistantClient = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
-})(({ remoteModules, code, conferenceStep, onSpeechStart, onSpeechEnd, getSpeechInput, ...props }) => {
+})(({ remoteModules, code, conferenceStep, onSpeechStart, onSpeechEnd, getSpeechInput, getEndConferenceCallback, ...props }) => {
   const [usePreset] = remoteModules;
   const [searchParams] = useSearchParams();
   const { apis } = usePreset();
@@ -26,6 +26,7 @@ const InterviewAssistantClient = createWithRemoteLoader({
         if (conferenceStep === 'waiting') {
           return <InterviewInfo active="preparation" reload={reload} jd={get(data, 'session.extra_info.data.jd')} resume={get(data, 'session.extra_info.data.resume')} preparationInfo={get(data, 'session.preparation_info.guide')} />;
         }
+
         return (
           <InterviewAssistant
             {...props}
@@ -33,6 +34,7 @@ const InterviewAssistantClient = createWithRemoteLoader({
             token={data.token}
             onStart={onSpeechStart}
             onComplete={onSpeechEnd}
+            getEndCallback={getEndConferenceCallback}
             getSpeechInput={processHandler => {
               return getSpeechInput(message => {
                 processHandler({
