@@ -14,8 +14,8 @@ window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
 const baseApiUrl = window.runtimeApiUrl || 'https://api.gw.leapin-ai.com';
 window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://api.gw.leapin-ai.com';
 const appName = 'ai-agent';
-const env = window.runtimeEnv?.['env'] || 'prod';
-const conferenceHost = window.window.runtimeEnv?.['conferenceHost'] || 'https://video-conf.unfolds.ai';
+const env = window.runtimeEnv?.['env'] || 'local';
+const conferenceHost = window.window.runtimeEnv?.['conferenceHost'] || (env === 'prod' ? 'https://video-conf.unfolds.ai' :'https://staging.video-conf.unfolds.ai');
 
 export const globalInit = async () => {
   const ajax = createAjax({
