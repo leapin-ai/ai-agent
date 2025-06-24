@@ -4,7 +4,7 @@ import cookie from 'js-cookie';
 import { message } from 'antd';
 
 const sse = config => {
-  const { url, params, data, eventEmit } = config;
+  const { url, params = {}, data, eventEmit } = config;
   const queryString = qs.stringify(
     transform(
       Object.assign({}, params, data, {

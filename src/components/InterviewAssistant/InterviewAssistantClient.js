@@ -26,6 +26,7 @@ const InterviewAssistantClient = createWithRemoteLoader({
         if (conferenceStep === 'waiting') {
           return <InterviewInfo active="preparation" reload={reload} jd={get(data, 'session.extra_info.data.jd')} resume={get(data, 'session.extra_info.data.resume')} preparationInfo={get(data, 'session.preparation_info.guide')} />;
         }
+
         return (
           <InterviewAssistant
             {...props}

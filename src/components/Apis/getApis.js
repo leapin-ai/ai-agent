@@ -92,6 +92,13 @@ const getApis = options => {
       rtasrSign: {
         url: `${prefix}/agent/saas/{agent_id}/rtasr/iflytek/sign/`,
         method: 'GET'
+      },
+      getMessageResult: {
+        url: `${prefix}/result/{session_id}`,
+        method: 'GET',
+        headers:{
+          appName: 'co-interviewer'
+        }
       }
     },
     job: {
@@ -147,6 +154,13 @@ const getApis = options => {
       },
       getSpeechToken: {
         url: `${prefix}/agent/{agent_id}/asr/ali/token/`
+      },
+      getMessageResult: {
+        url: `${prefix}/result/{session_id}`,
+        method: 'GET',
+        headers:{
+          appName: 'co-interviewer'
+        }
       }
     },
     videoConference: {
