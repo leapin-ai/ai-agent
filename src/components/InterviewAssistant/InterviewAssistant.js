@@ -15,7 +15,8 @@ const InterviewAssistantContent = createWithRemoteLoader({
   const { ajax } = usePreset();
   const [stage, setStage] = useState(null);
 
-  const endHandler = useRefCallback(async () => {
+  const endHandler = useRefCallback(async options => {
+    const { ignoreComplete } = Object.assign({}, options);
     const { data: resData } = await ajax(
       Object.assign({}, apis.saveSession, {
         urlParams: { session_id: sessionId },
@@ -28,11 +29,11 @@ const InterviewAssistantContent = createWithRemoteLoader({
     if (resData.code !== 0) {
       return;
     }
-    onComplete && onComplete();
+    !ignoreComplete && onComplete && onComplete();
   });
 
   useEffect(() => {
-    getEndCallback && getEndCallback(endHandler);
+    getEndCallback && getEndCallback(() => endHandler({ ignoreComplete: true }));
   }, [endHandler]);
 
   return (
