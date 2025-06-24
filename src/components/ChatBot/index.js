@@ -226,7 +226,7 @@ const ChartBotMessage = createWithRemoteLoader({
     });
     ajax.parseUrlParams(sseOptions);
     try {
-      await sse(Object.assign({}, sseOptions, { url: `${ajax.baseURL}/ai-agent/${env}${sseOptions.url}` }));
+      await sse(sseOptions);
     } catch (e) {
       console.log(e);
     }
