@@ -16,7 +16,7 @@ window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://ap
 const appName = 'ai-agent';
 const env = window.runtimeEnv?.['env'] || 'local';
 const conferenceHost = window.window.runtimeEnv?.['conferenceHost'] || (env === 'prod' ? 'https://video-conf.leapin-ai.com' :'https://staging.video-conf.leapin-ai.com');
-
+const cdnHost = window.runtimeEnv?.['cdnHost'] || 'https://cdn.leapin-ai.com';
 export const globalInit = async () => {
   const ajax = createAjax({
     baseURL: baseApiUrl,
@@ -83,7 +83,7 @@ export const globalInit = async () => {
   });
 
   const registry = {
-    url: 'https://cdn.leapin-ai.com',
+    url: cdnHost,
     tpl: '{{url}}/components/@kne-components/{{remote}}/{{version}}/build'
   };
 
@@ -159,7 +159,7 @@ export const globalInit = async () => {
         agent: getAgentApis(),
         file: {
           speechTextUrl: window.PUBLIC_URL + '/xfyun-dist', //speechTextUrl: 'https://cdn.leapin-ai.com/components/@kne/speech-text/0.2.3/xfyun-dist', //window.PUBLIC_URL + '/xfyun-dist'
-          contentWindowUrl: 'https://cdn.leapin-ai.com/components/@kne/iframe-resizer/0.1.3/dist/contentWindow.js', //pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
+          contentWindowUrl: `${cdnHost}/components/@kne/iframe-resizer/0.1.3/dist/contentWindow.js`, //pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
                                                                                                                           data: {
