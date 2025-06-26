@@ -128,7 +128,7 @@ const Message = createWithRemoteLoader({
     });
     ajax.parseUrlParams(sseOptions);
     try {
-      await sse(Object.assign({}, sseOptions, { url: `${ajax.baseURL}/${appName}/${env}${sseOptions.url}` }));
+      await sse(sseOptions);
     } catch (err) {
       console.log(err);
       setError(err);

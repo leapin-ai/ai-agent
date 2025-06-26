@@ -94,11 +94,8 @@ const getApis = options => {
         method: 'GET'
       },
       getMessageResult: {
-        url: `${prefix}/result/{session_id}`,
+        url: `${prefix}/co-interviewer/result/{session_id}`,
         method: 'GET',
-        headers:{
-          appName: 'co-interviewer'
-        }
       }
     },
     job: {
@@ -156,11 +153,8 @@ const getApis = options => {
         url: `${prefix}/agent/{agent_id}/asr/ali/token/`
       },
       getMessageResult: {
-        url: `${prefix}/result/{session_id}`,
-        method: 'GET',
-        headers:{
-          appName: 'co-interviewer'
-        }
+        url: `${prefix}/co-interviewer/result/{session_id}`,
+        method: 'GET'
       }
     },
     videoConference: {

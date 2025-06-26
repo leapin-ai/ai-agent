@@ -202,7 +202,10 @@ const InterviewAssistant = createWithRemoteLoader({
                     }
                   },
                   headers: {
-                    ...signatureResData.data,
+                    'x-openapi-appid': signatureResData.data.appId,
+                    'x-openapi-timestamp': signatureResData.data.timestamp,
+                    'x-openapi-signature': signatureResData.data.signature,
+                    'x-openapi-expire': signatureResData.data.expire,
                     appName: 'video-conference'
                   }
                 })
