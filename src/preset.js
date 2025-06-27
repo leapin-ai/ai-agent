@@ -43,7 +43,7 @@ export const globalInit = async () => {
 
       interceptors.response.use(response => {
         if (response.status === 200 && response.data.code === 401) {
-          //window.location.href = '/login';
+          window.location.href = '/login';
           return response;
         }
 
