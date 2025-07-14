@@ -2,6 +2,7 @@ import { createWithRemoteLoader } from '@kne/remote-loader';
 import React, { useState, useRef, useEffect, memo, useMemo } from 'react';
 import { Row, Col, Flex, Spin } from 'antd';
 import { Timer } from '@kne/count-down';
+import commonStyle from '../style.module.scss';
 import style from './style.module.scss';
 import aiIconVideo from './ai-icon.webm';
 import { PushpinOutlined, DeleteOutlined, PushpinTwoTone } from '@ant-design/icons';
@@ -46,7 +47,7 @@ const FlowStage = createWithRemoteLoader({
               <div>{item.text}</div>
               <Flex gap={8}>
                 {(item.tags || []).map((tag, index) => {
-                  return <StateTag type="info" size="small" text={tag} key={index} />;
+                  return <StateTag className={commonStyle['tag']} type="info" size="small" text={tag} key={index} />;
                 })}
               </Flex>
             </Flex>

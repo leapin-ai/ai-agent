@@ -1,5 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import style from './style.module.scss';
+import commonStyle from '../style.module.scss';
 import { Flex, Button } from 'antd';
 import { useRef } from 'react';
 
@@ -34,7 +35,7 @@ const PreparationInfo = createWithRemoteLoader({
                   {(advices || []).map(({ question, tag }, index) => {
                     return (
                       <li key={index}>
-                        <StateTag type="info" text={tag} />
+                        <StateTag type="info" text={tag} className={commonStyle['tag']}/>
                         {question}
                       </li>
                     );
