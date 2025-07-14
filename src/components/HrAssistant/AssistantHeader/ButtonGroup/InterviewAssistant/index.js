@@ -192,7 +192,8 @@ const InterviewAssistant = createWithRemoteLoader({
                       setting: {
                         layoutType: 3,
                         record: 'video',
-                        speech: true
+                        speech: true,
+                        language: '16k_zh_large'
                       },
                       documentType: 'remote-module',
                       module: 'leapin-ai-agent:InterviewAssistant@Client',
