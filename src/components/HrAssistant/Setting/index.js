@@ -1,7 +1,9 @@
 import InterviewAssistant from './InterviewAssistant';
 import AIInterview from './AIInterview';
+import ChatbotAssistant from './ChatbotAssistant';
 
 const mapping = {
+  1: ChatbotAssistant,
   2: InterviewAssistant,
   3: AIInterview
 };
