@@ -5,7 +5,7 @@ import { Timer } from '@kne/count-down';
 import commonStyle from '../style.module.scss';
 import style from './style.module.scss';
 import aiIconVideo from './ai-icon.webm';
-import { PushpinOutlined, DeleteOutlined, PushpinTwoTone } from '@ant-design/icons';
+import { PushpinOutlined, PushpinTwoTone } from '@ant-design/icons';
 import { ReactComponent as TipsIcon } from './tips.svg';
 import { ReactComponent as Logo } from './logo.svg';
 import dayjs from 'dayjs';
@@ -70,7 +70,7 @@ const FlowStage = createWithRemoteLoader({
                 size="small"
                 variant="filled"
                 color="danger"
-                icon={<DeleteOutlined />}
+                icon={<DislikeOutlined />}
                 onClick={async () => {
                   await onOperation({
                     action: 'delete',
