@@ -5,7 +5,7 @@ import { Timer } from '@kne/count-down';
 import commonStyle from '../style.module.scss';
 import style from './style.module.scss';
 import aiIconVideo from './ai-icon.webm';
-import { PushpinOutlined, PushpinTwoTone } from '@ant-design/icons';
+import { PushpinOutlined, PushpinTwoTone, DislikeOutlined } from '@ant-design/icons';
 import { ReactComponent as TipsIcon } from './tips.svg';
 import { ReactComponent as Logo } from './logo.svg';
 import dayjs from 'dayjs';
@@ -159,8 +159,7 @@ const FlowTitle = createWithRemoteLoader({
         placement="rightTop"
         getPopupContainer={() => {
           return ref.current && ref.current.parentElement.parentElement.parentElement;
-        }}
-      >
+        }}>
         <div>{children}</div>
       </Tooltip>
     </div>
@@ -273,8 +272,7 @@ const InterViewProgressInner = createWithRemoteLoader({
                         variant="filled"
                         onClick={() => {
                           return stageChange(list[current]);
-                        }}
-                      >
+                        }}>
                         重新获取
                       </LoadingButton>
                     </Flex>
