@@ -7,6 +7,7 @@ import Recorder from './Recorder';
 import useRefCallback from '@kne/use-ref-callback';
 import Interview from './Interview';
 import Message from './Message';
+import { v4 as uuidv4 } from 'uuid';
 
 const InterviewAssistantContent = createWithRemoteLoader({
   modules: ['components-core:Global@usePreset']
@@ -49,7 +50,7 @@ const InterviewAssistantContent = createWithRemoteLoader({
               success: !!get(outputData, 'chatbot_content.data'),
               advice: (get(outputData, 'chatbot_content.data.advice') || []).map((item, index) => {
                 return Object.assign({}, item, {
-                  id: `${outputData.id}-${index}`
+                  id: uuidv4()
                 });
               })
             })
@@ -63,7 +64,7 @@ const InterviewAssistantContent = createWithRemoteLoader({
             return Object.assign({}, stage, {
               advice: (advice || []).map((item, index) => {
                 return Object.assign({}, item, {
-                  id: `${outputData.id}-${index}`
+                  id: uuidv4()
                 });
               })
             });

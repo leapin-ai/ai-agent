@@ -2,9 +2,10 @@ import { createWithRemoteLoader } from '@kne/remote-loader';
 import React, { useState, useRef, useEffect, memo, useMemo } from 'react';
 import { Row, Col, Flex, Spin } from 'antd';
 import { Timer } from '@kne/count-down';
+import commonStyle from '../style.module.scss';
 import style from './style.module.scss';
 import aiIconVideo from './ai-icon.webm';
-import { PushpinOutlined, DeleteOutlined, PushpinTwoTone } from '@ant-design/icons';
+import { PushpinOutlined, PushpinTwoTone, DislikeOutlined } from '@ant-design/icons';
 import { ReactComponent as TipsIcon } from './tips.svg';
 import { ReactComponent as Logo } from './logo.svg';
 import dayjs from 'dayjs';
@@ -46,7 +47,7 @@ const FlowStage = createWithRemoteLoader({
               <div>{item.text}</div>
               <Flex gap={8}>
                 {(item.tags || []).map((tag, index) => {
-                  return <StateTag type="info" size="small" text={tag} key={index} />;
+                  return <StateTag className={commonStyle['tag']} type="info" size="small" text={tag} key={index} />;
                 })}
               </Flex>
             </Flex>
@@ -69,7 +70,7 @@ const FlowStage = createWithRemoteLoader({
                 size="small"
                 variant="filled"
                 color="danger"
-                icon={<DeleteOutlined />}
+                icon={<DislikeOutlined />}
                 onClick={async () => {
                   await onOperation({
                     action: 'delete',
@@ -158,8 +159,7 @@ const FlowTitle = createWithRemoteLoader({
         placement="rightTop"
         getPopupContainer={() => {
           return ref.current && ref.current.parentElement.parentElement.parentElement;
-        }}
-      >
+        }}>
         <div>{children}</div>
       </Tooltip>
     </div>
@@ -272,8 +272,7 @@ const InterViewProgressInner = createWithRemoteLoader({
                         variant="filled"
                         onClick={() => {
                           return stageChange(list[current]);
-                        }}
-                      >
+                        }}>
                         重新获取
                       </LoadingButton>
                     </Flex>
