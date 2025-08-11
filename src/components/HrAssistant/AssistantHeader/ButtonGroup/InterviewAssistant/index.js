@@ -191,7 +191,7 @@ const InterviewAssistant = createWithRemoteLoader({
                       documentTitle: '获取面试准备',
                       setting: {
                         layoutType: 3,
-                        record: 'video',
+                        //record: 'video',
                         speech: true,
                         language: '16k_zh_large'
                       },
