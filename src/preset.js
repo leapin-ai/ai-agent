@@ -159,7 +159,8 @@ export const globalInit = async () => {
         agent: getAgentApis(),
         file: {
           speechTextUrl: window.PUBLIC_URL + '/xfyun-dist', //speechTextUrl: 'https://cdn.leapin-ai.com/components/@kne/speech-text/0.2.3/xfyun-dist', //window.PUBLIC_URL + '/xfyun-dist'
-          contentWindowUrl: `${cdnHost}/components/@kne/iframe-resizer/0.1.3/dist/contentWindow.js`, //pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
+          contentWindowUrl: `${cdnHost}/components/@kne/iframe-resizer/0.1.3/dist/contentWindow.js`,
+          pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
           upload: async ({ file }) => {
             /*return {
                                                                                                                           data: {
