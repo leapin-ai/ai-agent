@@ -11,11 +11,10 @@ import { enums as interviewAssistantEnums } from '@components/InterviewAssistant
 
 window.PUBLIC_URL = window.runtimePublicUrl || process.env.PUBLIC_URL;
 
-const currentDist = window.location.origin + '/ai-agent';
-
 const baseApiUrl = window.runtimeApiUrl || 'https://api.gw.leapin-ai.com';
 window.runtimeGatewayUrl = window.runtimeGatewayUrl || baseApiUrl || 'https://api.gw.leapin-ai.com';
 const appName = 'ai-agent';
+const currentDist = `${window.location.origin}/${appName}`;
 const env = window.runtimeEnv?.['env'] || 'local';
 const conferenceHost = window.runtimeEnv?.['conferenceHost'] || (env === 'prod' ? 'https://video-conf.leapin-ai.com' : 'https://staging.video-conf.leapin-ai.com');
 const cdnHost = window.runtimeEnv?.['cdnHost'] || 'https://cdn.leapin-ai.com';
@@ -55,11 +54,11 @@ export const globalInit = async () => {
   });
   fetchPreset({
     ajax, loading: (<Spin
-        delay={500}
-        style={{
-          position: 'absolute', left: '50%', padding: '10px', transform: 'translateX(-50%)'
-        }}
-      />), error: null, empty: <Empty />, transformResponse: response => {
+      delay={500}
+      style={{
+        position: 'absolute', left: '50%', padding: '10px', transform: 'translateX(-50%)'
+      }}
+    />), error: null, empty: <Empty />, transformResponse: response => {
       const { data } = response;
       response.data = {
         code: data.code === 0 ? 200 : data.code, msg: data.msg, results: data.data
@@ -104,7 +103,7 @@ export const globalInit = async () => {
       }]
     }, interviewAssistantEnums), apis: Object.assign({}, {
       agent: getAgentApis(), file: {
-        speechTextUrl: window.PUBLIC_URL + '/xfyun-dist', //speechTextUrl: 'https://cdn.leapin-ai.com/components/@kne/speech-text/0.2.3/xfyun-dist', //window.PUBLIC_URL + '/xfyun-dist'
+        speechTextUrl: currentDist + '/xfyun-dist', //speechTextUrl: 'https://cdn.leapin-ai.com/components/@kne/speech-text/0.2.3/xfyun-dist', //window.PUBLIC_URL + '/xfyun-dist'
         contentWindowUrl: `${cdnHost}/components/@kne/iframe-resizer/0.1.3/dist/contentWindow.js`,
         pdfjsUrl: 'https://cdn.leapin-ai.com/components/pdfjs-dist/4.4.168',
         upload: async ({ file }) => {
