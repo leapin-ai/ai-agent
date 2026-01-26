@@ -1,8 +1,9 @@
 @Library(['leapin-pipeline']) _
 
-standardK8sPipeline {
-    projectName = "leapin-ai-agent-web"
+standardK8sPipelineV2 {
+    projectName = "ai-agent"
     isMultiBranch = true
+    isWebCdn = true
     imageRepo = "leapin-ai-agent-web"
     deployBranch = ['master', 'main']
     deployBranchEnvMap = ['master': 'prod', 'main': 'prod']

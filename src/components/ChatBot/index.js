@@ -38,6 +38,20 @@ const JobCard = createWithRemoteLoader({
   );
 });
 
+const IFrame = createWithRemoteLoader({
+  modules: ['components-core:InfoPage', 'components-core:Icon']
+})(({ remoteModules, url, title, height }) => {
+  const [InfoPage, Icon] = remoteModules;
+
+  return (
+    <InfoPage>
+      <InfoPage.Part title={title} extra={<Button shape="circle" type="link" href={url} target="_blank" icon={<Icon type="tuichudenglu" />} />}>
+        <iframe src={url} title="outsie content" height={height || 500} style={{ width: '100%', border: 'none' }} />
+      </InfoPage.Part>
+    </InfoPage>
+  );
+});
+
 const transformHTML = html => {
   const dom = document.createElement('div');
   dom.innerHTML = html;
@@ -83,7 +97,8 @@ const SideMessage = ({ messages }) => {
         htmlTransform={transformHTML}
         components={{
           Card,
-          JobCard
+          JobCard,
+          IFrame
         }}
         render={output => {
           if (output && output.length > 0) {
@@ -101,8 +116,7 @@ const SideMessage = ({ messages }) => {
                   video.muted = true;
                   video.play();
                 });
-              }}
-            >
+              }}>
               {contentRef.current &&
                 contentRef.current.output &&
                 contentRef.current.output.map((node, index) => {
@@ -110,8 +124,7 @@ const SideMessage = ({ messages }) => {
                 })}
             </QueueAnim>
           );
-        }}
-      >
+        }}>
         {content}
       </MarkdownRender>
     );
@@ -131,7 +144,7 @@ const ChartBotMessage = createWithRemoteLoader({
   const [loading, setLoading] = useState(true);
   const [evening, setEvening] = useState(false);
   const [list, setList] = useState(messageList || []);
-  const { ajax } = usePreset();
+  const { ajax, env } = usePreset();
   const { message } = App.useApp();
   const [currentMessage, setCurrentMessage] = useState('');
   const [isComposing, setIsComposing] = useState(false);
@@ -212,7 +225,11 @@ const ChartBotMessage = createWithRemoteLoader({
       }
     });
     ajax.parseUrlParams(sseOptions);
-    await sse(sseOptions);
+    try {
+      await sse(sseOptions);
+    } catch (e) {
+      console.log(e);
+    }
     setLoading(false);
     setCurrentMessage('');
     setEvening(false);
@@ -261,8 +278,7 @@ const ChartBotMessage = createWithRemoteLoader({
           className={classnames(style['message-list-outer'], 'message-list-scroller', {
             [style['is-end']]: isEnd
           })}
-          scrollableNodeProps={{ ref: messageListRef }}
-        >
+          scrollableNodeProps={{ ref: messageListRef }}>
           <MessageList
             isEnd={isEnd}
             agentAvatar={agentAvatar}
@@ -383,8 +399,7 @@ const ChartBotMessage = createWithRemoteLoader({
           onResize={sizes => {
             localStorage.setItem('LEAPIN_AI_AGENT_WINDOW_SIZES', sizes);
             setSizes(sizes);
-          }}
-        >
+          }}>
           <Splitter.Panel size={sizes[0]}>
             {list.length > 0 ? (
               <SimpleBar className={classnames(style['side-content-outer'], 'side-content-outer')}>

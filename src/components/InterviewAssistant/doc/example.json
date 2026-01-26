@@ -1,0 +1,62 @@
+{
+  "isFull": true,
+  "list": [
+    {
+      "title": "面试过程",
+      "description": "这里填写示例说明",
+      "code": "./progress.js",
+      "scope": [
+        {
+          "name": "_InterviewAssistant",
+          "packageName": "@components/InterviewAssistant"
+        },
+        {
+          "name": "_mockPreset",
+          "packageName": "@root/mockPreset"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
+    },
+    {
+      "title": "面试",
+      "description": "这里填写示例说明",
+      "code": "./interview.js",
+      "scope": [
+        {
+          "name": "_InterviewAssistant",
+          "packageName": "@components/InterviewAssistant"
+        },
+        {
+          "name": "_mockPreset",
+          "packageName": "@root/mockPreset"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
+    },
+    {
+      "title": "面试报告",
+      "description": "这里填写示例说明",
+      "code": "./base.js",
+      "scope": [
+        {
+          "name": "_InterviewAssistant",
+          "packageName": "@components/InterviewAssistant"
+        },
+        {
+          "name": "_mockPreset",
+          "packageName": "@root/mockPreset"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
+    }
+  ]
+}

@@ -52,14 +52,22 @@ const getApis = options => {
       url: `${prefix}/agent/{agent_id}/application/list/`,
       method: 'GET'
     },
+    getSignature: {
+      url: `${prefix}/agent/conference/sign/`,
+      method: 'GET'
+    },
     getApplicationDetail: {
-      url: `${prefix}/api/candidate/candidate/applications/detail/{applications_id}/`,
+      url: `${prefix}/candidate/candidate/applications/detail/{applications_id}/`,
       method: 'GET'
     },
     chatBot: {
       addSession: {
         url: `${prefix}/api/agent/saas/session/add/`,
         method: 'POST'
+      },
+      interviewPrepare: {
+        url: `${prefix}/agent/saas/session/{session_id}/interview/prepare/`,
+        method: 'GET'
       },
       getSessionDetail: {
         url: `${prefix}/agent/saas/session/{session_id}/detail/`,
@@ -80,6 +88,14 @@ const getApis = options => {
       saveSession: {
         url: `${prefix}/agent/saas/session/{session_id}/update/`,
         method: 'PUT'
+      },
+      rtasrSign: {
+        url: `${prefix}/agent/saas/{agent_id}/rtasr/iflytek/sign/`,
+        method: 'GET'
+      },
+      getMessageResult: {
+        url: `${prefix}/co-interviewer/result/{session_id}`,
+        method: 'GET',
       }
     },
     job: {
@@ -97,6 +113,10 @@ const getApis = options => {
       },
       rejected: {
         url: `${prefix}/candidate/candidate/applications/change_status/`,
+        method: 'POST'
+      },
+      resumeParse: {
+        url: `${prefix}/resume/parser_resume/`,
         method: 'POST'
       }
     },
@@ -127,10 +147,24 @@ const getApis = options => {
       },
       createChatBot: {
         url: `${prefix}/agent/anonymous/code/`,
-        method: 'GET'
+        method: 'POST'
       },
       getSpeechToken: {
         url: `${prefix}/agent/{agent_id}/asr/ali/token/`
+      },
+      getMessageResult: {
+        url: `${prefix}/co-interviewer/result/{session_id}`,
+        method: 'GET'
+      }
+    },
+    videoConference: {
+      createRoom: {
+        url: `${prefix}/v1/conference/open-api/create`,
+        method: 'POST'
+      },
+      getDetail: {
+        url: `${prefix}/v1/conference/open-api/detail`,
+        method: 'GET'
       }
     }
   };

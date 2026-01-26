@@ -11,6 +11,7 @@ const pages = {
   CreateAgent: loadableWithProps(() => import('./CreateAgent')),
   Marketplace: loadableWithProps(() => import('./Marketplace')),
   HrAssistant: loadableWithProps(() => import('./HrAssistant')),
+  InterviewAssistant: loadableWithProps(() => import('./InterviewAssistant')),
   ChatBot: loadableWithProps(() => import('./ChatBot')),
   History: loadableWithProps(() => import('./History'))
 };
