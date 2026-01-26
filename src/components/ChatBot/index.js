@@ -14,7 +14,7 @@ import style from './style.module.scss';
 import get from 'lodash/get';
 import CheckList from './CheckList';
 import Countdown from './Countdown';
-import MarkdownRender from '@kne/markdown-components-render';
+import MarkdownRender from './MarkdownRender';
 import sse from '@root/common/sse';
 import localStorage from '@kne/local-storage';
 import QueueAnim from 'rc-queue-anim';
